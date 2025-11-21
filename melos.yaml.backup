@@ -1,0 +1,41 @@
+name: flutter_architecture_sample_monorepo
+
+packages:
+  - apps/mobile
+  - packages/domain
+  - packages/presentation
+  - packages/design_system
+
+command:
+  bootstrap:
+    runPubGetInParallel: true
+    runPubGetOffline: false
+
+scripts:
+  get:
+    description: Run pub get in all packages
+    run: melos exec -- flutter pub get
+
+  clean:
+    description: Clean all packages
+    run: melos exec -- flutter clean
+
+  format:
+    description: Format all packages
+    run: dart format .
+
+  analyze:
+    description: Analyze all packages
+    run: melos exec -- flutter analyze
+
+  test:
+    description: Run tests in all packages
+    run: melos exec -- flutter test
+
+  build_runner:
+    description: Run build_runner in packages that use it
+    run: melos exec --depends-on="build_runner" -- dart run build_runner build --delete-conflicting-outputs
+
+  watch:
+    description: Watch for changes and run build_runner
+    run: melos exec --depends-on="build_runner" -- dart run build_runner watch --delete-conflicting-outputs

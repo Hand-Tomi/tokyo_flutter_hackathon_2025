@@ -1,0 +1,42 @@
+name: flutter_architecture_sample_monorepo
+description: "Melos monorepo for Flutter architecture sample"
+publish_to: 'none'
+
+environment:
+  sdk: ^3.8.1
+
+dev_dependencies:
+  melos: ^7.3.0
+
+workspace:
+  - apps/mobile
+  - packages/design_system
+  - packages/domain
+  - packages/presentation
+
+melos:
+  sdkPath: .fvm/flutter_sdk
+  scripts:
+    get:
+      description: pub get
+      run: make get
+      exec:
+        concurrency: 1
+        failFast: true
+        orderDependents: true
+
+    build:
+      description: build_runner build
+      run: make build_runner
+      exec:
+        orderDependents: true
+      packageFilters:
+        dependsOn: build_runner
+
+    watch:
+      description: build_runner watch
+      run: make watch
+      exec:
+        orderDependents: true
+      packageFilters:
+        dependsOn: build_runner

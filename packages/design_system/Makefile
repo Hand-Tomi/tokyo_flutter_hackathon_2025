@@ -1,0 +1,25 @@
+.PHONY: build_runner watch get clean
+
+# Flutter version management
+FLUTTER := fvm flutter
+DART := fvm dart
+
+# コード生成
+build_runner:
+	@echo "🔨 Building design_system package..."
+	$(DART) run build_runner build --delete-conflicting-outputs
+
+# ファイル変更を監視
+watch:
+	@echo "👀 Watching design_system package..."
+	$(DART) run build_runner watch --delete-conflicting-outputs
+
+# 依存関係の取得
+get:
+	@echo "📦 Getting dependencies for design_system package..."
+	$(FLUTTER) pub get
+
+# ビルドキャッシュのクリーン
+clean:
+	@echo "🧹 Cleaning design_system package build cache..."
+	$(DART) run build_runner clean
