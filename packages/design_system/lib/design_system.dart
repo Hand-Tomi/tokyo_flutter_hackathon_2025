@@ -6,3 +6,7 @@ export 'todo/todo_card.dart';
 export 'todo/todo_list_template.dart';
 export 'todo/todo_list_ui_state.dart';
 export 'todo/todo_ui.dart';
+
+export 'image/image_analysis_ui.dart';
+export 'image/image_analysis_page_ui_state.dart';
+export 'image/image_analysis_page_template.dart';
