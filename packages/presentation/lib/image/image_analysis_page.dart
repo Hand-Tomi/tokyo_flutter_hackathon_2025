@@ -29,6 +29,14 @@ class ImageAnalysisPage extends ConsumerWidget {
               ),
             );
           },
+          showGeneratedImage: (image) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('이미지 생성 완료!'),
+                backgroundColor: Colors.purple,
+              ),
+            );
+          },
           showError: (message) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -55,6 +63,9 @@ class ImageAnalysisPage extends ConsumerWidget {
       onAnalyzeImage: () => ref
           .read(imageAnalysisPageViewModelProvider.notifier)
           .onAnalyzeImagePressed(),
+      onGenerateImage: () => ref
+          .read(imageAnalysisPageViewModelProvider.notifier)
+          .onGenerateImagePressed(),
     );
   }
 }

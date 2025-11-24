@@ -17,5 +17,6 @@ export 'hand_tracking/hand_info_panel.dart';
 
 // Image Analysis
 export 'image/image_analysis_ui.dart';
+export 'image/generated_image_ui.dart';
 export 'image/image_analysis_page_ui_state.dart';
 export 'image/image_analysis_page_template.dart';

@@ -231,18 +231,21 @@ mixin _$DebugListPageAction {
     required TResult Function() none,
     required TResult Function() navigateToTodoList,
     required TResult Function() navigateToHandTracking,
+    required TResult Function() navigateToImageAnalysis,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? none,
     TResult? Function()? navigateToTodoList,
     TResult? Function()? navigateToHandTracking,
+    TResult? Function()? navigateToImageAnalysis,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? none,
     TResult Function()? navigateToTodoList,
     TResult Function()? navigateToHandTracking,
+    TResult Function()? navigateToImageAnalysis,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -251,18 +254,22 @@ mixin _$DebugListPageAction {
     required TResult Function(_NavigateToTodoList value) navigateToTodoList,
     required TResult Function(_NavigateToHandTracking value)
     navigateToHandTracking,
+    required TResult Function(_NavigateToImageAnalysis value)
+    navigateToImageAnalysis,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_None value)? none,
     TResult? Function(_NavigateToTodoList value)? navigateToTodoList,
     TResult? Function(_NavigateToHandTracking value)? navigateToHandTracking,
+    TResult? Function(_NavigateToImageAnalysis value)? navigateToImageAnalysis,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_None value)? none,
     TResult Function(_NavigateToTodoList value)? navigateToTodoList,
     TResult Function(_NavigateToHandTracking value)? navigateToHandTracking,
+    TResult Function(_NavigateToImageAnalysis value)? navigateToImageAnalysis,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
 }
@@ -333,6 +340,7 @@ class _$NoneImpl implements _None {
     required TResult Function() none,
     required TResult Function() navigateToTodoList,
     required TResult Function() navigateToHandTracking,
+    required TResult Function() navigateToImageAnalysis,
   }) {
     return none();
   }
@@ -343,6 +351,7 @@ class _$NoneImpl implements _None {
     TResult? Function()? none,
     TResult? Function()? navigateToTodoList,
     TResult? Function()? navigateToHandTracking,
+    TResult? Function()? navigateToImageAnalysis,
   }) {
     return none?.call();
   }
@@ -353,6 +362,7 @@ class _$NoneImpl implements _None {
     TResult Function()? none,
     TResult Function()? navigateToTodoList,
     TResult Function()? navigateToHandTracking,
+    TResult Function()? navigateToImageAnalysis,
     required TResult orElse(),
   }) {
     if (none != null) {
@@ -368,6 +378,8 @@ class _$NoneImpl implements _None {
     required TResult Function(_NavigateToTodoList value) navigateToTodoList,
     required TResult Function(_NavigateToHandTracking value)
     navigateToHandTracking,
+    required TResult Function(_NavigateToImageAnalysis value)
+    navigateToImageAnalysis,
   }) {
     return none(this);
   }
@@ -378,6 +390,7 @@ class _$NoneImpl implements _None {
     TResult? Function(_None value)? none,
     TResult? Function(_NavigateToTodoList value)? navigateToTodoList,
     TResult? Function(_NavigateToHandTracking value)? navigateToHandTracking,
+    TResult? Function(_NavigateToImageAnalysis value)? navigateToImageAnalysis,
   }) {
     return none?.call(this);
   }
@@ -388,6 +401,7 @@ class _$NoneImpl implements _None {
     TResult Function(_None value)? none,
     TResult Function(_NavigateToTodoList value)? navigateToTodoList,
     TResult Function(_NavigateToHandTracking value)? navigateToHandTracking,
+    TResult Function(_NavigateToImageAnalysis value)? navigateToImageAnalysis,
     required TResult orElse(),
   }) {
     if (none != null) {
@@ -447,6 +461,7 @@ class _$NavigateToTodoListImpl implements _NavigateToTodoList {
     required TResult Function() none,
     required TResult Function() navigateToTodoList,
     required TResult Function() navigateToHandTracking,
+    required TResult Function() navigateToImageAnalysis,
   }) {
     return navigateToTodoList();
   }
@@ -457,6 +472,7 @@ class _$NavigateToTodoListImpl implements _NavigateToTodoList {
     TResult? Function()? none,
     TResult? Function()? navigateToTodoList,
     TResult? Function()? navigateToHandTracking,
+    TResult? Function()? navigateToImageAnalysis,
   }) {
     return navigateToTodoList?.call();
   }
@@ -467,6 +483,7 @@ class _$NavigateToTodoListImpl implements _NavigateToTodoList {
     TResult Function()? none,
     TResult Function()? navigateToTodoList,
     TResult Function()? navigateToHandTracking,
+    TResult Function()? navigateToImageAnalysis,
     required TResult orElse(),
   }) {
     if (navigateToTodoList != null) {
@@ -482,6 +499,8 @@ class _$NavigateToTodoListImpl implements _NavigateToTodoList {
     required TResult Function(_NavigateToTodoList value) navigateToTodoList,
     required TResult Function(_NavigateToHandTracking value)
     navigateToHandTracking,
+    required TResult Function(_NavigateToImageAnalysis value)
+    navigateToImageAnalysis,
   }) {
     return navigateToTodoList(this);
   }
@@ -492,6 +511,7 @@ class _$NavigateToTodoListImpl implements _NavigateToTodoList {
     TResult? Function(_None value)? none,
     TResult? Function(_NavigateToTodoList value)? navigateToTodoList,
     TResult? Function(_NavigateToHandTracking value)? navigateToHandTracking,
+    TResult? Function(_NavigateToImageAnalysis value)? navigateToImageAnalysis,
   }) {
     return navigateToTodoList?.call(this);
   }
@@ -502,6 +522,7 @@ class _$NavigateToTodoListImpl implements _NavigateToTodoList {
     TResult Function(_None value)? none,
     TResult Function(_NavigateToTodoList value)? navigateToTodoList,
     TResult Function(_NavigateToHandTracking value)? navigateToHandTracking,
+    TResult Function(_NavigateToImageAnalysis value)? navigateToImageAnalysis,
     required TResult orElse(),
   }) {
     if (navigateToTodoList != null) {
@@ -563,6 +584,7 @@ class _$NavigateToHandTrackingImpl implements _NavigateToHandTracking {
     required TResult Function() none,
     required TResult Function() navigateToTodoList,
     required TResult Function() navigateToHandTracking,
+    required TResult Function() navigateToImageAnalysis,
   }) {
     return navigateToHandTracking();
   }
@@ -573,6 +595,7 @@ class _$NavigateToHandTrackingImpl implements _NavigateToHandTracking {
     TResult? Function()? none,
     TResult? Function()? navigateToTodoList,
     TResult? Function()? navigateToHandTracking,
+    TResult? Function()? navigateToImageAnalysis,
   }) {
     return navigateToHandTracking?.call();
   }
@@ -583,6 +606,7 @@ class _$NavigateToHandTrackingImpl implements _NavigateToHandTracking {
     TResult Function()? none,
     TResult Function()? navigateToTodoList,
     TResult Function()? navigateToHandTracking,
+    TResult Function()? navigateToImageAnalysis,
     required TResult orElse(),
   }) {
     if (navigateToHandTracking != null) {
@@ -598,6 +622,8 @@ class _$NavigateToHandTrackingImpl implements _NavigateToHandTracking {
     required TResult Function(_NavigateToTodoList value) navigateToTodoList,
     required TResult Function(_NavigateToHandTracking value)
     navigateToHandTracking,
+    required TResult Function(_NavigateToImageAnalysis value)
+    navigateToImageAnalysis,
   }) {
     return navigateToHandTracking(this);
   }
@@ -608,6 +634,7 @@ class _$NavigateToHandTrackingImpl implements _NavigateToHandTracking {
     TResult? Function(_None value)? none,
     TResult? Function(_NavigateToTodoList value)? navigateToTodoList,
     TResult? Function(_NavigateToHandTracking value)? navigateToHandTracking,
+    TResult? Function(_NavigateToImageAnalysis value)? navigateToImageAnalysis,
   }) {
     return navigateToHandTracking?.call(this);
   }
@@ -618,6 +645,7 @@ class _$NavigateToHandTrackingImpl implements _NavigateToHandTracking {
     TResult Function(_None value)? none,
     TResult Function(_NavigateToTodoList value)? navigateToTodoList,
     TResult Function(_NavigateToHandTracking value)? navigateToHandTracking,
+    TResult Function(_NavigateToImageAnalysis value)? navigateToImageAnalysis,
     required TResult orElse(),
   }) {
     if (navigateToHandTracking != null) {
@@ -629,4 +657,127 @@ class _$NavigateToHandTrackingImpl implements _NavigateToHandTracking {
 
 abstract class _NavigateToHandTracking implements DebugListPageAction {
   factory _NavigateToHandTracking() = _$NavigateToHandTrackingImpl;
+}
+
+/// @nodoc
+abstract class _$$NavigateToImageAnalysisImplCopyWith<$Res> {
+  factory _$$NavigateToImageAnalysisImplCopyWith(
+    _$NavigateToImageAnalysisImpl value,
+    $Res Function(_$NavigateToImageAnalysisImpl) then,
+  ) = __$$NavigateToImageAnalysisImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$NavigateToImageAnalysisImplCopyWithImpl<$Res>
+    extends
+        _$DebugListPageActionCopyWithImpl<$Res, _$NavigateToImageAnalysisImpl>
+    implements _$$NavigateToImageAnalysisImplCopyWith<$Res> {
+  __$$NavigateToImageAnalysisImplCopyWithImpl(
+    _$NavigateToImageAnalysisImpl _value,
+    $Res Function(_$NavigateToImageAnalysisImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of DebugListPageAction
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$NavigateToImageAnalysisImpl implements _NavigateToImageAnalysis {
+  _$NavigateToImageAnalysisImpl();
+
+  @override
+  String toString() {
+    return 'DebugListPageAction.navigateToImageAnalysis()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$NavigateToImageAnalysisImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() none,
+    required TResult Function() navigateToTodoList,
+    required TResult Function() navigateToHandTracking,
+    required TResult Function() navigateToImageAnalysis,
+  }) {
+    return navigateToImageAnalysis();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? none,
+    TResult? Function()? navigateToTodoList,
+    TResult? Function()? navigateToHandTracking,
+    TResult? Function()? navigateToImageAnalysis,
+  }) {
+    return navigateToImageAnalysis?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? none,
+    TResult Function()? navigateToTodoList,
+    TResult Function()? navigateToHandTracking,
+    TResult Function()? navigateToImageAnalysis,
+    required TResult orElse(),
+  }) {
+    if (navigateToImageAnalysis != null) {
+      return navigateToImageAnalysis();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_None value) none,
+    required TResult Function(_NavigateToTodoList value) navigateToTodoList,
+    required TResult Function(_NavigateToHandTracking value)
+    navigateToHandTracking,
+    required TResult Function(_NavigateToImageAnalysis value)
+    navigateToImageAnalysis,
+  }) {
+    return navigateToImageAnalysis(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_None value)? none,
+    TResult? Function(_NavigateToTodoList value)? navigateToTodoList,
+    TResult? Function(_NavigateToHandTracking value)? navigateToHandTracking,
+    TResult? Function(_NavigateToImageAnalysis value)? navigateToImageAnalysis,
+  }) {
+    return navigateToImageAnalysis?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_None value)? none,
+    TResult Function(_NavigateToTodoList value)? navigateToTodoList,
+    TResult Function(_NavigateToHandTracking value)? navigateToHandTracking,
+    TResult Function(_NavigateToImageAnalysis value)? navigateToImageAnalysis,
+    required TResult orElse(),
+  }) {
+    if (navigateToImageAnalysis != null) {
+      return navigateToImageAnalysis(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _NavigateToImageAnalysis implements DebugListPageAction {
+  factory _NavigateToImageAnalysis() = _$NavigateToImageAnalysisImpl;
 }

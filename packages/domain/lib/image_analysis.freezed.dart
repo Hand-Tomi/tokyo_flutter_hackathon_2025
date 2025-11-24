@@ -24,8 +24,7 @@ mixin _$ImageAnalysis {
   String get id => throw _privateConstructorUsedError;
   String get originalImagePath => throw _privateConstructorUsedError;
   String get analysisText => throw _privateConstructorUsedError;
-  String get sceneType =>
-      throw _privateConstructorUsedError; // enum 대신 String으로 변경
+  String get sceneType => throw _privateConstructorUsedError;
   List<String> get tags => throw _privateConstructorUsedError;
   DateTime get createdAt => throw _privateConstructorUsedError;
 
@@ -204,9 +203,7 @@ class _$ImageAnalysisImpl implements _ImageAnalysis {
   final String analysisText;
   @override
   final String sceneType;
-  // enum 대신 String으로 변경
   final List<String> _tags;
-  // enum 대신 String으로 변경
   @override
   List<String> get tags {
     if (_tags is EqualUnmodifiableListView) return _tags;
@@ -285,7 +282,7 @@ abstract class _ImageAnalysis implements ImageAnalysis {
   @override
   String get analysisText;
   @override
-  String get sceneType; // enum 대신 String으로 변경
+  String get sceneType;
   @override
   List<String> get tags;
   @override

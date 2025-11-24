@@ -14,3 +14,26 @@ extension ImageAnalysisMapper on ImageAnalysis {
     );
   }
 }
+
+extension GeneratedImageMapper on GeneratedImage {
+  GeneratedImageUi toUi() {
+    return GeneratedImageUi(
+      id: id,
+      imagePath: imagePath,
+      prompt: prompt,
+      statusLabel: _statusToLabel(status),
+      formattedDate: DateFormat('yyyy/MM/dd HH:mm').format(createdAt),
+    );
+  }
+
+  String _statusToLabel(GenerationStatus status) {
+    switch (status) {
+      case GenerationStatus.pending:
+        return '생성 중';
+      case GenerationStatus.completed:
+        return '완료';
+      case GenerationStatus.failed:
+        return '실패';
+    }
+  }
+}

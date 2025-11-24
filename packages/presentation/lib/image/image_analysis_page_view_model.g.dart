@@ -7,7 +7,7 @@ part of 'image_analysis_page_view_model.dart';
 // **************************************************************************
 
 String _$imageAnalysisPageViewModelHash() =>
-    r'aa29c2251d10e5bf7f65b34dd0f061a85927a486';
+    r'3394d0e2db04aba78e3f3edbf278233a82ae46b5';
 
 /// See also [ImageAnalysisPageViewModel].
 @ProviderFor(ImageAnalysisPageViewModel)

@@ -8,17 +8,19 @@ class ImageAnalysisPageTemplate extends StatelessWidget {
     required this.uiState,
     required this.onPickImage,
     required this.onAnalyzeImage,
+    required this.onGenerateImage,
   });
 
   final ImageAnalysisPageUiState uiState;
   final VoidCallback onPickImage;
   final VoidCallback onAnalyzeImage;
+  final VoidCallback onGenerateImage;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('이미지 분석'),
+        title: const Text('이미지 분석 & 생성'),
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -27,8 +29,12 @@ class ImageAnalysisPageTemplate extends StatelessWidget {
           children: [
             _buildImagePickerSection(),
             const SizedBox(height: 24),
-            if (uiState.currentAnalysis != null)
+            if (uiState.currentAnalysis != null) ...[
               _buildAnalysisResultSection(),
+              const SizedBox(height: 24),
+            ],
+            if (uiState.generatedImage != null)
+              _buildGeneratedImageSection(),
           ],
         ),
       ),
@@ -144,6 +150,98 @@ class ImageAnalysisPageTemplate extends StatelessWidget {
             const SizedBox(height: 8),
             Text(
               '분석 시간: ${analysis.formattedDate}',
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
+            ),
+            const SizedBox(height: 16),
+            if (uiState.isGenerating)
+              const Column(
+                children: [
+                  Center(child: CircularProgressIndicator()),
+                  SizedBox(height: 8),
+                  Text('새 이미지 생성 중...', style: TextStyle(color: Colors.grey)),
+                ],
+              )
+            else
+              ElevatedButton.icon(
+                onPressed: onGenerateImage,
+                icon: const Icon(Icons.auto_awesome),
+                label: const Text('새 이미지 생성하기'),
+                style: ElevatedButton.styleFrom(
+                  padding: const EdgeInsets.symmetric(vertical: 16),
+                  backgroundColor: Colors.purple,
+                  foregroundColor: Colors.white,
+                ),
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildGeneratedImageSection() {
+    final generated = uiState.generatedImage!;
+    return Card(
+      elevation: 2,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                const Icon(Icons.image, color: Colors.purple),
+                const SizedBox(width: 8),
+                const Text(
+                  '생성된 이미지',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const Spacer(),
+                Chip(
+                  label: Text(generated.statusLabel),
+                  backgroundColor: Colors.green.shade50,
+                ),
+              ],
+            ),
+            const SizedBox(height: 12),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(12),
+              child: generated.imagePath.startsWith('http')
+                  ? Image.network(
+                      generated.imagePath,
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                      loadingBuilder: (context, child, loadingProgress) {
+                        if (loadingProgress == null) return child;
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      },
+                    )
+                  : Image.file(
+                      File(generated.imagePath),
+                      width: double.infinity,
+                      fit: BoxFit.cover,
+                    ),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              '프롬프트:',
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 14,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              generated.prompt,
+              style: const TextStyle(fontSize: 12, color: Colors.grey),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              '생성 시간: ${generated.formattedDate}',
               style: const TextStyle(fontSize: 12, color: Colors.grey),
             ),
           ],

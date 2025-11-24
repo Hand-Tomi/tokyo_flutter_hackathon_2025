@@ -12,13 +12,16 @@ part 'image_analysis_page_view_model.g.dart';
 class ImageAnalysisPageViewModel extends _$ImageAnalysisPageViewModel {
   final ImagePicker _imagePicker = ImagePicker();
   ImageAnalysis? _currentAnalysis;
+  GeneratedImage? _currentGeneratedImage;
 
   late final VisionService _visionService;
+  late final ImageGenerationService _imageGenService;
 
   @override
   PageState<ImageAnalysisPageUiState, ImageAnalysisPageAction> build() {
     // 서비스 주입
     _visionService = ref.read(visionServiceProvider);
+    _imageGenService = ref.read(imageGenerationServiceProvider);
 
     return PageState(
       uiState: const ImageAnalysisPageUiState(),
@@ -43,6 +46,7 @@ class ImageAnalysisPageViewModel extends _$ImageAnalysisPageViewModel {
         uiState: state.uiState.copyWith(
           selectedImagePath: image.path,
           currentAnalysis: null,
+          generatedImage: null,
         ),
       );
     } catch (e) {
@@ -80,6 +84,38 @@ class ImageAnalysisPageViewModel extends _$ImageAnalysisPageViewModel {
       state = state.copyWith(
         uiState: state.uiState.copyWith(isAnalyzing: false),
         action: ImageAnalysisPageAction.showError('이미지 분석 실패: $e'),
+      );
+    }
+  }
+
+  /// 새 이미지 생성
+  Future<void> onGenerateImagePressed() async {
+    if (_currentAnalysis == null) return;
+
+    state = state.copyWith(
+      uiState: state.uiState.copyWith(isGenerating: true),
+    );
+
+    try {
+      final generatedImage = await _imageGenService.generateImage(
+        _currentAnalysis!,
+      );
+
+      _currentGeneratedImage = generatedImage;
+
+      state = state.copyWith(
+        uiState: state.uiState.copyWith(
+          isGenerating: false,
+          generatedImage: generatedImage.toUi(),
+        ),
+        action: ImageAnalysisPageAction.showGeneratedImage(
+          generatedImage.toUi(),
+        ),
+      );
+    } catch (e) {
+      state = state.copyWith(
+        uiState: state.uiState.copyWith(isGenerating: false),
+        action: ImageAnalysisPageAction.showError('이미지 생성 실패: $e'),
       );
     }
   }

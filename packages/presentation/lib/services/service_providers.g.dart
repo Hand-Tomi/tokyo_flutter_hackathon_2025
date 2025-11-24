@@ -26,5 +26,28 @@ final visionServiceProvider = AutoDisposeProvider<VisionService>.internal(
 @Deprecated('Will be removed in 3.0. Use Ref instead')
 // ignore: unused_element
 typedef VisionServiceRef = AutoDisposeProviderRef<VisionService>;
+String _$imageGenerationServiceHash() =>
+    r'9899ca9096923a97b95a08052b185e6378ff4843';
+
+/// Image Generation Service Provider
+/// Mock 서비스 (추후 Imagen 3로 교체 예정)
+///
+/// Copied from [imageGenerationService].
+@ProviderFor(imageGenerationService)
+final imageGenerationServiceProvider =
+    AutoDisposeProvider<ImageGenerationService>.internal(
+      imageGenerationService,
+      name: r'imageGenerationServiceProvider',
+      debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+          ? null
+          : _$imageGenerationServiceHash,
+      dependencies: null,
+      allTransitiveDependencies: null,
+    );
+
+@Deprecated('Will be removed in 3.0. Use Ref instead')
+// ignore: unused_element
+typedef ImageGenerationServiceRef =
+    AutoDisposeProviderRef<ImageGenerationService>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

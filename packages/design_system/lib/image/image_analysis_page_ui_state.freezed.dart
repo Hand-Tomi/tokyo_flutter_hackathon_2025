@@ -19,7 +19,9 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$ImageAnalysisPageUiState {
   String? get selectedImagePath => throw _privateConstructorUsedError;
   bool get isAnalyzing => throw _privateConstructorUsedError;
+  bool get isGenerating => throw _privateConstructorUsedError;
   ImageAnalysisUi? get currentAnalysis => throw _privateConstructorUsedError;
+  GeneratedImageUi? get generatedImage => throw _privateConstructorUsedError;
 
   /// Create a copy of ImageAnalysisPageUiState
   /// with the given fields replaced by the non-null parameter values.
@@ -38,10 +40,13 @@ abstract class $ImageAnalysisPageUiStateCopyWith<$Res> {
   $Res call({
     String? selectedImagePath,
     bool isAnalyzing,
+    bool isGenerating,
     ImageAnalysisUi? currentAnalysis,
+    GeneratedImageUi? generatedImage,
   });
 
   $ImageAnalysisUiCopyWith<$Res>? get currentAnalysis;
+  $GeneratedImageUiCopyWith<$Res>? get generatedImage;
 }
 
 /// @nodoc
@@ -64,7 +69,9 @@ class _$ImageAnalysisPageUiStateCopyWithImpl<
   $Res call({
     Object? selectedImagePath = freezed,
     Object? isAnalyzing = null,
+    Object? isGenerating = null,
     Object? currentAnalysis = freezed,
+    Object? generatedImage = freezed,
   }) {
     return _then(
       _value.copyWith(
@@ -76,10 +83,18 @@ class _$ImageAnalysisPageUiStateCopyWithImpl<
                 ? _value.isAnalyzing
                 : isAnalyzing // ignore: cast_nullable_to_non_nullable
                       as bool,
+            isGenerating: null == isGenerating
+                ? _value.isGenerating
+                : isGenerating // ignore: cast_nullable_to_non_nullable
+                      as bool,
             currentAnalysis: freezed == currentAnalysis
                 ? _value.currentAnalysis
                 : currentAnalysis // ignore: cast_nullable_to_non_nullable
                       as ImageAnalysisUi?,
+            generatedImage: freezed == generatedImage
+                ? _value.generatedImage
+                : generatedImage // ignore: cast_nullable_to_non_nullable
+                      as GeneratedImageUi?,
           )
           as $Val,
     );
@@ -98,6 +113,20 @@ class _$ImageAnalysisPageUiStateCopyWithImpl<
       return _then(_value.copyWith(currentAnalysis: value) as $Val);
     });
   }
+
+  /// Create a copy of ImageAnalysisPageUiState
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $GeneratedImageUiCopyWith<$Res>? get generatedImage {
+    if (_value.generatedImage == null) {
+      return null;
+    }
+
+    return $GeneratedImageUiCopyWith<$Res>(_value.generatedImage!, (value) {
+      return _then(_value.copyWith(generatedImage: value) as $Val);
+    });
+  }
 }
 
 /// @nodoc
@@ -112,11 +141,15 @@ abstract class _$$ImageAnalysisPageUiStateImplCopyWith<$Res>
   $Res call({
     String? selectedImagePath,
     bool isAnalyzing,
+    bool isGenerating,
     ImageAnalysisUi? currentAnalysis,
+    GeneratedImageUi? generatedImage,
   });
 
   @override
   $ImageAnalysisUiCopyWith<$Res>? get currentAnalysis;
+  @override
+  $GeneratedImageUiCopyWith<$Res>? get generatedImage;
 }
 
 /// @nodoc
@@ -139,7 +172,9 @@ class __$$ImageAnalysisPageUiStateImplCopyWithImpl<$Res>
   $Res call({
     Object? selectedImagePath = freezed,
     Object? isAnalyzing = null,
+    Object? isGenerating = null,
     Object? currentAnalysis = freezed,
+    Object? generatedImage = freezed,
   }) {
     return _then(
       _$ImageAnalysisPageUiStateImpl(
@@ -151,10 +186,18 @@ class __$$ImageAnalysisPageUiStateImplCopyWithImpl<$Res>
             ? _value.isAnalyzing
             : isAnalyzing // ignore: cast_nullable_to_non_nullable
                   as bool,
+        isGenerating: null == isGenerating
+            ? _value.isGenerating
+            : isGenerating // ignore: cast_nullable_to_non_nullable
+                  as bool,
         currentAnalysis: freezed == currentAnalysis
             ? _value.currentAnalysis
             : currentAnalysis // ignore: cast_nullable_to_non_nullable
                   as ImageAnalysisUi?,
+        generatedImage: freezed == generatedImage
+            ? _value.generatedImage
+            : generatedImage // ignore: cast_nullable_to_non_nullable
+                  as GeneratedImageUi?,
       ),
     );
   }
@@ -166,7 +209,9 @@ class _$ImageAnalysisPageUiStateImpl implements _ImageAnalysisPageUiState {
   const _$ImageAnalysisPageUiStateImpl({
     this.selectedImagePath = null,
     this.isAnalyzing = false,
+    this.isGenerating = false,
     this.currentAnalysis = null,
+    this.generatedImage = null,
   });
 
   @override
@@ -177,11 +222,17 @@ class _$ImageAnalysisPageUiStateImpl implements _ImageAnalysisPageUiState {
   final bool isAnalyzing;
   @override
   @JsonKey()
+  final bool isGenerating;
+  @override
+  @JsonKey()
   final ImageAnalysisUi? currentAnalysis;
+  @override
+  @JsonKey()
+  final GeneratedImageUi? generatedImage;
 
   @override
   String toString() {
-    return 'ImageAnalysisPageUiState(selectedImagePath: $selectedImagePath, isAnalyzing: $isAnalyzing, currentAnalysis: $currentAnalysis)';
+    return 'ImageAnalysisPageUiState(selectedImagePath: $selectedImagePath, isAnalyzing: $isAnalyzing, isGenerating: $isGenerating, currentAnalysis: $currentAnalysis, generatedImage: $generatedImage)';
   }
 
   @override
@@ -193,13 +244,23 @@ class _$ImageAnalysisPageUiStateImpl implements _ImageAnalysisPageUiState {
                 other.selectedImagePath == selectedImagePath) &&
             (identical(other.isAnalyzing, isAnalyzing) ||
                 other.isAnalyzing == isAnalyzing) &&
+            (identical(other.isGenerating, isGenerating) ||
+                other.isGenerating == isGenerating) &&
             (identical(other.currentAnalysis, currentAnalysis) ||
-                other.currentAnalysis == currentAnalysis));
+                other.currentAnalysis == currentAnalysis) &&
+            (identical(other.generatedImage, generatedImage) ||
+                other.generatedImage == generatedImage));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, selectedImagePath, isAnalyzing, currentAnalysis);
+  int get hashCode => Object.hash(
+    runtimeType,
+    selectedImagePath,
+    isAnalyzing,
+    isGenerating,
+    currentAnalysis,
+    generatedImage,
+  );
 
   /// Create a copy of ImageAnalysisPageUiState
   /// with the given fields replaced by the non-null parameter values.
@@ -217,7 +278,9 @@ abstract class _ImageAnalysisPageUiState implements ImageAnalysisPageUiState {
   const factory _ImageAnalysisPageUiState({
     final String? selectedImagePath,
     final bool isAnalyzing,
+    final bool isGenerating,
     final ImageAnalysisUi? currentAnalysis,
+    final GeneratedImageUi? generatedImage,
   }) = _$ImageAnalysisPageUiStateImpl;
 
   @override
@@ -225,7 +288,11 @@ abstract class _ImageAnalysisPageUiState implements ImageAnalysisPageUiState {
   @override
   bool get isAnalyzing;
   @override
+  bool get isGenerating;
+  @override
   ImageAnalysisUi? get currentAnalysis;
+  @override
+  GeneratedImageUi? get generatedImage;
 
   /// Create a copy of ImageAnalysisPageUiState
   /// with the given fields replaced by the non-null parameter values.
@@ -242,6 +309,7 @@ mixin _$ImageAnalysisPageAction {
     required TResult Function() none,
     required TResult Function() pickImage,
     required TResult Function(ImageAnalysisUi analysis) showAnalysisResult,
+    required TResult Function(GeneratedImageUi image) showGeneratedImage,
     required TResult Function(String message) showError,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -249,6 +317,7 @@ mixin _$ImageAnalysisPageAction {
     TResult? Function()? none,
     TResult? Function()? pickImage,
     TResult? Function(ImageAnalysisUi analysis)? showAnalysisResult,
+    TResult? Function(GeneratedImageUi image)? showGeneratedImage,
     TResult? Function(String message)? showError,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -256,6 +325,7 @@ mixin _$ImageAnalysisPageAction {
     TResult Function()? none,
     TResult Function()? pickImage,
     TResult Function(ImageAnalysisUi analysis)? showAnalysisResult,
+    TResult Function(GeneratedImageUi image)? showGeneratedImage,
     TResult Function(String message)? showError,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
@@ -264,6 +334,7 @@ mixin _$ImageAnalysisPageAction {
     required TResult Function(_None value) none,
     required TResult Function(_PickImage value) pickImage,
     required TResult Function(_ShowAnalysisResult value) showAnalysisResult,
+    required TResult Function(_ShowGeneratedImage value) showGeneratedImage,
     required TResult Function(_ShowError value) showError,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -271,6 +342,7 @@ mixin _$ImageAnalysisPageAction {
     TResult? Function(_None value)? none,
     TResult? Function(_PickImage value)? pickImage,
     TResult? Function(_ShowAnalysisResult value)? showAnalysisResult,
+    TResult? Function(_ShowGeneratedImage value)? showGeneratedImage,
     TResult? Function(_ShowError value)? showError,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
@@ -278,6 +350,7 @@ mixin _$ImageAnalysisPageAction {
     TResult Function(_None value)? none,
     TResult Function(_PickImage value)? pickImage,
     TResult Function(_ShowAnalysisResult value)? showAnalysisResult,
+    TResult Function(_ShowGeneratedImage value)? showGeneratedImage,
     TResult Function(_ShowError value)? showError,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
@@ -352,6 +425,7 @@ class _$NoneImpl implements _None {
     required TResult Function() none,
     required TResult Function() pickImage,
     required TResult Function(ImageAnalysisUi analysis) showAnalysisResult,
+    required TResult Function(GeneratedImageUi image) showGeneratedImage,
     required TResult Function(String message) showError,
   }) {
     return none();
@@ -363,6 +437,7 @@ class _$NoneImpl implements _None {
     TResult? Function()? none,
     TResult? Function()? pickImage,
     TResult? Function(ImageAnalysisUi analysis)? showAnalysisResult,
+    TResult? Function(GeneratedImageUi image)? showGeneratedImage,
     TResult? Function(String message)? showError,
   }) {
     return none?.call();
@@ -374,6 +449,7 @@ class _$NoneImpl implements _None {
     TResult Function()? none,
     TResult Function()? pickImage,
     TResult Function(ImageAnalysisUi analysis)? showAnalysisResult,
+    TResult Function(GeneratedImageUi image)? showGeneratedImage,
     TResult Function(String message)? showError,
     required TResult orElse(),
   }) {
@@ -389,6 +465,7 @@ class _$NoneImpl implements _None {
     required TResult Function(_None value) none,
     required TResult Function(_PickImage value) pickImage,
     required TResult Function(_ShowAnalysisResult value) showAnalysisResult,
+    required TResult Function(_ShowGeneratedImage value) showGeneratedImage,
     required TResult Function(_ShowError value) showError,
   }) {
     return none(this);
@@ -400,6 +477,7 @@ class _$NoneImpl implements _None {
     TResult? Function(_None value)? none,
     TResult? Function(_PickImage value)? pickImage,
     TResult? Function(_ShowAnalysisResult value)? showAnalysisResult,
+    TResult? Function(_ShowGeneratedImage value)? showGeneratedImage,
     TResult? Function(_ShowError value)? showError,
   }) {
     return none?.call(this);
@@ -411,6 +489,7 @@ class _$NoneImpl implements _None {
     TResult Function(_None value)? none,
     TResult Function(_PickImage value)? pickImage,
     TResult Function(_ShowAnalysisResult value)? showAnalysisResult,
+    TResult Function(_ShowGeneratedImage value)? showGeneratedImage,
     TResult Function(_ShowError value)? showError,
     required TResult orElse(),
   }) {
@@ -471,6 +550,7 @@ class _$PickImageImpl implements _PickImage {
     required TResult Function() none,
     required TResult Function() pickImage,
     required TResult Function(ImageAnalysisUi analysis) showAnalysisResult,
+    required TResult Function(GeneratedImageUi image) showGeneratedImage,
     required TResult Function(String message) showError,
   }) {
     return pickImage();
@@ -482,6 +562,7 @@ class _$PickImageImpl implements _PickImage {
     TResult? Function()? none,
     TResult? Function()? pickImage,
     TResult? Function(ImageAnalysisUi analysis)? showAnalysisResult,
+    TResult? Function(GeneratedImageUi image)? showGeneratedImage,
     TResult? Function(String message)? showError,
   }) {
     return pickImage?.call();
@@ -493,6 +574,7 @@ class _$PickImageImpl implements _PickImage {
     TResult Function()? none,
     TResult Function()? pickImage,
     TResult Function(ImageAnalysisUi analysis)? showAnalysisResult,
+    TResult Function(GeneratedImageUi image)? showGeneratedImage,
     TResult Function(String message)? showError,
     required TResult orElse(),
   }) {
@@ -508,6 +590,7 @@ class _$PickImageImpl implements _PickImage {
     required TResult Function(_None value) none,
     required TResult Function(_PickImage value) pickImage,
     required TResult Function(_ShowAnalysisResult value) showAnalysisResult,
+    required TResult Function(_ShowGeneratedImage value) showGeneratedImage,
     required TResult Function(_ShowError value) showError,
   }) {
     return pickImage(this);
@@ -519,6 +602,7 @@ class _$PickImageImpl implements _PickImage {
     TResult? Function(_None value)? none,
     TResult? Function(_PickImage value)? pickImage,
     TResult? Function(_ShowAnalysisResult value)? showAnalysisResult,
+    TResult? Function(_ShowGeneratedImage value)? showGeneratedImage,
     TResult? Function(_ShowError value)? showError,
   }) {
     return pickImage?.call(this);
@@ -530,6 +614,7 @@ class _$PickImageImpl implements _PickImage {
     TResult Function(_None value)? none,
     TResult Function(_PickImage value)? pickImage,
     TResult Function(_ShowAnalysisResult value)? showAnalysisResult,
+    TResult Function(_ShowGeneratedImage value)? showGeneratedImage,
     TResult Function(_ShowError value)? showError,
     required TResult orElse(),
   }) {
@@ -634,6 +719,7 @@ class _$ShowAnalysisResultImpl implements _ShowAnalysisResult {
     required TResult Function() none,
     required TResult Function() pickImage,
     required TResult Function(ImageAnalysisUi analysis) showAnalysisResult,
+    required TResult Function(GeneratedImageUi image) showGeneratedImage,
     required TResult Function(String message) showError,
   }) {
     return showAnalysisResult(analysis);
@@ -645,6 +731,7 @@ class _$ShowAnalysisResultImpl implements _ShowAnalysisResult {
     TResult? Function()? none,
     TResult? Function()? pickImage,
     TResult? Function(ImageAnalysisUi analysis)? showAnalysisResult,
+    TResult? Function(GeneratedImageUi image)? showGeneratedImage,
     TResult? Function(String message)? showError,
   }) {
     return showAnalysisResult?.call(analysis);
@@ -656,6 +743,7 @@ class _$ShowAnalysisResultImpl implements _ShowAnalysisResult {
     TResult Function()? none,
     TResult Function()? pickImage,
     TResult Function(ImageAnalysisUi analysis)? showAnalysisResult,
+    TResult Function(GeneratedImageUi image)? showGeneratedImage,
     TResult Function(String message)? showError,
     required TResult orElse(),
   }) {
@@ -671,6 +759,7 @@ class _$ShowAnalysisResultImpl implements _ShowAnalysisResult {
     required TResult Function(_None value) none,
     required TResult Function(_PickImage value) pickImage,
     required TResult Function(_ShowAnalysisResult value) showAnalysisResult,
+    required TResult Function(_ShowGeneratedImage value) showGeneratedImage,
     required TResult Function(_ShowError value) showError,
   }) {
     return showAnalysisResult(this);
@@ -682,6 +771,7 @@ class _$ShowAnalysisResultImpl implements _ShowAnalysisResult {
     TResult? Function(_None value)? none,
     TResult? Function(_PickImage value)? pickImage,
     TResult? Function(_ShowAnalysisResult value)? showAnalysisResult,
+    TResult? Function(_ShowGeneratedImage value)? showGeneratedImage,
     TResult? Function(_ShowError value)? showError,
   }) {
     return showAnalysisResult?.call(this);
@@ -693,6 +783,7 @@ class _$ShowAnalysisResultImpl implements _ShowAnalysisResult {
     TResult Function(_None value)? none,
     TResult Function(_PickImage value)? pickImage,
     TResult Function(_ShowAnalysisResult value)? showAnalysisResult,
+    TResult Function(_ShowGeneratedImage value)? showGeneratedImage,
     TResult Function(_ShowError value)? showError,
     required TResult orElse(),
   }) {
@@ -713,6 +804,183 @@ abstract class _ShowAnalysisResult implements ImageAnalysisPageAction {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ShowAnalysisResultImplCopyWith<_$ShowAnalysisResultImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$ShowGeneratedImageImplCopyWith<$Res> {
+  factory _$$ShowGeneratedImageImplCopyWith(
+    _$ShowGeneratedImageImpl value,
+    $Res Function(_$ShowGeneratedImageImpl) then,
+  ) = __$$ShowGeneratedImageImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({GeneratedImageUi image});
+
+  $GeneratedImageUiCopyWith<$Res> get image;
+}
+
+/// @nodoc
+class __$$ShowGeneratedImageImplCopyWithImpl<$Res>
+    extends
+        _$ImageAnalysisPageActionCopyWithImpl<$Res, _$ShowGeneratedImageImpl>
+    implements _$$ShowGeneratedImageImplCopyWith<$Res> {
+  __$$ShowGeneratedImageImplCopyWithImpl(
+    _$ShowGeneratedImageImpl _value,
+    $Res Function(_$ShowGeneratedImageImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of ImageAnalysisPageAction
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({Object? image = null}) {
+    return _then(
+      _$ShowGeneratedImageImpl(
+        null == image
+            ? _value.image
+            : image // ignore: cast_nullable_to_non_nullable
+                  as GeneratedImageUi,
+      ),
+    );
+  }
+
+  /// Create a copy of ImageAnalysisPageAction
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $GeneratedImageUiCopyWith<$Res> get image {
+    return $GeneratedImageUiCopyWith<$Res>(_value.image, (value) {
+      return _then(_value.copyWith(image: value));
+    });
+  }
+}
+
+/// @nodoc
+
+class _$ShowGeneratedImageImpl implements _ShowGeneratedImage {
+  _$ShowGeneratedImageImpl(this.image);
+
+  @override
+  final GeneratedImageUi image;
+
+  @override
+  String toString() {
+    return 'ImageAnalysisPageAction.showGeneratedImage(image: $image)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ShowGeneratedImageImpl &&
+            (identical(other.image, image) || other.image == image));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, image);
+
+  /// Create a copy of ImageAnalysisPageAction
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ShowGeneratedImageImplCopyWith<_$ShowGeneratedImageImpl> get copyWith =>
+      __$$ShowGeneratedImageImplCopyWithImpl<_$ShowGeneratedImageImpl>(
+        this,
+        _$identity,
+      );
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() none,
+    required TResult Function() pickImage,
+    required TResult Function(ImageAnalysisUi analysis) showAnalysisResult,
+    required TResult Function(GeneratedImageUi image) showGeneratedImage,
+    required TResult Function(String message) showError,
+  }) {
+    return showGeneratedImage(image);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? none,
+    TResult? Function()? pickImage,
+    TResult? Function(ImageAnalysisUi analysis)? showAnalysisResult,
+    TResult? Function(GeneratedImageUi image)? showGeneratedImage,
+    TResult? Function(String message)? showError,
+  }) {
+    return showGeneratedImage?.call(image);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? none,
+    TResult Function()? pickImage,
+    TResult Function(ImageAnalysisUi analysis)? showAnalysisResult,
+    TResult Function(GeneratedImageUi image)? showGeneratedImage,
+    TResult Function(String message)? showError,
+    required TResult orElse(),
+  }) {
+    if (showGeneratedImage != null) {
+      return showGeneratedImage(image);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_None value) none,
+    required TResult Function(_PickImage value) pickImage,
+    required TResult Function(_ShowAnalysisResult value) showAnalysisResult,
+    required TResult Function(_ShowGeneratedImage value) showGeneratedImage,
+    required TResult Function(_ShowError value) showError,
+  }) {
+    return showGeneratedImage(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_None value)? none,
+    TResult? Function(_PickImage value)? pickImage,
+    TResult? Function(_ShowAnalysisResult value)? showAnalysisResult,
+    TResult? Function(_ShowGeneratedImage value)? showGeneratedImage,
+    TResult? Function(_ShowError value)? showError,
+  }) {
+    return showGeneratedImage?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_None value)? none,
+    TResult Function(_PickImage value)? pickImage,
+    TResult Function(_ShowAnalysisResult value)? showAnalysisResult,
+    TResult Function(_ShowGeneratedImage value)? showGeneratedImage,
+    TResult Function(_ShowError value)? showError,
+    required TResult orElse(),
+  }) {
+    if (showGeneratedImage != null) {
+      return showGeneratedImage(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _ShowGeneratedImage implements ImageAnalysisPageAction {
+  factory _ShowGeneratedImage(final GeneratedImageUi image) =
+      _$ShowGeneratedImageImpl;
+
+  GeneratedImageUi get image;
+
+  /// Create a copy of ImageAnalysisPageAction
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$ShowGeneratedImageImplCopyWith<_$ShowGeneratedImageImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -789,6 +1057,7 @@ class _$ShowErrorImpl implements _ShowError {
     required TResult Function() none,
     required TResult Function() pickImage,
     required TResult Function(ImageAnalysisUi analysis) showAnalysisResult,
+    required TResult Function(GeneratedImageUi image) showGeneratedImage,
     required TResult Function(String message) showError,
   }) {
     return showError(message);
@@ -800,6 +1069,7 @@ class _$ShowErrorImpl implements _ShowError {
     TResult? Function()? none,
     TResult? Function()? pickImage,
     TResult? Function(ImageAnalysisUi analysis)? showAnalysisResult,
+    TResult? Function(GeneratedImageUi image)? showGeneratedImage,
     TResult? Function(String message)? showError,
   }) {
     return showError?.call(message);
@@ -811,6 +1081,7 @@ class _$ShowErrorImpl implements _ShowError {
     TResult Function()? none,
     TResult Function()? pickImage,
     TResult Function(ImageAnalysisUi analysis)? showAnalysisResult,
+    TResult Function(GeneratedImageUi image)? showGeneratedImage,
     TResult Function(String message)? showError,
     required TResult orElse(),
   }) {
@@ -826,6 +1097,7 @@ class _$ShowErrorImpl implements _ShowError {
     required TResult Function(_None value) none,
     required TResult Function(_PickImage value) pickImage,
     required TResult Function(_ShowAnalysisResult value) showAnalysisResult,
+    required TResult Function(_ShowGeneratedImage value) showGeneratedImage,
     required TResult Function(_ShowError value) showError,
   }) {
     return showError(this);
@@ -837,6 +1109,7 @@ class _$ShowErrorImpl implements _ShowError {
     TResult? Function(_None value)? none,
     TResult? Function(_PickImage value)? pickImage,
     TResult? Function(_ShowAnalysisResult value)? showAnalysisResult,
+    TResult? Function(_ShowGeneratedImage value)? showGeneratedImage,
     TResult? Function(_ShowError value)? showError,
   }) {
     return showError?.call(this);
@@ -848,6 +1121,7 @@ class _$ShowErrorImpl implements _ShowError {
     TResult Function(_None value)? none,
     TResult Function(_PickImage value)? pickImage,
     TResult Function(_ShowAnalysisResult value)? showAnalysisResult,
+    TResult Function(_ShowGeneratedImage value)? showGeneratedImage,
     TResult Function(_ShowError value)? showError,
     required TResult orElse(),
   }) {
