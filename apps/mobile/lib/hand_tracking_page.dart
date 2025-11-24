@@ -16,7 +16,7 @@ class _HandTrackingPageState extends State<HandTrackingPage> {
   List<Hand> _landmarks = [];
   bool _isInitialized = false;
   bool _isDetecting = false;
-  String _statusMessage = '초기화 중...';
+  String _statusMessage = 'Initializing...';
 
   @override
   void initState() {
@@ -26,29 +26,29 @@ class _HandTrackingPageState extends State<HandTrackingPage> {
 
   Future<void> _initialize() async {
     try {
-      // 1. 카메라 권한 요청
+      // 1. Request camera permission
       final status = await Permission.camera.request();
       if (!status.isGranted) {
-        setState(() => _statusMessage = '카메라 권한이 필요합니다');
+        setState(() => _statusMessage = 'Camera permission required');
         return;
       }
 
-      setState(() => _statusMessage = '카메라 초기화 중...');
+      setState(() => _statusMessage = 'Initializing camera...');
 
-      // 2. 카메라 목록 가져오기
+      // 2. Get available cameras
       final cameras = await availableCameras();
       if (cameras.isEmpty) {
-        setState(() => _statusMessage = '사용 가능한 카메라가 없습니다');
+        setState(() => _statusMessage = 'No available cameras');
         return;
       }
 
-      // 후면 카메라 선택 (없으면 첫 번째 카메라)
+      // Select back camera (or first available camera)
       final camera = cameras.firstWhere(
         (cam) => cam.lensDirection == CameraLensDirection.back,
         orElse: () => cameras.first,
       );
 
-      // 3. 카메라 컨트롤러 초기화
+      // 3. Initialize camera controller
       _controller = CameraController(
         camera,
         ResolutionPreset.medium,
@@ -57,27 +57,27 @@ class _HandTrackingPageState extends State<HandTrackingPage> {
 
       await _controller!.initialize();
 
-      setState(() => _statusMessage = 'Hand Landmarker 초기화 중...');
+      setState(() => _statusMessage = 'Initializing Hand Landmarker...');
 
-      // 4. HandLandmarker 플러그인 생성
+      // 4. Create HandLandmarker plugin
       _plugin = HandLandmarkerPlugin.create(
-        numHands: 2, // 최대 2개의 손 감지
-        minHandDetectionConfidence: 0.5, // 신뢰도 50% 이상
-        delegate: HandLandmarkerDelegate.GPU, // GPU 가속 사용
+        numHands: 2, // Detect up to 2 hands
+        minHandDetectionConfidence: 0.5, // Minimum confidence 50%
+        delegate: HandLandmarkerDelegate.GPU, // Use GPU acceleration
       );
 
-      // 5. 카메라 스트림 시작
+      // 5. Start camera stream
       await _controller!.startImageStream(_processCameraImage);
 
       if (mounted) {
         setState(() {
           _isInitialized = true;
-          _statusMessage = '초기화 완료! 손을 카메라에 보여주세요';
+          _statusMessage = 'Initialization complete! Show your hand to the camera';
         });
       }
     } catch (e) {
-      setState(() => _statusMessage = '초기화 실패: $e');
-      debugPrint('초기화 에러: $e');
+      setState(() => _statusMessage = 'Initialization failed: $e');
+      debugPrint('Initialization error: $e');
     }
   }
 
@@ -87,7 +87,7 @@ class _HandTrackingPageState extends State<HandTrackingPage> {
     _isDetecting = true;
 
     try {
-      // 손 랜드마크 감지
+      // Detect hand landmarks
       final hands = _plugin!.detect(
         image,
         _controller!.description.sensorOrientation,
@@ -97,22 +97,22 @@ class _HandTrackingPageState extends State<HandTrackingPage> {
         setState(() {
           _landmarks = hands;
           if (hands.isNotEmpty) {
-            _statusMessage = '${hands.length}개의 손 감지됨!';
-            // 디버깅: 첫 번째 손의 손목 좌표 출력
+            _statusMessage = '${hands.length} hand(s) detected!';
+            // Debug: Print wrist coordinates of first hand
             if (hands[0].landmarks.isNotEmpty) {
               final wrist = hands[0].landmarks[0];
-              debugPrint('손목 좌표: (${wrist.x}, ${wrist.y})');
-              debugPrint('이미지 크기: ${image.width}x${image.height}');
-              debugPrint('화면 크기: ${_controller!.value.previewSize}');
-              debugPrint('센서 방향: ${_controller!.description.sensorOrientation}도');
+              debugPrint('Wrist coordinates: (${wrist.x}, ${wrist.y})');
+              debugPrint('Image size: ${image.width}x${image.height}');
+              debugPrint('Preview size: ${_controller!.value.previewSize}');
+              debugPrint('Sensor orientation: ${_controller!.description.sensorOrientation} degrees');
             }
           } else {
-            _statusMessage = '손을 찾는 중...';
+            _statusMessage = 'Looking for hands...';
           }
         });
       }
     } catch (e) {
-      debugPrint('감지 에러: $e');
+      debugPrint('Detection error: $e');
     } finally {
       _isDetecting = false;
     }
@@ -134,7 +134,7 @@ class _HandTrackingPageState extends State<HandTrackingPage> {
       ),
       body: Column(
         children: [
-          // 상태 메시지
+          // Status message
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16),
@@ -146,15 +146,15 @@ class _HandTrackingPageState extends State<HandTrackingPage> {
             ),
           ),
 
-          // 카메라 프리뷰
+          // Camera preview
           Expanded(
             child: _controller != null && _controller!.value.isInitialized
                 ? Stack(
                     fit: StackFit.expand,
                     children: [
-                      // 카메라 화면 (전체 화면 채우기)
+                      // Camera view (fill screen)
                       CameraPreview(_controller!),
-                      // 랜드마크 오버레이 (전체 화면)
+                      // Landmark overlay (full screen)
                       CustomPaint(
                         painter: HandLandmarkPainter(
                           _landmarks,
@@ -169,7 +169,7 @@ class _HandTrackingPageState extends State<HandTrackingPage> {
                   ),
           ),
 
-          // 감지된 손 정보
+          // Detected hand information
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16),
@@ -178,7 +178,7 @@ class _HandTrackingPageState extends State<HandTrackingPage> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '감지된 손: ${_landmarks.length}개',
+                  'Detected hands: ${_landmarks.length}',
                   style: const TextStyle(
                       fontSize: 18, fontWeight: FontWeight.bold),
                 ),
@@ -186,7 +186,7 @@ class _HandTrackingPageState extends State<HandTrackingPage> {
                 if (_landmarks.isNotEmpty) ...[
                   for (var i = 0; i < _landmarks.length; i++)
                     Text(
-                      '손 ${i + 1}: 랜드마크 ${_landmarks[i].landmarks.length}개',
+                      'Hand ${i + 1}: ${_landmarks[i].landmarks.length} landmarks',
                       style: const TextStyle(fontSize: 14),
                     ),
                 ],
@@ -199,7 +199,7 @@ class _HandTrackingPageState extends State<HandTrackingPage> {
   }
 }
 
-// 손 랜드마크를 그리는 CustomPainter
+// CustomPainter to draw hand landmarks
 class HandLandmarkPainter extends CustomPainter {
   final List<Hand> hands;
   final Size imageSize;
@@ -207,15 +207,15 @@ class HandLandmarkPainter extends CustomPainter {
 
   HandLandmarkPainter(this.hands, this.imageSize, this.sensorOrientation);
 
-  // MediaPipe 손 랜드마크 연결 구조
+  // MediaPipe hand landmark connection structure
   static const List<List<int>> connections = [
-    // 손목에서 각 손가락 시작점으로
-    [0, 1], [1, 2], [2, 3], [3, 4], // 엄지
-    [0, 5], [5, 6], [6, 7], [7, 8], // 검지
-    [0, 9], [9, 10], [10, 11], [11, 12], // 중지
-    [0, 13], [13, 14], [14, 15], [15, 16], // 약지
-    [0, 17], [17, 18], [18, 19], [19, 20], // 새끼
-    // 손바닥 연결
+    // From wrist to each finger
+    [0, 1], [1, 2], [2, 3], [3, 4], // Thumb
+    [0, 5], [5, 6], [6, 7], [7, 8], // Index
+    [0, 9], [9, 10], [10, 11], [11, 12], // Middle
+    [0, 13], [13, 14], [14, 15], [15, 16], // Ring
+    [0, 17], [17, 18], [18, 19], [19, 20], // Pinky
+    // Palm connections
     [5, 9], [9, 13], [13, 17], [0, 17],
   ];
 
@@ -236,7 +236,7 @@ class HandLandmarkPainter extends CustomPainter {
     for (final hand in hands) {
       final landmarks = hand.landmarks;
 
-      // 연결선 그리기
+      // Draw connection lines
       for (final connection in connections) {
         final start = landmarks[connection[0]];
         final end = landmarks[connection[1]];
@@ -247,7 +247,7 @@ class HandLandmarkPainter extends CustomPainter {
         canvas.drawLine(p1, p2, linePaint);
       }
 
-      // 랜드마크 포인트 그리기
+      // Draw landmark points
       for (final landmark in landmarks) {
         final point = _transformPoint(landmark.x, landmark.y, size);
         canvas.drawCircle(point, 6, pointPaint);
@@ -256,28 +256,28 @@ class HandLandmarkPainter extends CustomPainter {
   }
 
   Offset _transformPoint(double x, double y, Size size) {
-    // 센서 방향에 따라 좌표 변환
+    // Transform coordinates based on sensor orientation
     double transformedX, transformedY;
 
     if (sensorOrientation == 90) {
-      // 90도 회전: (x, y) -> (1-y, x)
+      // 90 degree rotation: (x, y) -> (1-y, x)
       transformedX = 1 - y;
       transformedY = x;
     } else if (sensorOrientation == 270) {
-      // 270도 회전: (x, y) -> (y, 1-x)
+      // 270 degree rotation: (x, y) -> (y, 1-x)
       transformedX = y;
       transformedY = 1 - x;
     } else if (sensorOrientation == 180) {
-      // 180도 회전: (x, y) -> (1-x, 1-y)
+      // 180 degree rotation: (x, y) -> (1-x, 1-y)
       transformedX = 1 - x;
       transformedY = 1 - y;
     } else {
-      // 0도 (회전 없음)
+      // 0 degree (no rotation)
       transformedX = x;
       transformedY = y;
     }
 
-    // 화면 크기에 맞춰 스케일 조정
+    // Scale to screen size
     final dx = transformedX * size.width;
     final dy = transformedY * size.height;
 

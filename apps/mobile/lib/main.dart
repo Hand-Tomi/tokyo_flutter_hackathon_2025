@@ -5,7 +5,7 @@ import 'router/app_router.dart';
 
 void main() {
   runApp(
-    // Riverpod의 ProviderScope로 앱 전체를 래핑
+    // Wrap the entire app with Riverpod's ProviderScope
     const ProviderScope(child: MyApp()),
   );
 }
