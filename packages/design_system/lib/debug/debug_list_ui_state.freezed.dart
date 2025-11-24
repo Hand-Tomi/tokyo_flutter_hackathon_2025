@@ -19,6 +19,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$DebugListPageUiState {
   List<DebugMenuItemUi> get menuItems => throw _privateConstructorUsedError;
   bool get isLoading => throw _privateConstructorUsedError;
+  void Function(String) get onMenuItemTap => throw _privateConstructorUsedError;
 
   /// Create a copy of DebugListPageUiState
   /// with the given fields replaced by the non-null parameter values.
@@ -34,7 +35,11 @@ abstract class $DebugListPageUiStateCopyWith<$Res> {
     $Res Function(DebugListPageUiState) then,
   ) = _$DebugListPageUiStateCopyWithImpl<$Res, DebugListPageUiState>;
   @useResult
-  $Res call({List<DebugMenuItemUi> menuItems, bool isLoading});
+  $Res call({
+    List<DebugMenuItemUi> menuItems,
+    bool isLoading,
+    void Function(String) onMenuItemTap,
+  });
 }
 
 /// @nodoc
@@ -54,7 +59,11 @@ class _$DebugListPageUiStateCopyWithImpl<
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? menuItems = null, Object? isLoading = null}) {
+  $Res call({
+    Object? menuItems = null,
+    Object? isLoading = null,
+    Object? onMenuItemTap = null,
+  }) {
     return _then(
       _value.copyWith(
             menuItems: null == menuItems
@@ -65,6 +74,10 @@ class _$DebugListPageUiStateCopyWithImpl<
                 ? _value.isLoading
                 : isLoading // ignore: cast_nullable_to_non_nullable
                       as bool,
+            onMenuItemTap: null == onMenuItemTap
+                ? _value.onMenuItemTap
+                : onMenuItemTap // ignore: cast_nullable_to_non_nullable
+                      as void Function(String),
           )
           as $Val,
     );
@@ -80,7 +93,11 @@ abstract class _$$DebugListPageUiStateImplCopyWith<$Res>
   ) = __$$DebugListPageUiStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({List<DebugMenuItemUi> menuItems, bool isLoading});
+  $Res call({
+    List<DebugMenuItemUi> menuItems,
+    bool isLoading,
+    void Function(String) onMenuItemTap,
+  });
 }
 
 /// @nodoc
@@ -96,7 +113,11 @@ class __$$DebugListPageUiStateImplCopyWithImpl<$Res>
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
-  $Res call({Object? menuItems = null, Object? isLoading = null}) {
+  $Res call({
+    Object? menuItems = null,
+    Object? isLoading = null,
+    Object? onMenuItemTap = null,
+  }) {
     return _then(
       _$DebugListPageUiStateImpl(
         menuItems: null == menuItems
@@ -107,6 +128,10 @@ class __$$DebugListPageUiStateImplCopyWithImpl<$Res>
             ? _value.isLoading
             : isLoading // ignore: cast_nullable_to_non_nullable
                   as bool,
+        onMenuItemTap: null == onMenuItemTap
+            ? _value.onMenuItemTap
+            : onMenuItemTap // ignore: cast_nullable_to_non_nullable
+                  as void Function(String),
       ),
     );
   }
@@ -118,6 +143,7 @@ class _$DebugListPageUiStateImpl implements _DebugListPageUiState {
   const _$DebugListPageUiStateImpl({
     final List<DebugMenuItemUi> menuItems = const [],
     this.isLoading = false,
+    required this.onMenuItemTap,
   }) : _menuItems = menuItems;
 
   final List<DebugMenuItemUi> _menuItems;
@@ -132,10 +158,12 @@ class _$DebugListPageUiStateImpl implements _DebugListPageUiState {
   @override
   @JsonKey()
   final bool isLoading;
+  @override
+  final void Function(String) onMenuItemTap;
 
   @override
   String toString() {
-    return 'DebugListPageUiState(menuItems: $menuItems, isLoading: $isLoading)';
+    return 'DebugListPageUiState(menuItems: $menuItems, isLoading: $isLoading, onMenuItemTap: $onMenuItemTap)';
   }
 
   @override
@@ -148,7 +176,9 @@ class _$DebugListPageUiStateImpl implements _DebugListPageUiState {
               _menuItems,
             ) &&
             (identical(other.isLoading, isLoading) ||
-                other.isLoading == isLoading));
+                other.isLoading == isLoading) &&
+            (identical(other.onMenuItemTap, onMenuItemTap) ||
+                other.onMenuItemTap == onMenuItemTap));
   }
 
   @override
@@ -156,6 +186,7 @@ class _$DebugListPageUiStateImpl implements _DebugListPageUiState {
     runtimeType,
     const DeepCollectionEquality().hash(_menuItems),
     isLoading,
+    onMenuItemTap,
   );
 
   /// Create a copy of DebugListPageUiState
@@ -175,12 +206,15 @@ abstract class _DebugListPageUiState implements DebugListPageUiState {
   const factory _DebugListPageUiState({
     final List<DebugMenuItemUi> menuItems,
     final bool isLoading,
+    required final void Function(String) onMenuItemTap,
   }) = _$DebugListPageUiStateImpl;
 
   @override
   List<DebugMenuItemUi> get menuItems;
   @override
   bool get isLoading;
+  @override
+  void Function(String) get onMenuItemTap;
 
   /// Create a copy of DebugListPageUiState
   /// with the given fields replaced by the non-null parameter values.

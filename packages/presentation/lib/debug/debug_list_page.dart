@@ -34,9 +34,6 @@ class DebugListPage extends ConsumerWidget {
     // Template에 데이터와 콜백을 전달
     return DebugListPageTemplate(
       uiState: state.uiState,
-      onMenuItemTap: (id) {
-        ref.read(debugListPageViewModelProvider.notifier).onMenuItemTap(id);
-      },
     );
   }
 }
