@@ -1,8 +1,8 @@
 import 'package:design_system/debug/debug_list_template.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:presentation/debug/debug_list_page_view_model.dart';
-import 'package:presentation/todo/todo_list_page.dart';
 
 /// 디버그 리스트 페이지
 ///
@@ -23,11 +23,7 @@ class DebugListPage extends ConsumerWidget {
         next.when(
           none: () {},
           navigateToTodoList: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const TodoListPage(),
-              ),
-            );
+            context.push('/todo');
           },
         );
 
