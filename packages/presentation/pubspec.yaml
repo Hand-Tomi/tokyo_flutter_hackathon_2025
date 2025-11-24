@@ -33,6 +33,17 @@ dependencies:
   hand_landmarker: ^2.1.2
   permission_handler: ^11.0.1
 
+  # 環境変数
+  flutter_dotenv: ^5.0.2
+
+  # 画像関連
+  image_picker: ^0.8.9  # Android Gradle 8.9.1과 호환
+  path_provider: ^2.0.15
+
+  # AI API
+  google_generative_ai: ^0.2.2
+  http: ^1.2.0
+
 dev_dependencies:
   build_runner: ^2.4.6
   freezed: ^2.4.5
