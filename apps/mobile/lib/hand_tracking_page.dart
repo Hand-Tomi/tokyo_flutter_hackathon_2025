@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:hand_landmarker/hand_landmarker.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'gesture_recognizer.dart';
 
 class HandTrackingPage extends StatefulWidget {
   const HandTrackingPage({super.key});
@@ -17,6 +18,15 @@ class _HandTrackingPageState extends State<HandTrackingPage> {
   bool _isInitialized = false;
   bool _isDetecting = false;
   String _statusMessage = 'Initializing...';
+
+  // Gesture recognition
+  String _gestureInfo = '';
+
+  // Performance optimization settings
+  int _frameSkip = 2; // Process every Nth frame (1 = no skip, 2 = every 2nd frame, etc.)
+  int _frameCounter = 0;
+  ResolutionPreset _resolution = ResolutionPreset.medium;
+  bool _showSettings = false;
 
   @override
   void initState() {
@@ -48,10 +58,10 @@ class _HandTrackingPageState extends State<HandTrackingPage> {
         orElse: () => cameras.first,
       );
 
-      // 3. Initialize camera controller
+      // 3. Initialize camera controller with selected resolution
       _controller = CameraController(
         camera,
-        ResolutionPreset.medium,
+        _resolution,
         enableAudio: false,
       );
 
@@ -72,7 +82,7 @@ class _HandTrackingPageState extends State<HandTrackingPage> {
       if (mounted) {
         setState(() {
           _isInitialized = true;
-          _statusMessage = 'Initialization complete! Show your hand to the camera';
+          _statusMessage = 'Ready! Show your hand to the camera';
         });
       }
     } catch (e) {
@@ -83,6 +93,12 @@ class _HandTrackingPageState extends State<HandTrackingPage> {
 
   Future<void> _processCameraImage(CameraImage image) async {
     if (_isDetecting || !_isInitialized || _plugin == null) return;
+
+    // Frame skipping for performance optimization
+    _frameCounter++;
+    if (_frameCounter % _frameSkip != 0) {
+      return;
+    }
 
     _isDetecting = true;
 
@@ -98,16 +114,13 @@ class _HandTrackingPageState extends State<HandTrackingPage> {
           _landmarks = hands;
           if (hands.isNotEmpty) {
             _statusMessage = '${hands.length} hand(s) detected!';
-            // Debug: Print wrist coordinates of first hand
-            if (hands[0].landmarks.isNotEmpty) {
-              final wrist = hands[0].landmarks[0];
-              debugPrint('Wrist coordinates: (${wrist.x}, ${wrist.y})');
-              debugPrint('Image size: ${image.width}x${image.height}');
-              debugPrint('Preview size: ${_controller!.value.previewSize}');
-              debugPrint('Sensor orientation: ${_controller!.description.sensorOrientation} degrees');
-            }
+
+            // Recognize gesture from first hand
+            final firstHand = hands[0].landmarks;
+            _gestureInfo = GestureRecognizer.getHandDescription(firstHand);
           } else {
             _statusMessage = 'Looking for hands...';
+            _gestureInfo = '';
           }
         });
       }
@@ -116,6 +129,23 @@ class _HandTrackingPageState extends State<HandTrackingPage> {
     } finally {
       _isDetecting = false;
     }
+  }
+
+  Future<void> _changeResolution(ResolutionPreset newResolution) async {
+    if (_resolution == newResolution) return;
+
+    setState(() {
+      _resolution = newResolution;
+      _isInitialized = false;
+      _statusMessage = 'Changing resolution...';
+    });
+
+    // Stop current camera
+    await _controller?.stopImageStream();
+    await _controller?.dispose();
+
+    // Reinitialize with new resolution
+    await _initialize();
   }
 
   @override
@@ -131,6 +161,14 @@ class _HandTrackingPageState extends State<HandTrackingPage> {
       appBar: AppBar(
         title: const Text('Hand Tracking Test'),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        actions: [
+          IconButton(
+            icon: Icon(_showSettings ? Icons.close : Icons.settings),
+            onPressed: () {
+              setState(() => _showSettings = !_showSettings);
+            },
+          ),
+        ],
       ),
       body: Column(
         children: [
@@ -145,6 +183,68 @@ class _HandTrackingPageState extends State<HandTrackingPage> {
               textAlign: TextAlign.center,
             ),
           ),
+
+          // Performance settings panel (collapsible)
+          if (_showSettings)
+            Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              color: Colors.amber.shade100,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    '⚙️ Performance Settings',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 12),
+
+                  // Frame skip slider
+                  Text('Frame Skip: ${_frameSkip}x (Process every $_frameSkip frame${_frameSkip > 1 ? 's' : ''})'),
+                  Slider(
+                    value: _frameSkip.toDouble(),
+                    min: 1,
+                    max: 5,
+                    divisions: 4,
+                    label: '${_frameSkip}x',
+                    onChanged: (value) {
+                      setState(() => _frameSkip = value.toInt());
+                    },
+                  ),
+                  const SizedBox(height: 8),
+
+                  // Resolution selector
+                  const Text('Camera Resolution:'),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 8,
+                    children: [
+                      ChoiceChip(
+                        label: const Text('Low'),
+                        selected: _resolution == ResolutionPreset.low,
+                        onSelected: (selected) {
+                          if (selected) _changeResolution(ResolutionPreset.low);
+                        },
+                      ),
+                      ChoiceChip(
+                        label: const Text('Medium'),
+                        selected: _resolution == ResolutionPreset.medium,
+                        onSelected: (selected) {
+                          if (selected) _changeResolution(ResolutionPreset.medium);
+                        },
+                      ),
+                      ChoiceChip(
+                        label: const Text('High'),
+                        selected: _resolution == ResolutionPreset.high,
+                        onSelected: (selected) {
+                          if (selected) _changeResolution(ResolutionPreset.high);
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
 
           // Camera preview
           Expanded(
@@ -169,7 +269,7 @@ class _HandTrackingPageState extends State<HandTrackingPage> {
                   ),
           ),
 
-          // Detected hand information
+          // Detected hand information with gesture recognition
           Container(
             width: double.infinity,
             padding: const EdgeInsets.all(16),
@@ -177,12 +277,55 @@ class _HandTrackingPageState extends State<HandTrackingPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Detected hands: ${_landmarks.length}',
-                  style: const TextStyle(
-                      fontSize: 18, fontWeight: FontWeight.bold),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      'Detected hands: ${_landmarks.length}',
+                      style: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      'FPS: ~${(60 / _frameSkip).toStringAsFixed(0)}',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey.shade600,
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 8),
+
+                // Gesture information
+                if (_gestureInfo.isNotEmpty) ...[
+                  Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      color: Colors.green.shade100,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.green.shade300),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.gesture, color: Colors.green),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            _gestureInfo,
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+
+                const SizedBox(height: 8),
+
+                // Hand details
                 if (_landmarks.isNotEmpty) ...[
                   for (var i = 0; i < _landmarks.length; i++)
                     Text(
