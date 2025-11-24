@@ -32,6 +32,11 @@ dependencies:
   intl: ^0.18.0
   uuid: ^4.0.0
 
+  # Hand Tracking
+  hand_landmarker: ^2.1.2
+  camera: ^0.11.0+2
+  permission_handler: ^11.0.1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
