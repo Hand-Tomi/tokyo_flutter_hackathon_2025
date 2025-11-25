@@ -10,6 +10,7 @@ class DebugListPageUiState with _$DebugListPageUiState {
   const factory DebugListPageUiState({
     @Default([]) List<DebugMenuItemUi> menuItems,
     @Default(false) bool isLoading,
+    required void Function(String id) onMenuItemTap,
   }) = _DebugListPageUiState;
 }
 

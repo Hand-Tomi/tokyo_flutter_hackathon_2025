@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:presentation/debug/debug_list_page.dart';
+
+import 'router/app_router.dart';
 
 void main() {
   runApp(
@@ -14,14 +15,13 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp.router(
       title: 'Clean Architecture Sample',
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      // 디버그 리스트 페이지를 표시
-      home: const DebugListPage(),
+      routerConfig: appRouter,
     );
   }
 }

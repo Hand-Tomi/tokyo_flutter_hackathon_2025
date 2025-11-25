@@ -7,11 +7,9 @@ class DebugListPageTemplate extends StatelessWidget {
   const DebugListPageTemplate({
     super.key,
     required this.uiState,
-    required this.onMenuItemTap,
   });
 
   final DebugListPageUiState uiState;
-  final void Function(String id) onMenuItemTap;
 
   @override
   Widget build(BuildContext context) {
@@ -44,7 +42,7 @@ class DebugListPageTemplate extends StatelessWidget {
                           style: Theme.of(context).textTheme.titleMedium,
                         ),
                         subtitle: Text(item.description),
-                        onTap: () => onMenuItemTap(item.id),
+                        onTap: () => uiState.onMenuItemTap(item.id),
                       ),
                     );
                   },

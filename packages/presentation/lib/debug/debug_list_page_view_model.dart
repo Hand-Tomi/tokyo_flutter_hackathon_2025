@@ -23,7 +23,10 @@ class DebugListPageViewModel extends _$DebugListPageViewModel {
     ];
 
     return PageState(
-      uiState: DebugListPageUiState(menuItems: menuItems),
+      uiState: DebugListPageUiState(
+        menuItems: menuItems,
+        onMenuItemTap: onMenuItemTap,
+      ),
       action: DebugListPageAction.none(),
     );
   }
