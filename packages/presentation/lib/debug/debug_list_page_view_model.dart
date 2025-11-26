@@ -19,7 +19,11 @@ class DebugListPageViewModel extends _$DebugListPageViewModel {
         title: 'Todo 리스트',
         description: 'Todo 관리 화면',
       ),
-      // 향후 다른 디버그 메뉴 항목을 여기에 추가할 수 있습니다
+      const DebugMenuItemUi(
+        id: 'hand_tracking',
+        title: 'Hand Tracking',
+        description: '손 추적 및 제스처 인식',
+      ),
     ];
 
     return PageState(
@@ -41,6 +45,10 @@ class DebugListPageViewModel extends _$DebugListPageViewModel {
     switch (id) {
       case 'todo_list':
         state = state.copyWith(action: DebugListPageAction.navigateToTodoList());
+        break;
+      case 'hand_tracking':
+        state =
+            state.copyWith(action: DebugListPageAction.navigateToHandTracking());
         break;
     }
   }

@@ -11,11 +11,11 @@ enum HandGesture {
   String toString() {
     switch (this) {
       case HandGesture.rock:
-        return 'Rock ✊';
+        return 'Rock';
       case HandGesture.paper:
-        return 'Paper ✋';
+        return 'Paper';
       case HandGesture.scissors:
-        return 'Scissors ✌️';
+        return 'Scissors';
       case HandGesture.unknown:
         return 'Unknown';
     }
@@ -174,11 +174,11 @@ class GestureRecognizer {
     if (gesture != HandGesture.unknown) {
       parts.add(gesture.toString());
     } else if (thumbsUp) {
-      parts.add('Thumbs Up 👍');
+      parts.add('Thumbs Up');
     } else if (peace) {
-      parts.add('Peace Sign ✌️');
+      parts.add('Peace Sign');
     }
 
-    return parts.join(' • ');
+    return parts.join(' - ');
   }
 }

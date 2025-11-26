@@ -230,32 +230,39 @@ mixin _$DebugListPageAction {
   TResult when<TResult extends Object?>({
     required TResult Function() none,
     required TResult Function() navigateToTodoList,
+    required TResult Function() navigateToHandTracking,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? none,
     TResult? Function()? navigateToTodoList,
+    TResult? Function()? navigateToHandTracking,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? none,
     TResult Function()? navigateToTodoList,
+    TResult Function()? navigateToHandTracking,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(_None value) none,
     required TResult Function(_NavigateToTodoList value) navigateToTodoList,
+    required TResult Function(_NavigateToHandTracking value)
+    navigateToHandTracking,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_None value)? none,
     TResult? Function(_NavigateToTodoList value)? navigateToTodoList,
+    TResult? Function(_NavigateToHandTracking value)? navigateToHandTracking,
   }) => throw _privateConstructorUsedError;
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_None value)? none,
     TResult Function(_NavigateToTodoList value)? navigateToTodoList,
+    TResult Function(_NavigateToHandTracking value)? navigateToHandTracking,
     required TResult orElse(),
   }) => throw _privateConstructorUsedError;
 }
@@ -325,6 +332,7 @@ class _$NoneImpl implements _None {
   TResult when<TResult extends Object?>({
     required TResult Function() none,
     required TResult Function() navigateToTodoList,
+    required TResult Function() navigateToHandTracking,
   }) {
     return none();
   }
@@ -334,6 +342,7 @@ class _$NoneImpl implements _None {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? none,
     TResult? Function()? navigateToTodoList,
+    TResult? Function()? navigateToHandTracking,
   }) {
     return none?.call();
   }
@@ -343,6 +352,7 @@ class _$NoneImpl implements _None {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? none,
     TResult Function()? navigateToTodoList,
+    TResult Function()? navigateToHandTracking,
     required TResult orElse(),
   }) {
     if (none != null) {
@@ -356,6 +366,8 @@ class _$NoneImpl implements _None {
   TResult map<TResult extends Object?>({
     required TResult Function(_None value) none,
     required TResult Function(_NavigateToTodoList value) navigateToTodoList,
+    required TResult Function(_NavigateToHandTracking value)
+    navigateToHandTracking,
   }) {
     return none(this);
   }
@@ -365,6 +377,7 @@ class _$NoneImpl implements _None {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_None value)? none,
     TResult? Function(_NavigateToTodoList value)? navigateToTodoList,
+    TResult? Function(_NavigateToHandTracking value)? navigateToHandTracking,
   }) {
     return none?.call(this);
   }
@@ -374,6 +387,7 @@ class _$NoneImpl implements _None {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_None value)? none,
     TResult Function(_NavigateToTodoList value)? navigateToTodoList,
+    TResult Function(_NavigateToHandTracking value)? navigateToHandTracking,
     required TResult orElse(),
   }) {
     if (none != null) {
@@ -432,6 +446,7 @@ class _$NavigateToTodoListImpl implements _NavigateToTodoList {
   TResult when<TResult extends Object?>({
     required TResult Function() none,
     required TResult Function() navigateToTodoList,
+    required TResult Function() navigateToHandTracking,
   }) {
     return navigateToTodoList();
   }
@@ -441,6 +456,7 @@ class _$NavigateToTodoListImpl implements _NavigateToTodoList {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? none,
     TResult? Function()? navigateToTodoList,
+    TResult? Function()? navigateToHandTracking,
   }) {
     return navigateToTodoList?.call();
   }
@@ -450,6 +466,7 @@ class _$NavigateToTodoListImpl implements _NavigateToTodoList {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? none,
     TResult Function()? navigateToTodoList,
+    TResult Function()? navigateToHandTracking,
     required TResult orElse(),
   }) {
     if (navigateToTodoList != null) {
@@ -463,6 +480,8 @@ class _$NavigateToTodoListImpl implements _NavigateToTodoList {
   TResult map<TResult extends Object?>({
     required TResult Function(_None value) none,
     required TResult Function(_NavigateToTodoList value) navigateToTodoList,
+    required TResult Function(_NavigateToHandTracking value)
+    navigateToHandTracking,
   }) {
     return navigateToTodoList(this);
   }
@@ -472,6 +491,7 @@ class _$NavigateToTodoListImpl implements _NavigateToTodoList {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_None value)? none,
     TResult? Function(_NavigateToTodoList value)? navigateToTodoList,
+    TResult? Function(_NavigateToHandTracking value)? navigateToHandTracking,
   }) {
     return navigateToTodoList?.call(this);
   }
@@ -481,6 +501,7 @@ class _$NavigateToTodoListImpl implements _NavigateToTodoList {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_None value)? none,
     TResult Function(_NavigateToTodoList value)? navigateToTodoList,
+    TResult Function(_NavigateToHandTracking value)? navigateToHandTracking,
     required TResult orElse(),
   }) {
     if (navigateToTodoList != null) {
@@ -492,4 +513,120 @@ class _$NavigateToTodoListImpl implements _NavigateToTodoList {
 
 abstract class _NavigateToTodoList implements DebugListPageAction {
   factory _NavigateToTodoList() = _$NavigateToTodoListImpl;
+}
+
+/// @nodoc
+abstract class _$$NavigateToHandTrackingImplCopyWith<$Res> {
+  factory _$$NavigateToHandTrackingImplCopyWith(
+    _$NavigateToHandTrackingImpl value,
+    $Res Function(_$NavigateToHandTrackingImpl) then,
+  ) = __$$NavigateToHandTrackingImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$NavigateToHandTrackingImplCopyWithImpl<$Res>
+    extends
+        _$DebugListPageActionCopyWithImpl<$Res, _$NavigateToHandTrackingImpl>
+    implements _$$NavigateToHandTrackingImplCopyWith<$Res> {
+  __$$NavigateToHandTrackingImplCopyWithImpl(
+    _$NavigateToHandTrackingImpl _value,
+    $Res Function(_$NavigateToHandTrackingImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of DebugListPageAction
+  /// with the given fields replaced by the non-null parameter values.
+}
+
+/// @nodoc
+
+class _$NavigateToHandTrackingImpl implements _NavigateToHandTracking {
+  _$NavigateToHandTrackingImpl();
+
+  @override
+  String toString() {
+    return 'DebugListPageAction.navigateToHandTracking()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$NavigateToHandTrackingImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() none,
+    required TResult Function() navigateToTodoList,
+    required TResult Function() navigateToHandTracking,
+  }) {
+    return navigateToHandTracking();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? none,
+    TResult? Function()? navigateToTodoList,
+    TResult? Function()? navigateToHandTracking,
+  }) {
+    return navigateToHandTracking?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? none,
+    TResult Function()? navigateToTodoList,
+    TResult Function()? navigateToHandTracking,
+    required TResult orElse(),
+  }) {
+    if (navigateToHandTracking != null) {
+      return navigateToHandTracking();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_None value) none,
+    required TResult Function(_NavigateToTodoList value) navigateToTodoList,
+    required TResult Function(_NavigateToHandTracking value)
+    navigateToHandTracking,
+  }) {
+    return navigateToHandTracking(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_None value)? none,
+    TResult? Function(_NavigateToTodoList value)? navigateToTodoList,
+    TResult? Function(_NavigateToHandTracking value)? navigateToHandTracking,
+  }) {
+    return navigateToHandTracking?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_None value)? none,
+    TResult Function(_NavigateToTodoList value)? navigateToTodoList,
+    TResult Function(_NavigateToHandTracking value)? navigateToHandTracking,
+    required TResult orElse(),
+  }) {
+    if (navigateToHandTracking != null) {
+      return navigateToHandTracking(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _NavigateToHandTracking implements DebugListPageAction {
+  factory _NavigateToHandTracking() = _$NavigateToHandTrackingImpl;
 }

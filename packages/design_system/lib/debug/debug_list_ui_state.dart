@@ -20,4 +20,5 @@ class DebugListPageUiState with _$DebugListPageUiState {
 class DebugListPageAction with _$DebugListPageAction {
   factory DebugListPageAction.none() = _None;
   factory DebugListPageAction.navigateToTodoList() = _NavigateToTodoList;
+  factory DebugListPageAction.navigateToHandTracking() = _NavigateToHandTracking;
 }
