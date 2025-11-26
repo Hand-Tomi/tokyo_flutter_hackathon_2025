@@ -25,6 +25,9 @@ class DebugListPage extends ConsumerWidget {
           navigateToTodoList: () {
             context.push('/todo');
           },
+          navigateToHandTracking: () {
+            context.push('/hand-tracking');
+          },
         );
 
         ref.read(debugListPageViewModelProvider.notifier).onFinishedAction();
