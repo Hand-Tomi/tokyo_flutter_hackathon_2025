@@ -6,7 +6,7 @@ part 'todo_ui.freezed.dart';
 /// Domain Model (Todo) を UI 用に変換したモデル
 /// 表示用にフォーマット済みのデータを保持
 @freezed
-class TodoUi with _$TodoUi {
+abstract class TodoUi with _$TodoUi {
   const factory TodoUi({
     required String id,
     required String title,

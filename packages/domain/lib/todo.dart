@@ -8,7 +8,7 @@ part 'todo.g.dart';
 /// ビジネスルールを表現する不変オブジェクト。
 /// UI依存なし、純粋なドメインモデル。
 @freezed
-class Todo with _$Todo {
+abstract class Todo with _$Todo {
   const factory Todo({
     required String id,
     required String title,

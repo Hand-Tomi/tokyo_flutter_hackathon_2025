@@ -14,3 +14,10 @@ export 'hand_tracking/hand_tracking_template.dart';
 export 'hand_tracking/hand_landmark_painter.dart';
 export 'hand_tracking/hand_tracking_settings_panel.dart';
 export 'hand_tracking/hand_info_panel.dart';
+
+// Voice Chat
+export 'voice_chat/voice_chat_ui_state.dart';
+export 'voice_chat/chat_message_ui.dart';
+export 'voice_chat/chat_bubble.dart';
+export 'voice_chat/voice_input_button.dart';
+export 'voice_chat/voice_chat_template.dart';
