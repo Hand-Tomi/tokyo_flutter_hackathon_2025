@@ -1,5 +1,6 @@
 import 'package:camera/camera.dart';
 import 'package:design_system/hand_tracking/hand_tracking_template.dart';
+import 'package:design_system/hand_tracking/hand_tracking_ui_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 

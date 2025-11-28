@@ -7,7 +7,7 @@ part 'page_state.freezed.dart';
 /// [uiState]: 継続的なUI状態（画面に表示するデータ）
 /// [action]: 一度だけ実行されるアクション（ダイアログ表示、画面遷移など）
 @freezed
-class PageState<TUiState, TAction> with _$PageState<TUiState, TAction> {
+abstract class PageState<TUiState, TAction> with _$PageState<TUiState, TAction> {
   const factory PageState({
     required TUiState uiState,
     required TAction action,

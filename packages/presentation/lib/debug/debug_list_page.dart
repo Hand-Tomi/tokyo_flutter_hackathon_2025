@@ -1,4 +1,5 @@
 import 'package:design_system/debug/debug_list_template.dart';
+import 'package:design_system/debug/debug_list_ui_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -27,6 +28,9 @@ class DebugListPage extends ConsumerWidget {
           },
           navigateToHandTracking: () {
             context.push('/hand-tracking');
+          },
+          navigateToVoiceChat: () {
+            context.push('/voice-chat');
           },
         );
 

@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,624 +9,581 @@ part of 'debug_list_ui_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-  'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models',
-);
-
 /// @nodoc
 mixin _$DebugListPageUiState {
-  List<DebugMenuItemUi> get menuItems => throw _privateConstructorUsedError;
-  bool get isLoading => throw _privateConstructorUsedError;
-  void Function(String) get onMenuItemTap => throw _privateConstructorUsedError;
 
-  /// Create a copy of DebugListPageUiState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  $DebugListPageUiStateCopyWith<DebugListPageUiState> get copyWith =>
-      throw _privateConstructorUsedError;
+ List<DebugMenuItemUi> get menuItems; bool get isLoading; void Function(String id) get onMenuItemTap;
+/// Create a copy of DebugListPageUiState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$DebugListPageUiStateCopyWith<DebugListPageUiState> get copyWith => _$DebugListPageUiStateCopyWithImpl<DebugListPageUiState>(this as DebugListPageUiState, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DebugListPageUiState&&const DeepCollectionEquality().equals(other.menuItems, menuItems)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.onMenuItemTap, onMenuItemTap) || other.onMenuItemTap == onMenuItemTap));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(menuItems),isLoading,onMenuItemTap);
+
+@override
+String toString() {
+  return 'DebugListPageUiState(menuItems: $menuItems, isLoading: $isLoading, onMenuItemTap: $onMenuItemTap)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $DebugListPageUiStateCopyWith<$Res> {
-  factory $DebugListPageUiStateCopyWith(
-    DebugListPageUiState value,
-    $Res Function(DebugListPageUiState) then,
-  ) = _$DebugListPageUiStateCopyWithImpl<$Res, DebugListPageUiState>;
-  @useResult
-  $Res call({
-    List<DebugMenuItemUi> menuItems,
-    bool isLoading,
-    void Function(String) onMenuItemTap,
-  });
-}
+abstract mixin class $DebugListPageUiStateCopyWith<$Res>  {
+  factory $DebugListPageUiStateCopyWith(DebugListPageUiState value, $Res Function(DebugListPageUiState) _then) = _$DebugListPageUiStateCopyWithImpl;
+@useResult
+$Res call({
+ List<DebugMenuItemUi> menuItems, bool isLoading, void Function(String id) onMenuItemTap
+});
 
+
+
+
+}
 /// @nodoc
-class _$DebugListPageUiStateCopyWithImpl<
-  $Res,
-  $Val extends DebugListPageUiState
->
+class _$DebugListPageUiStateCopyWithImpl<$Res>
     implements $DebugListPageUiStateCopyWith<$Res> {
-  _$DebugListPageUiStateCopyWithImpl(this._value, this._then);
+  _$DebugListPageUiStateCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final DebugListPageUiState _self;
+  final $Res Function(DebugListPageUiState) _then;
 
-  /// Create a copy of DebugListPageUiState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? menuItems = null,
-    Object? isLoading = null,
-    Object? onMenuItemTap = null,
-  }) {
-    return _then(
-      _value.copyWith(
-            menuItems: null == menuItems
-                ? _value.menuItems
-                : menuItems // ignore: cast_nullable_to_non_nullable
-                      as List<DebugMenuItemUi>,
-            isLoading: null == isLoading
-                ? _value.isLoading
-                : isLoading // ignore: cast_nullable_to_non_nullable
-                      as bool,
-            onMenuItemTap: null == onMenuItemTap
-                ? _value.onMenuItemTap
-                : onMenuItemTap // ignore: cast_nullable_to_non_nullable
-                      as void Function(String),
-          )
-          as $Val,
-    );
-  }
+/// Create a copy of DebugListPageUiState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? menuItems = null,Object? isLoading = null,Object? onMenuItemTap = null,}) {
+  return _then(_self.copyWith(
+menuItems: null == menuItems ? _self.menuItems : menuItems // ignore: cast_nullable_to_non_nullable
+as List<DebugMenuItemUi>,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
+as bool,onMenuItemTap: null == onMenuItemTap ? _self.onMenuItemTap : onMenuItemTap // ignore: cast_nullable_to_non_nullable
+as void Function(String id),
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [DebugListPageUiState].
+extension DebugListPageUiStatePatterns on DebugListPageUiState {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _DebugListPageUiState value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _DebugListPageUiState() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _DebugListPageUiState value)  $default,){
+final _that = this;
+switch (_that) {
+case _DebugListPageUiState():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _DebugListPageUiState value)?  $default,){
+final _that = this;
+switch (_that) {
+case _DebugListPageUiState() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( List<DebugMenuItemUi> menuItems,  bool isLoading,  void Function(String id) onMenuItemTap)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _DebugListPageUiState() when $default != null:
+return $default(_that.menuItems,_that.isLoading,_that.onMenuItemTap);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( List<DebugMenuItemUi> menuItems,  bool isLoading,  void Function(String id) onMenuItemTap)  $default,) {final _that = this;
+switch (_that) {
+case _DebugListPageUiState():
+return $default(_that.menuItems,_that.isLoading,_that.onMenuItemTap);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( List<DebugMenuItemUi> menuItems,  bool isLoading,  void Function(String id) onMenuItemTap)?  $default,) {final _that = this;
+switch (_that) {
+case _DebugListPageUiState() when $default != null:
+return $default(_that.menuItems,_that.isLoading,_that.onMenuItemTap);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
-abstract class _$$DebugListPageUiStateImplCopyWith<$Res>
-    implements $DebugListPageUiStateCopyWith<$Res> {
-  factory _$$DebugListPageUiStateImplCopyWith(
-    _$DebugListPageUiStateImpl value,
-    $Res Function(_$DebugListPageUiStateImpl) then,
-  ) = __$$DebugListPageUiStateImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({
-    List<DebugMenuItemUi> menuItems,
-    bool isLoading,
-    void Function(String) onMenuItemTap,
-  });
+
+
+class _DebugListPageUiState implements DebugListPageUiState {
+  const _DebugListPageUiState({final  List<DebugMenuItemUi> menuItems = const [], this.isLoading = false, required this.onMenuItemTap}): _menuItems = menuItems;
+  
+
+ final  List<DebugMenuItemUi> _menuItems;
+@override@JsonKey() List<DebugMenuItemUi> get menuItems {
+  if (_menuItems is EqualUnmodifiableListView) return _menuItems;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(_menuItems);
+}
+
+@override@JsonKey() final  bool isLoading;
+@override final  void Function(String id) onMenuItemTap;
+
+/// Create a copy of DebugListPageUiState
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DebugListPageUiStateCopyWith<_DebugListPageUiState> get copyWith => __$DebugListPageUiStateCopyWithImpl<_DebugListPageUiState>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DebugListPageUiState&&const DeepCollectionEquality().equals(other._menuItems, _menuItems)&&(identical(other.isLoading, isLoading) || other.isLoading == isLoading)&&(identical(other.onMenuItemTap, onMenuItemTap) || other.onMenuItemTap == onMenuItemTap));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_menuItems),isLoading,onMenuItemTap);
+
+@override
+String toString() {
+  return 'DebugListPageUiState(menuItems: $menuItems, isLoading: $isLoading, onMenuItemTap: $onMenuItemTap)';
+}
+
+
 }
 
 /// @nodoc
-class __$$DebugListPageUiStateImplCopyWithImpl<$Res>
-    extends _$DebugListPageUiStateCopyWithImpl<$Res, _$DebugListPageUiStateImpl>
-    implements _$$DebugListPageUiStateImplCopyWith<$Res> {
-  __$$DebugListPageUiStateImplCopyWithImpl(
-    _$DebugListPageUiStateImpl _value,
-    $Res Function(_$DebugListPageUiStateImpl) _then,
-  ) : super(_value, _then);
+abstract mixin class _$DebugListPageUiStateCopyWith<$Res> implements $DebugListPageUiStateCopyWith<$Res> {
+  factory _$DebugListPageUiStateCopyWith(_DebugListPageUiState value, $Res Function(_DebugListPageUiState) _then) = __$DebugListPageUiStateCopyWithImpl;
+@override @useResult
+$Res call({
+ List<DebugMenuItemUi> menuItems, bool isLoading, void Function(String id) onMenuItemTap
+});
 
-  /// Create a copy of DebugListPageUiState
-  /// with the given fields replaced by the non-null parameter values.
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? menuItems = null,
-    Object? isLoading = null,
-    Object? onMenuItemTap = null,
-  }) {
-    return _then(
-      _$DebugListPageUiStateImpl(
-        menuItems: null == menuItems
-            ? _value._menuItems
-            : menuItems // ignore: cast_nullable_to_non_nullable
-                  as List<DebugMenuItemUi>,
-        isLoading: null == isLoading
-            ? _value.isLoading
-            : isLoading // ignore: cast_nullable_to_non_nullable
-                  as bool,
-        onMenuItemTap: null == onMenuItemTap
-            ? _value.onMenuItemTap
-            : onMenuItemTap // ignore: cast_nullable_to_non_nullable
-                  as void Function(String),
-      ),
-    );
-  }
+
+
+
 }
-
 /// @nodoc
+class __$DebugListPageUiStateCopyWithImpl<$Res>
+    implements _$DebugListPageUiStateCopyWith<$Res> {
+  __$DebugListPageUiStateCopyWithImpl(this._self, this._then);
 
-class _$DebugListPageUiStateImpl implements _DebugListPageUiState {
-  const _$DebugListPageUiStateImpl({
-    final List<DebugMenuItemUi> menuItems = const [],
-    this.isLoading = false,
-    required this.onMenuItemTap,
-  }) : _menuItems = menuItems;
+  final _DebugListPageUiState _self;
+  final $Res Function(_DebugListPageUiState) _then;
 
-  final List<DebugMenuItemUi> _menuItems;
-  @override
-  @JsonKey()
-  List<DebugMenuItemUi> get menuItems {
-    if (_menuItems is EqualUnmodifiableListView) return _menuItems;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_menuItems);
-  }
-
-  @override
-  @JsonKey()
-  final bool isLoading;
-  @override
-  final void Function(String) onMenuItemTap;
-
-  @override
-  String toString() {
-    return 'DebugListPageUiState(menuItems: $menuItems, isLoading: $isLoading, onMenuItemTap: $onMenuItemTap)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$DebugListPageUiStateImpl &&
-            const DeepCollectionEquality().equals(
-              other._menuItems,
-              _menuItems,
-            ) &&
-            (identical(other.isLoading, isLoading) ||
-                other.isLoading == isLoading) &&
-            (identical(other.onMenuItemTap, onMenuItemTap) ||
-                other.onMenuItemTap == onMenuItemTap));
-  }
-
-  @override
-  int get hashCode => Object.hash(
-    runtimeType,
-    const DeepCollectionEquality().hash(_menuItems),
-    isLoading,
-    onMenuItemTap,
-  );
-
-  /// Create a copy of DebugListPageUiState
-  /// with the given fields replaced by the non-null parameter values.
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$DebugListPageUiStateImplCopyWith<_$DebugListPageUiStateImpl>
-  get copyWith =>
-      __$$DebugListPageUiStateImplCopyWithImpl<_$DebugListPageUiStateImpl>(
-        this,
-        _$identity,
-      );
+/// Create a copy of DebugListPageUiState
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? menuItems = null,Object? isLoading = null,Object? onMenuItemTap = null,}) {
+  return _then(_DebugListPageUiState(
+menuItems: null == menuItems ? _self._menuItems : menuItems // ignore: cast_nullable_to_non_nullable
+as List<DebugMenuItemUi>,isLoading: null == isLoading ? _self.isLoading : isLoading // ignore: cast_nullable_to_non_nullable
+as bool,onMenuItemTap: null == onMenuItemTap ? _self.onMenuItemTap : onMenuItemTap // ignore: cast_nullable_to_non_nullable
+as void Function(String id),
+  ));
 }
 
-abstract class _DebugListPageUiState implements DebugListPageUiState {
-  const factory _DebugListPageUiState({
-    final List<DebugMenuItemUi> menuItems,
-    final bool isLoading,
-    required final void Function(String) onMenuItemTap,
-  }) = _$DebugListPageUiStateImpl;
 
-  @override
-  List<DebugMenuItemUi> get menuItems;
-  @override
-  bool get isLoading;
-  @override
-  void Function(String) get onMenuItemTap;
-
-  /// Create a copy of DebugListPageUiState
-  /// with the given fields replaced by the non-null parameter values.
-  @override
-  @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$DebugListPageUiStateImplCopyWith<_$DebugListPageUiStateImpl>
-  get copyWith => throw _privateConstructorUsedError;
 }
 
 /// @nodoc
 mixin _$DebugListPageAction {
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() none,
-    required TResult Function() navigateToTodoList,
-    required TResult Function() navigateToHandTracking,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? none,
-    TResult? Function()? navigateToTodoList,
-    TResult? Function()? navigateToHandTracking,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? none,
-    TResult Function()? navigateToTodoList,
-    TResult Function()? navigateToHandTracking,
-    required TResult orElse(),
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_None value) none,
-    required TResult Function(_NavigateToTodoList value) navigateToTodoList,
-    required TResult Function(_NavigateToHandTracking value)
-    navigateToHandTracking,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_None value)? none,
-    TResult? Function(_NavigateToTodoList value)? navigateToTodoList,
-    TResult? Function(_NavigateToHandTracking value)? navigateToHandTracking,
-  }) => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_None value)? none,
-    TResult Function(_NavigateToTodoList value)? navigateToTodoList,
-    TResult Function(_NavigateToHandTracking value)? navigateToHandTracking,
-    required TResult orElse(),
-  }) => throw _privateConstructorUsedError;
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DebugListPageAction);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'DebugListPageAction()';
+}
+
+
 }
 
 /// @nodoc
-abstract class $DebugListPageActionCopyWith<$Res> {
-  factory $DebugListPageActionCopyWith(
-    DebugListPageAction value,
-    $Res Function(DebugListPageAction) then,
-  ) = _$DebugListPageActionCopyWithImpl<$Res, DebugListPageAction>;
+class $DebugListPageActionCopyWith<$Res>  {
+$DebugListPageActionCopyWith(DebugListPageAction _, $Res Function(DebugListPageAction) __);
 }
 
-/// @nodoc
-class _$DebugListPageActionCopyWithImpl<$Res, $Val extends DebugListPageAction>
-    implements $DebugListPageActionCopyWith<$Res> {
-  _$DebugListPageActionCopyWithImpl(this._value, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+/// Adds pattern-matching-related methods to [DebugListPageAction].
+extension DebugListPageActionPatterns on DebugListPageAction {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
 
-  /// Create a copy of DebugListPageAction
-  /// with the given fields replaced by the non-null parameter values.
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _None value)?  none,TResult Function( _NavigateToTodoList value)?  navigateToTodoList,TResult Function( _NavigateToHandTracking value)?  navigateToHandTracking,TResult Function( _NavigateToVoiceChat value)?  navigateToVoiceChat,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _None() when none != null:
+return none(_that);case _NavigateToTodoList() when navigateToTodoList != null:
+return navigateToTodoList(_that);case _NavigateToHandTracking() when navigateToHandTracking != null:
+return navigateToHandTracking(_that);case _NavigateToVoiceChat() when navigateToVoiceChat != null:
+return navigateToVoiceChat(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _None value)  none,required TResult Function( _NavigateToTodoList value)  navigateToTodoList,required TResult Function( _NavigateToHandTracking value)  navigateToHandTracking,required TResult Function( _NavigateToVoiceChat value)  navigateToVoiceChat,}){
+final _that = this;
+switch (_that) {
+case _None():
+return none(_that);case _NavigateToTodoList():
+return navigateToTodoList(_that);case _NavigateToHandTracking():
+return navigateToHandTracking(_that);case _NavigateToVoiceChat():
+return navigateToVoiceChat(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _None value)?  none,TResult? Function( _NavigateToTodoList value)?  navigateToTodoList,TResult? Function( _NavigateToHandTracking value)?  navigateToHandTracking,TResult? Function( _NavigateToVoiceChat value)?  navigateToVoiceChat,}){
+final _that = this;
+switch (_that) {
+case _None() when none != null:
+return none(_that);case _NavigateToTodoList() when navigateToTodoList != null:
+return navigateToTodoList(_that);case _NavigateToHandTracking() when navigateToHandTracking != null:
+return navigateToHandTracking(_that);case _NavigateToVoiceChat() when navigateToVoiceChat != null:
+return navigateToVoiceChat(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  none,TResult Function()?  navigateToTodoList,TResult Function()?  navigateToHandTracking,TResult Function()?  navigateToVoiceChat,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _None() when none != null:
+return none();case _NavigateToTodoList() when navigateToTodoList != null:
+return navigateToTodoList();case _NavigateToHandTracking() when navigateToHandTracking != null:
+return navigateToHandTracking();case _NavigateToVoiceChat() when navigateToVoiceChat != null:
+return navigateToVoiceChat();case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  none,required TResult Function()  navigateToTodoList,required TResult Function()  navigateToHandTracking,required TResult Function()  navigateToVoiceChat,}) {final _that = this;
+switch (_that) {
+case _None():
+return none();case _NavigateToTodoList():
+return navigateToTodoList();case _NavigateToHandTracking():
+return navigateToHandTracking();case _NavigateToVoiceChat():
+return navigateToVoiceChat();case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  none,TResult? Function()?  navigateToTodoList,TResult? Function()?  navigateToHandTracking,TResult? Function()?  navigateToVoiceChat,}) {final _that = this;
+switch (_that) {
+case _None() when none != null:
+return none();case _NavigateToTodoList() when navigateToTodoList != null:
+return navigateToTodoList();case _NavigateToHandTracking() when navigateToHandTracking != null:
+return navigateToHandTracking();case _NavigateToVoiceChat() when navigateToVoiceChat != null:
+return navigateToVoiceChat();case _:
+  return null;
+
+}
 }
 
-/// @nodoc
-abstract class _$$NoneImplCopyWith<$Res> {
-  factory _$$NoneImplCopyWith(
-    _$NoneImpl value,
-    $Res Function(_$NoneImpl) then,
-  ) = __$$NoneImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$NoneImplCopyWithImpl<$Res>
-    extends _$DebugListPageActionCopyWithImpl<$Res, _$NoneImpl>
-    implements _$$NoneImplCopyWith<$Res> {
-  __$$NoneImplCopyWithImpl(_$NoneImpl _value, $Res Function(_$NoneImpl) _then)
-    : super(_value, _then);
-
-  /// Create a copy of DebugListPageAction
-  /// with the given fields replaced by the non-null parameter values.
-}
-
-/// @nodoc
-
-class _$NoneImpl implements _None {
-  _$NoneImpl();
-
-  @override
-  String toString() {
-    return 'DebugListPageAction.none()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$NoneImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() none,
-    required TResult Function() navigateToTodoList,
-    required TResult Function() navigateToHandTracking,
-  }) {
-    return none();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? none,
-    TResult? Function()? navigateToTodoList,
-    TResult? Function()? navigateToHandTracking,
-  }) {
-    return none?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? none,
-    TResult Function()? navigateToTodoList,
-    TResult Function()? navigateToHandTracking,
-    required TResult orElse(),
-  }) {
-    if (none != null) {
-      return none();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_None value) none,
-    required TResult Function(_NavigateToTodoList value) navigateToTodoList,
-    required TResult Function(_NavigateToHandTracking value)
-    navigateToHandTracking,
-  }) {
-    return none(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_None value)? none,
-    TResult? Function(_NavigateToTodoList value)? navigateToTodoList,
-    TResult? Function(_NavigateToHandTracking value)? navigateToHandTracking,
-  }) {
-    return none?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_None value)? none,
-    TResult Function(_NavigateToTodoList value)? navigateToTodoList,
-    TResult Function(_NavigateToHandTracking value)? navigateToHandTracking,
-    required TResult orElse(),
-  }) {
-    if (none != null) {
-      return none(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _None implements DebugListPageAction {
-  factory _None() = _$NoneImpl;
-}
-
-/// @nodoc
-abstract class _$$NavigateToTodoListImplCopyWith<$Res> {
-  factory _$$NavigateToTodoListImplCopyWith(
-    _$NavigateToTodoListImpl value,
-    $Res Function(_$NavigateToTodoListImpl) then,
-  ) = __$$NavigateToTodoListImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$NavigateToTodoListImplCopyWithImpl<$Res>
-    extends _$DebugListPageActionCopyWithImpl<$Res, _$NavigateToTodoListImpl>
-    implements _$$NavigateToTodoListImplCopyWith<$Res> {
-  __$$NavigateToTodoListImplCopyWithImpl(
-    _$NavigateToTodoListImpl _value,
-    $Res Function(_$NavigateToTodoListImpl) _then,
-  ) : super(_value, _then);
-
-  /// Create a copy of DebugListPageAction
-  /// with the given fields replaced by the non-null parameter values.
 }
 
 /// @nodoc
 
-class _$NavigateToTodoListImpl implements _NavigateToTodoList {
-  _$NavigateToTodoListImpl();
 
-  @override
-  String toString() {
-    return 'DebugListPageAction.navigateToTodoList()';
-  }
+class _None implements DebugListPageAction {
+   _None();
+  
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$NavigateToTodoListImpl);
-  }
 
-  @override
-  int get hashCode => runtimeType.hashCode;
 
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() none,
-    required TResult Function() navigateToTodoList,
-    required TResult Function() navigateToHandTracking,
-  }) {
-    return navigateToTodoList();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? none,
-    TResult? Function()? navigateToTodoList,
-    TResult? Function()? navigateToHandTracking,
-  }) {
-    return navigateToTodoList?.call();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? none,
-    TResult Function()? navigateToTodoList,
-    TResult Function()? navigateToHandTracking,
-    required TResult orElse(),
-  }) {
-    if (navigateToTodoList != null) {
-      return navigateToTodoList();
-    }
-    return orElse();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_None value) none,
-    required TResult Function(_NavigateToTodoList value) navigateToTodoList,
-    required TResult Function(_NavigateToHandTracking value)
-    navigateToHandTracking,
-  }) {
-    return navigateToTodoList(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_None value)? none,
-    TResult? Function(_NavigateToTodoList value)? navigateToTodoList,
-    TResult? Function(_NavigateToHandTracking value)? navigateToHandTracking,
-  }) {
-    return navigateToTodoList?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_None value)? none,
-    TResult Function(_NavigateToTodoList value)? navigateToTodoList,
-    TResult Function(_NavigateToHandTracking value)? navigateToHandTracking,
-    required TResult orElse(),
-  }) {
-    if (navigateToTodoList != null) {
-      return navigateToTodoList(this);
-    }
-    return orElse();
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _None);
 }
 
-abstract class _NavigateToTodoList implements DebugListPageAction {
-  factory _NavigateToTodoList() = _$NavigateToTodoListImpl;
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'DebugListPageAction.none()';
 }
 
-/// @nodoc
-abstract class _$$NavigateToHandTrackingImplCopyWith<$Res> {
-  factory _$$NavigateToHandTrackingImplCopyWith(
-    _$NavigateToHandTrackingImpl value,
-    $Res Function(_$NavigateToHandTrackingImpl) then,
-  ) = __$$NavigateToHandTrackingImplCopyWithImpl<$Res>;
+
 }
 
-/// @nodoc
-class __$$NavigateToHandTrackingImplCopyWithImpl<$Res>
-    extends
-        _$DebugListPageActionCopyWithImpl<$Res, _$NavigateToHandTrackingImpl>
-    implements _$$NavigateToHandTrackingImplCopyWith<$Res> {
-  __$$NavigateToHandTrackingImplCopyWithImpl(
-    _$NavigateToHandTrackingImpl _value,
-    $Res Function(_$NavigateToHandTrackingImpl) _then,
-  ) : super(_value, _then);
 
-  /// Create a copy of DebugListPageAction
-  /// with the given fields replaced by the non-null parameter values.
-}
+
 
 /// @nodoc
 
-class _$NavigateToHandTrackingImpl implements _NavigateToHandTracking {
-  _$NavigateToHandTrackingImpl();
 
-  @override
-  String toString() {
-    return 'DebugListPageAction.navigateToHandTracking()';
-  }
+class _NavigateToTodoList implements DebugListPageAction {
+   _NavigateToTodoList();
+  
 
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$NavigateToHandTrackingImpl);
-  }
 
-  @override
-  int get hashCode => runtimeType.hashCode;
 
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() none,
-    required TResult Function() navigateToTodoList,
-    required TResult Function() navigateToHandTracking,
-  }) {
-    return navigateToHandTracking();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? none,
-    TResult? Function()? navigateToTodoList,
-    TResult? Function()? navigateToHandTracking,
-  }) {
-    return navigateToHandTracking?.call();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? none,
-    TResult Function()? navigateToTodoList,
-    TResult Function()? navigateToHandTracking,
-    required TResult orElse(),
-  }) {
-    if (navigateToHandTracking != null) {
-      return navigateToHandTracking();
-    }
-    return orElse();
-  }
 
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_None value) none,
-    required TResult Function(_NavigateToTodoList value) navigateToTodoList,
-    required TResult Function(_NavigateToHandTracking value)
-    navigateToHandTracking,
-  }) {
-    return navigateToHandTracking(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_None value)? none,
-    TResult? Function(_NavigateToTodoList value)? navigateToTodoList,
-    TResult? Function(_NavigateToHandTracking value)? navigateToHandTracking,
-  }) {
-    return navigateToHandTracking?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_None value)? none,
-    TResult Function(_NavigateToTodoList value)? navigateToTodoList,
-    TResult Function(_NavigateToHandTracking value)? navigateToHandTracking,
-    required TResult orElse(),
-  }) {
-    if (navigateToHandTracking != null) {
-      return navigateToHandTracking(this);
-    }
-    return orElse();
-  }
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NavigateToTodoList);
 }
 
-abstract class _NavigateToHandTracking implements DebugListPageAction {
-  factory _NavigateToHandTracking() = _$NavigateToHandTrackingImpl;
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'DebugListPageAction.navigateToTodoList()';
 }
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _NavigateToHandTracking implements DebugListPageAction {
+   _NavigateToHandTracking();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NavigateToHandTracking);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'DebugListPageAction.navigateToHandTracking()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _NavigateToVoiceChat implements DebugListPageAction {
+   _NavigateToVoiceChat();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NavigateToVoiceChat);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'DebugListPageAction.navigateToVoiceChat()';
+}
+
+
+}
+
+
+
+
+// dart format on

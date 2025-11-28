@@ -24,6 +24,11 @@ class DebugListPageViewModel extends _$DebugListPageViewModel {
         title: 'Hand Tracking',
         description: '손 추적 및 제스처 인식',
       ),
+      const DebugMenuItemUi(
+        id: 'voice_chat',
+        title: 'Voice Chat',
+        description: 'AI 음성 대화 (OpenAI Realtime)',
+      ),
     ];
 
     return PageState(
@@ -49,6 +54,10 @@ class DebugListPageViewModel extends _$DebugListPageViewModel {
       case 'hand_tracking':
         state =
             state.copyWith(action: DebugListPageAction.navigateToHandTracking());
+        break;
+      case 'voice_chat':
+        state =
+            state.copyWith(action: DebugListPageAction.navigateToVoiceChat());
         break;
     }
   }

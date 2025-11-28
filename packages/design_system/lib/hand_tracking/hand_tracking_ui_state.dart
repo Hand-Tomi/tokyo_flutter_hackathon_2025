@@ -7,7 +7,7 @@ part 'hand_tracking_ui_state.freezed.dart';
 /// Hand Tracking Page UI State
 /// Persistent data displayed on screen
 @freezed
-class HandTrackingPageUiState with _$HandTrackingPageUiState {
+abstract class HandTrackingPageUiState with _$HandTrackingPageUiState {
   const factory HandTrackingPageUiState({
     @Default('Initializing...') String statusMessage,
     @Default('') String gestureInfo,
@@ -24,14 +24,14 @@ class HandTrackingPageUiState with _$HandTrackingPageUiState {
 /// Hand Tracking Page Actions
 /// One-time events (dialogs, navigation, etc.)
 @freezed
-class HandTrackingPageAction with _$HandTrackingPageAction {
+abstract class HandTrackingPageAction with _$HandTrackingPageAction {
   factory HandTrackingPageAction.none() = _None;
   factory HandTrackingPageAction.showError(String message) = _ShowError;
 }
 
 /// UI model for hand landmark data (decoupled from hand_landmarker package)
 @freezed
-class HandLandmarkUi with _$HandLandmarkUi {
+abstract class HandLandmarkUi with _$HandLandmarkUi {
   const factory HandLandmarkUi({
     required List<LandmarkPointUi> points,
   }) = _HandLandmarkUi;
@@ -39,7 +39,7 @@ class HandLandmarkUi with _$HandLandmarkUi {
 
 /// UI model for a single landmark point
 @freezed
-class LandmarkPointUi with _$LandmarkPointUi {
+abstract class LandmarkPointUi with _$LandmarkPointUi {
   const factory LandmarkPointUi({
     required double x,
     required double y,

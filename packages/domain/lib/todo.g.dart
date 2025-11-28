@@ -6,7 +6,7 @@ part of 'todo.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-_$TodoImpl _$$TodoImplFromJson(Map<String, dynamic> json) => _$TodoImpl(
+_Todo _$TodoFromJson(Map<String, dynamic> json) => _Todo(
   id: json['id'] as String,
   title: json['title'] as String,
   description: json['description'] as String,
@@ -14,11 +14,10 @@ _$TodoImpl _$$TodoImplFromJson(Map<String, dynamic> json) => _$TodoImpl(
   createdAt: DateTime.parse(json['createdAt'] as String),
 );
 
-Map<String, dynamic> _$$TodoImplToJson(_$TodoImpl instance) =>
-    <String, dynamic>{
-      'id': instance.id,
-      'title': instance.title,
-      'description': instance.description,
-      'isCompleted': instance.isCompleted,
-      'createdAt': instance.createdAt.toIso8601String(),
-    };
+Map<String, dynamic> _$TodoToJson(_Todo instance) => <String, dynamic>{
+  'id': instance.id,
+  'title': instance.title,
+  'description': instance.description,
+  'isCompleted': instance.isCompleted,
+  'createdAt': instance.createdAt.toIso8601String(),
+};
