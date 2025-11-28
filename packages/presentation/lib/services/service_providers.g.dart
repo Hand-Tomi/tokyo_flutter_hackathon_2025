@@ -27,10 +27,14 @@ final visionServiceProvider = AutoDisposeProvider<VisionService>.internal(
 // ignore: unused_element
 typedef VisionServiceRef = AutoDisposeProviderRef<VisionService>;
 String _$imageGenerationServiceHash() =>
-    r'9899ca9096923a97b95a08052b185e6378ff4843';
+    r'75ffcf5e7a4364b93ed39e9e5cb927e8bef25dce';
 
 /// Image Generation Service Provider
-/// Mock 서비스 (추후 Imagen 3로 교체 예정)
+///
+/// 환경 변수 IMAGE_GEN_PROVIDER로 선택 가능:
+/// - 'gemini': Gemini 2.0 Flash 이미지 생성 (기본값, 추천)
+/// - 'imagen': Imagen 3 API (Vertex AI 필요)
+/// - 'mock': Mock 서비스 (테스트용)
 ///
 /// Copied from [imageGenerationService].
 @ProviderFor(imageGenerationService)

@@ -8,6 +8,10 @@ environment:
 dev_dependencies:
   melos: ^7.3.0
 
+# CameraX와 Kotlin 2.1.0 호환성 문제로 구버전 Android 카메라 사용
+dependency_overrides:
+  camera_android_camerax: 0.6.17
+
 workspace:
   - apps/mobile
   - packages/design_system
