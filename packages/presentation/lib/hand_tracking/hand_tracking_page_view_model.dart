@@ -7,6 +7,7 @@ import 'package:presentation/page_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'gesture_recognizer.dart';
+import 'gesture_recognizer_channel.dart';
 import 'hand_landmark_mapper.dart';
 
 part 'hand_tracking_page_view_model.g.dart';
@@ -20,6 +21,15 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
   CameraController? _controller;
   bool _isDetecting = false;
   int _frameCounter = 0;
+
+  // Native MediaPipe Gesture Recognizer
+  final GestureRecognizerChannel _gestureChannel = GestureRecognizerChannel();
+  bool _useNativeGestureRecognizer = true;
+
+  // Gesture stabilization buffer
+  static const int _gestureBufferSize = 5; // Number of frames to average
+  final List<HandGesture> _gestureBuffer = [];
+  String _lastNativeGesture = '';
 
   @override
   PageState<HandTrackingPageUiState, HandTrackingPageAction> build() {
@@ -130,6 +140,17 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
         delegate: HandLandmarkerDelegate.GPU,
       );
 
+      // 4.5. Initialize native MediaPipe Gesture Recognizer
+      if (_useNativeGestureRecognizer) {
+        state = state.copyWith(
+          uiState: state.uiState.copyWith(
+            statusMessage: 'Initializing Gesture Recognizer...',
+          ),
+        );
+        final gestureInitialized = await _gestureChannel.initialize();
+        debugPrint('Native Gesture Recognizer initialized: $gestureInitialized');
+      }
+
       // 5. Start camera stream
       await _controller!.startImageStream(_processCameraImage);
 
@@ -150,6 +171,36 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
       );
       debugPrint('Initialization error: $e');
     }
+  }
+
+  /// Stabilize gesture recognition by using a sliding window buffer
+  HandGesture _getStabilizedGesture(HandGesture currentGesture) {
+    // Add current gesture to buffer
+    _gestureBuffer.add(currentGesture);
+
+    // Keep buffer size limited
+    if (_gestureBuffer.length > _gestureBufferSize) {
+      _gestureBuffer.removeAt(0);
+    }
+
+    // Count occurrences of each gesture
+    final gestureCounts = <HandGesture, int>{};
+    for (final gesture in _gestureBuffer) {
+      gestureCounts[gesture] = (gestureCounts[gesture] ?? 0) + 1;
+    }
+
+    // Return the most frequent gesture
+    HandGesture mostFrequent = currentGesture;
+    int maxCount = 0;
+
+    gestureCounts.forEach((gesture, count) {
+      if (count > maxCount) {
+        maxCount = count;
+        mostFrequent = gesture;
+      }
+    });
+
+    return mostFrequent;
   }
 
   Future<void> _processCameraImage(CameraImage image) async {
@@ -174,13 +225,108 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
       String statusMessage;
       String gestureInfo = '';
 
+      // Try native gesture recognition if enabled
+      if (_useNativeGestureRecognizer && _gestureChannel.isInitialized) {
+        final nativeResult = await _gestureChannel.recognizeFromCameraImage(
+          image,
+          _controller!.description.sensorOrientation,
+        );
+
+        // Debug logging with all gesture candidates
+        if (nativeResult != null) {
+          debugPrint('Native result: ${nativeResult.hands.length} hands, hasHands: ${nativeResult.hasHands}');
+          for (final h in nativeResult.hands) {
+            debugPrint('  Top Gesture: ${h.gesture}, Score: ${(h.gestureScore * 100).toStringAsFixed(1)}%, Hand: ${h.handedness}');
+            debugPrint('  allGestures count: ${h.allGestures.length}');
+            for (final g in h.allGestures) {
+              debugPrint('    - ${g.name}: ${(g.score * 100).toStringAsFixed(1)}%');
+            }
+          }
+        } else {
+          debugPrint('Native result is null');
+        }
+
+        if (nativeResult != null && nativeResult.hasHands) {
+          statusMessage = '${nativeResult.hands.length} hand(s) detected! (AI)';
+
+          final handInfos = <String>[];
+          for (final hand in nativeResult.hands) {
+            final parts = <String>[];
+
+            // Handedness
+            parts.add(hand.handednessDisplayName);
+
+            // Gesture from AI
+            parts.add(hand.gestureDisplayName);
+
+            // Confidence
+            if (hand.gestureScore > 0) {
+              parts.add('(${(hand.gestureScore * 100).toStringAsFixed(0)}%)');
+            }
+
+            handInfos.add(parts.join(' '));
+            _lastNativeGesture = hand.gesture;
+          }
+
+          gestureInfo = handInfos.join('\n');
+
+          state = state.copyWith(
+            uiState: state.uiState.copyWith(
+              landmarks: landmarks,
+              statusMessage: statusMessage,
+              gestureInfo: gestureInfo,
+            ),
+          );
+          return;
+        }
+      }
+
+      // Fallback to rule-based recognition
       if (hands.isNotEmpty) {
         statusMessage = '${hands.length} hand(s) detected!';
-        // Recognize gesture from first hand
-        final firstHand = hands[0].landmarks;
-        gestureInfo = GestureRecognizer.getHandDescription(firstHand);
+
+        // Build info for all detected hands
+        final handInfos = <String>[];
+
+        for (int i = 0; i < hands.length; i++) {
+          final hand = hands[i].landmarks;
+          final gestureResult = GestureRecognizer.detectGesture(
+            hand,
+            sensorOrientation: _controller!.description.sensorOrientation,
+          );
+
+          // Apply stabilization filter (only for first hand for now)
+          final stabilizedGesture = i == 0 ? _getStabilizedGesture(gestureResult.gesture) : gestureResult.gesture;
+
+          // Build detailed description for this hand
+          final parts = <String>[];
+
+          // Add handedness (왼손/오른손)
+          final handName = gestureResult.handedness == 'Left' ? '왼손' :
+                          gestureResult.handedness == 'Right' ? '오른손' : '손';
+          parts.add(handName);
+
+          // Add detailed finger state (e.g., "엄지, 중지 폄")
+          parts.add(gestureResult.fingerState.description);
+
+          // Add orientation if available
+          if (gestureResult.orientation != HandOrientation.unknown) {
+            parts.add('방향: ${gestureResult.orientation}');
+          }
+
+          // Add named gesture if recognized
+          if (stabilizedGesture != HandGesture.unknown && gestureResult.confidence >= 0.7) {
+            parts.add('${stabilizedGesture} (${(gestureResult.confidence * 100).toStringAsFixed(0)}%)');
+          }
+
+          handInfos.add(parts.join(' | '));
+        }
+
+        gestureInfo = handInfos.join('\n');
       } else {
         statusMessage = 'Looking for hands...';
+        // Clear gesture buffer when no hand detected
+        _gestureBuffer.clear();
       }
 
       state = state.copyWith(
@@ -211,5 +357,6 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
   void _dispose() {
     _controller?.stopImageStream();
     _controller?.dispose();
+    _gestureChannel.close();
   }
 }

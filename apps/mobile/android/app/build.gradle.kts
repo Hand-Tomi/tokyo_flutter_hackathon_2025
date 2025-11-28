@@ -42,3 +42,8 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    // MediaPipe Gesture Recognizer
+    implementation("com.google.mediapipe:tasks-vision:0.10.14")
+}
