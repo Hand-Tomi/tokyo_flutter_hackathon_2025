@@ -680,30 +680,12 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
     }
   }
 
-  /// Save image to external storage media/sketches with sequential numbering
+  /// Save image to app documents directory media/sketches with sequential numbering
   Future<bool> onSaveToGallery(Uint8List imageBytes) async {
     try {
-      // Request storage permission
-      final storageStatus = await Permission.storage.request();
-
-      if (!storageStatus.isGranted) {
-        debugPrint('❌ Storage permission denied');
-        state = state.copyWith(
-          action: HandTrackingPageAction.showError('저장소 권한이 필요합니다'),
-        );
-        return false;
-      }
-
-      // 1. Get app's external storage directory
-      // This will be /storage/emulated/0/Android/data/com.example.flutter_architecture_sample/files
-      final Directory? appDir = await getExternalStorageDirectory();
-      if (appDir == null) {
-        debugPrint('❌ Cannot access external storage');
-        state = state.copyWith(
-          action: HandTrackingPageAction.showError('외부 저장소에 접근할 수 없습니다'),
-        );
-        return false;
-      }
+      // Get app's documents directory (always available, no permission required)
+      final Directory appDir = await getApplicationDocumentsDirectory();
+      debugPrint('📁 App directory: ${appDir.path}');
 
       // 2. Create media/sketches subdirectory
       final sketchesDir = Directory('${appDir.path}/media/sketches');
