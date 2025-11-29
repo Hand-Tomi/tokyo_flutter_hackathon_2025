@@ -1,5 +1,7 @@
 import 'package:design_system/step2_scene_creation/scene_creation_ui_state.dart';
 import 'package:presentation/page_state.dart';
+import 'package:presentation/services/service_providers.dart';
+import 'package:presentation/src/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'scene_creation_page_view_model.g.dart';
@@ -21,22 +23,89 @@ class SceneCreationPageViewModel extends _$SceneCreationPageViewModel {
   }
 
   /// 녹음 시작
-  void onRecordPressed() {
-    state = state.copyWith(
-      uiState: state.uiState.copyWith(isRecording: true),
-    );
+  Future<void> onRecordPressed() async {
+    // 이미 녹음 중이면 무시
+    if (state.uiState.isRecording) return;
+
+    final recorder = ref.read(audioRecorderServiceProvider);
+
+    // 마이크 권한 확인
+    final hasPermission = await recorder.hasPermission();
+    if (!hasPermission) {
+      state = state.copyWith(
+        action: SceneCreationPageAction.showError('마이크 권한이 필요합니다.'),
+      );
+      return;
+    }
+
+    // 먼저 UI 상태 업데이트 (버튼 즉시 변경)
+    state = state.copyWith(uiState: state.uiState.copyWith(isRecording: true));
+
+    // 파일명 생성
+    final fileName =
+        'scene_${state.uiState.sceneNumber}_${DateTime.now().millisecondsSinceEpoch}';
+
+    try {
+      final path = await recorder.startRecording(fileName);
+      logger.i('recording file path = $path');
+      // 녹음 시작 시 경로 저장
+      state = state.copyWith(
+        uiState: state.uiState.copyWith(currentRecordingPath: path),
+      );
+    } catch (e) {
+      // 실패 시 상태 롤백
+      state = state.copyWith(
+        uiState: state.uiState.copyWith(isRecording: false),
+        action: SceneCreationPageAction.showError('녹음 시작 실패: $e'),
+      );
+    }
   }
 
-  /// 녹음 중지
-  void onStopRecordPressed() {
-    // 녹음 중지 후 STT 결과 화면으로 이동
+  /// 녹음 중지 + STT 변환
+  Future<void> onStopRecordPressed() async {
+    // 녹음 중이 아니면 무시
+    if (!state.uiState.isRecording) return;
+
+    final recorder = ref.read(audioRecorderServiceProvider);
+    final sttService = ref.read(sttServiceProvider);
+
+    // 먼저 UI 상태 업데이트 (녹음 중지 표시)
     state = state.copyWith(
-      uiState: state.uiState.copyWith(
-        isRecording: false,
-        currentStep: SceneCreationStep.sttResult,
-        sttText: 'Once upon a time, there was a little bunny...', // Mock STT
-      ),
+      uiState: state.uiState.copyWith(isRecording: false, isSttLoading: true),
     );
+
+    try {
+      var audioPath = await recorder.stopRecording();
+      // stopRecording이 null이면 시작 시 저장한 경로 사용
+      if (audioPath == null || audioPath.isEmpty) {
+        audioPath = state.uiState.currentRecordingPath;
+      }
+      if (audioPath.isEmpty) {
+        throw Exception('녹음 파일을 찾을 수 없습니다.');
+      }
+      logger.d('recorded audioPath = $audioPath');
+
+      state = state.copyWith(
+        uiState: state.uiState.copyWith(currentRecordingPath: audioPath),
+      );
+
+      // STT 변환 실행
+      final transcribedText = await sttService.transcribe(audioPath);
+
+      state = state.copyWith(
+        uiState: state.uiState.copyWith(
+          isSttLoading: false,
+          currentStep: SceneCreationStep.sttResult,
+          sttText: transcribedText,
+        ),
+      );
+    } catch (e) {
+      logger.e('SST 변환 실패', error: e);
+      state = state.copyWith(
+        uiState: state.uiState.copyWith(isSttLoading: false),
+        action: SceneCreationPageAction.showError('STT 변환 실패: $e'),
+      );
+    }
   }
 
   /// 재녹음
@@ -45,6 +114,7 @@ class SceneCreationPageViewModel extends _$SceneCreationPageViewModel {
       uiState: state.uiState.copyWith(
         currentStep: SceneCreationStep.recording,
         sttText: '',
+        currentRecordingPath: '',
       ),
     );
   }
@@ -96,6 +166,7 @@ class SceneCreationPageViewModel extends _$SceneCreationPageViewModel {
         currentStep: SceneCreationStep.recording,
         sttText: '',
         isRecording: false,
+        currentRecordingPath: '',
       ),
     );
   }

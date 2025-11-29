@@ -3,6 +3,8 @@
     <!-- Camera permission for hand tracking -->
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- Microphone permission for audio recording -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
 
     <!-- Gallery/Storage permissions for saving images -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
@@ -20,7 +22,8 @@
     <application
         android:label="flutter_architecture_sample"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/ic_launcher"
+        android:usesCleartextTraffic="true">
         <activity
             android:name=".MainActivity"
             android:exported="true"
