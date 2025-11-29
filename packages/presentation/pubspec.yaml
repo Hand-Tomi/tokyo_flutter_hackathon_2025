@@ -53,6 +53,13 @@ dependencies:
   # HTTP Client
   dio: ^5.4.0
 
+  # Audio/Video Playback
+  just_audio: ^0.9.36
+  video_player: ^2.8.1
+
+  #Video Generation (FFmpeg)
+  ffmpeg_kit_flutter: ^6.0.3
+
 flutter:
   assets:
     - assets/
