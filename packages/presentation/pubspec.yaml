@@ -46,6 +46,13 @@ dependencies:
   google_generative_ai: ^0.4.7
   http: ^1.2.0
 
+  # Audio Recording
+  record: ^5.2.0
+  logger: ^2.6.2
+
+  # HTTP Client
+  dio: ^5.4.0
+
 flutter:
   assets:
     - assets/

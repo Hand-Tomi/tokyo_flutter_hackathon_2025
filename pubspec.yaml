@@ -9,8 +9,10 @@ dev_dependencies:
   melos: ^7.3.0
 
 # CameraX와 Kotlin 2.1.0 호환성 문제로 구버전 Android 카메라 사용
+# record_linux 최신 버전으로 업그레이드 (호환성 이슈 해결)
 dependency_overrides:
   camera_android_camerax: 0.6.17
+  record_linux: ^1.2.0
 
 workspace:
   - apps/mobile

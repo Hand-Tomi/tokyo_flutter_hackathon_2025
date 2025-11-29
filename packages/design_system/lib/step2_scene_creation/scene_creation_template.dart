@@ -166,6 +166,21 @@ class SceneCreationTemplate extends StatelessWidget {
   }
 
   Widget _buildRecordingContent() {
+    // STT 로딩 상태
+    if (uiState.isSttLoading) {
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const CircularProgressIndicator(color: Colors.white),
+          const SizedBox(height: AppSpacing.lg),
+          Text(
+            'Converting speech to text...',
+            style: AppTypography.bodyLarge,
+          ),
+        ],
+      );
+    }
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

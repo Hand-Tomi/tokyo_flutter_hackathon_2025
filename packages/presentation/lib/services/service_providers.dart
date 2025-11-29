@@ -5,11 +5,13 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:domain/domain.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../repositories/illustrations_repository.dart';
+import 'audio_recorder_service.dart';
 import 'gemini_vision_service.dart';
 import 'gemini_image_generation_service.dart';
 import 'gemini_sketch_to_image_service.dart';
 import 'imagen_generation_service.dart';
 import 'imagen_sketch_to_image_service.dart';
+import 'openai_whisper_service.dart';
 
 part 'service_providers.g.dart';
 
@@ -101,4 +103,24 @@ Future<SketchToImageService> sketchToImageService(
     apiKey: apiKey,
     styleReferenceImage: styleReference,
   );
+}
+
+/// Audio Recorder Service Provider
+/// 오디오 녹음 기능 제공
+@riverpod
+AudioRecorderService audioRecorderService(AudioRecorderServiceRef ref) {
+  final service = AudioRecorderService();
+  ref.onDispose(() => service.dispose());
+  return service;
+}
+
+/// STT Service Provider
+/// OpenAI Whisper API를 사용한 음성-텍스트 변환
+@riverpod
+SttService sttService(SttServiceRef ref) {
+  final apiKey = dotenv.env['OPENAI_API_KEY'];
+  if (apiKey == null || apiKey.isEmpty) {
+    throw Exception('OPENAI_API_KEY가 .env 파일에 설정되지 않았습니다.');
+  }
+  return OpenAiWhisperService(apiKey: apiKey);
 }

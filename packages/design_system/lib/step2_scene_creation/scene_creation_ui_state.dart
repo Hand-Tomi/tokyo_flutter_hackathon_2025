@@ -17,9 +17,11 @@ class SceneCreationPageUiState with _$SceneCreationPageUiState {
     @Default(SceneCreationStep.recording) SceneCreationStep currentStep,
     @Default(1) int sceneNumber,
     @Default(false) bool isRecording,
+    @Default(false) bool isSttLoading,
     @Default('') String sttText,
     @Default(false) bool isGeneratingImage,
     @Default('') String statusMessage,
+    @Default('') String currentRecordingPath,
   }) = _SceneCreationPageUiState;
 }
 
