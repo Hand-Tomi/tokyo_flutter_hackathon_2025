@@ -28,9 +28,8 @@ dependencies:
   intl: ^0.18.0
   uuid: ^4.0.0
 
-  # Hand Tracking
+  # Hand Tracking (hand_landmarker provided by mobile app for platform support)
   camera: ^0.11.0+2
-  hand_landmarker: ^2.1.2
   permission_handler: ^11.0.1
 
   # 環境変数

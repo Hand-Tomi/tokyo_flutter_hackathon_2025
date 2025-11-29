@@ -30,14 +30,9 @@ class DebugListPageViewModel extends _$DebugListPageViewModel {
         description: '손 추적 및 제스처 인식',
       ),
       const DebugMenuItemUi(
-        id: 'image_analysis',
-        title: '이미지 분석 & 생성',
-        description: 'AI 이미지 분석 및 생성 기능',
-      ),
-      const DebugMenuItemUi(
-        id: 'sketch_test',
-        title: '스케치 → 동화 이미지',
-        description: '스케치 + 텍스트를 동화풍 이미지로 변환',
+        id: 'video_generation',
+        title: 'Video Generation',
+        description: 'AI 비디오 생성',
       ),
     ];
 
@@ -68,13 +63,9 @@ class DebugListPageViewModel extends _$DebugListPageViewModel {
         state =
             state.copyWith(action: DebugListPageAction.navigateToHandTracking());
         break;
-      case 'image_analysis':
+      case 'video_generation':
         state =
-            state.copyWith(action: DebugListPageAction.navigateToImageAnalysis());
-        break;
-      case 'sketch_test':
-        state =
-            state.copyWith(action: DebugListPageAction.navigateToSketchTest());
+            state.copyWith(action: DebugListPageAction.navigateToVideoGeneration());
         break;
     }
   }

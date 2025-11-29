@@ -1,4 +1,4 @@
-import 'package:hand_landmarker/hand_landmarker.dart';
+import 'platform/hand_landmarker.dart';
 
 /// Enum for rock-paper-scissors gestures
 enum HandGesture {

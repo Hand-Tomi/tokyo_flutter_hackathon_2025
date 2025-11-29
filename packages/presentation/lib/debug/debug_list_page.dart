@@ -33,19 +33,8 @@ class DebugListPage extends ConsumerWidget {
           navigateToHandTracking: () {
             context.push('/hand-tracking');
           },
-          navigateToImageAnalysis: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const ImageAnalysisPage(),
-              ),
-            );
-          },
-          navigateToSketchTest: () {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) => const SketchTestPage(),
-              ),
-            );
+          navigateToVideoGeneration: () {
+            context.push('/video-generation');
           },
         );
 

@@ -32,6 +32,10 @@ migrate_working_dir/
 .pub/
 build/
 
+# Generated code (freezed, json_serializable, riverpod_generator)
+*.freezed.dart
+*.g.dart
+
 # Symbolication related
 app.*.symbols
 
