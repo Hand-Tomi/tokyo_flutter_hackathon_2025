@@ -84,18 +84,30 @@ class _HandTrackingPageState extends ConsumerState<HandTrackingPage> {
                                 onPressed: () async {
                                   Navigator.of(context).pop();
 
-                                  // 이미지 분석 페이지의 ViewModel에 이미지 설정
-                                  await ref
-                                      .read(imageAnalysisPageViewModelProvider.notifier)
-                                      .onSetImageFromBytes(imageBytes);
+                                  // 갤러리에 저장
+                                  final saved = await viewModel.onSaveToGallery(imageBytes);
 
-                                  // 이미지 분석 페이지로 이동
-                                  if (context.mounted) {
-                                    Navigator.of(context).push(
-                                      MaterialPageRoute(
-                                        builder: (context) => const ImageAnalysisPage(),
+                                  if (saved && context.mounted) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text('갤러리에 저장되었습니다!'),
+                                        duration: Duration(seconds: 2),
                                       ),
                                     );
+
+                                    // 이미지 분석 페이지의 ViewModel에 이미지 설정
+                                    await ref
+                                        .read(imageAnalysisPageViewModelProvider.notifier)
+                                        .onSetImageFromBytes(imageBytes);
+
+                                    // 이미지 분석 페이지로 이동
+                                    if (context.mounted) {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) => const ImageAnalysisPage(),
+                                        ),
+                                      );
+                                    }
                                   }
                                 },
                                 child: const Text('저장'),

@@ -1,16 +1,20 @@
+import 'dart:io';
 import 'dart:ui' as ui;
 
 import 'package:camera/camera.dart';
 import 'package:design_system/hand_tracking/hand_tracking_ui_state.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
+import 'package:gal/gal.dart';
 import 'package:hand_landmarker/hand_landmarker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:presentation/page_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'gesture_recognizer.dart';
 import 'hand_landmark_mapper.dart';
+import 'robust_gesture_detector.dart';
 
 part 'hand_tracking_page_view_model.g.dart';
 
@@ -24,12 +28,17 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
   bool _isDetecting = false;
   int _frameCounter = 0;
 
+  // Robust gesture detector with frame buffering
+  late final RobustGestureDetector _gestureDetector;
+
   // Drawing state
   bool _wasDrawing = false;
   List<Offset> _currentPathPoints = [];
 
-  // Fist gesture state
-  bool _wasFist = false;
+  // Pen down/up control based on movement speed
+  Offset? _lastDrawPoint;
+  DateTime? _lastDrawTime;
+  bool _isPenDown = false;
 
   // Hand detection timer
   DateTime? _lastHandDetectedTime;
@@ -38,6 +47,18 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
   @override
   PageState<HandTrackingPageUiState, HandTrackingPageAction> build() {
     ref.onDispose(_dispose);
+
+    // Initialize robust gesture detector with custom config
+    _gestureDetector = RobustGestureDetector(
+      config: const GestureDetectionConfig(
+        indexExtensionThreshold: 0.06,        // Reduced threshold for easier detection
+        fistMaxDistance: 0.15,                // Fist detection threshold
+        consecutiveFramesRequired: 2,         // Only 2 frames for immediate response
+        smoothingFactor: 0.5,                 // 50/50 for balance
+        otherFingersCurledThreshold: 0.03,    // Not used anymore but kept for config
+      ),
+    );
+
     return PageState(
       uiState: const HandTrackingPageUiState(),
       action: HandTrackingPageAction.none(),
@@ -195,44 +216,64 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
         _lastHandDetectedTime = DateTime.now();
         _timerDialogShown = false;
 
-        statusMessage = '${hands.length} hand(s) detected!';
-        // Recognize gesture from first hand
         final firstHand = hands[0].landmarks;
-        gestureInfo = GestureRecognizer.getHandDescription(firstHand);
 
-        // Simple fist detection
-        final extendedFingers = GestureRecognizer.countExtendedFingers(firstHand);
-        final isFist = extendedFingers == 0;
+        // Use robust gesture detector
+        final gestureState = _gestureDetector.detectGesture(firstHand);
 
-        if (isFist) {
-          // Fist detected - save current path and stop drawing
-          if (!_wasFist && _wasDrawing) {
-            _finishCurrentPath();
-            statusMessage = 'Fist - Path saved!';
-          }
-          _wasFist = true;
-          _wasDrawing = false;
-        } else {
-          // Any other hand gesture - draw with index finger
+        // Get debug info
+        final debugInfo = _gestureDetector.getDebugInfo(firstHand);
+        debugPrint('Gesture: ${gestureState.name} | Frames: ${debugInfo['consecutiveFrames']} | '
+            'Index-Middle diff: ${debugInfo['indexVsMiddle']}');
+
+        gestureInfo = 'State: ${gestureState.name}';
+
+        if (gestureState == GestureState.drawing) {
+          // DRAWING MODE: Index finger extended
           isDrawingMode = true;
-          _wasFist = false;
-          statusMessage = 'Drawing... ($extendedFingers fingers)';
+          statusMessage = 'Drawing with index finger...';
 
-          // Track drawing path using index finger tip
-          final fingerTip = GestureRecognizer.getIndexFingerTip(firstHand);
-          if (fingerTip != null) {
-            _processDrawingPoint(fingerTip.x, fingerTip.y);
+          // Use smoothed index finger position to reduce jitter
+          final smoothedTip = _gestureDetector.smoothedIndexTip;
+          if (smoothedTip != null) {
+            _processDrawingPoint(smoothedTip.dx, smoothedTip.dy);
           }
           _wasDrawing = true;
+        } else if (gestureState == GestureState.stopped) {
+          // STOPPED MODE: Fist detected
+          statusMessage = 'Fist detected - path saved!';
+
+          if (_wasDrawing) {
+            _finishCurrentPath();
+            debugPrint('Path saved - fist gesture detected');
+          }
+          _wasDrawing = false;
+        } else {
+          // UNKNOWN STATE: Keep previous behavior
+          statusMessage = 'Show index finger to draw, fist to stop';
+
+          // If was drawing but now unknown, keep drawing until clear stop
+          if (_wasDrawing) {
+            final fingerTip = GestureRecognizer.getIndexFingerTip(firstHand);
+            if (fingerTip != null) {
+              _processDrawingPoint(fingerTip.x, fingerTip.y);
+            }
+          }
         }
       } else {
-        statusMessage = 'Looking for hands...';
-        // No hand detected - finish current path
+        statusMessage = 'Show your hand to draw';
+        // No hand detected - save current path automatically
         if (_wasDrawing) {
           _finishCurrentPath();
+          debugPrint('Path saved - hand removed from screen');
         }
         _wasDrawing = false;
-        _wasFist = false;
+        _gestureDetector.reset(); // Reset detector when hand disappears
+
+        // Reset pen state when hand disappears
+        _lastDrawPoint = null;
+        _lastDrawTime = null;
+        _isPenDown = false;
 
         // Check timer for dialog
         if (_lastHandDetectedTime != null && !_timerDialogShown) {
@@ -265,7 +306,7 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
     }
   }
 
-  /// Process a drawing point from finger tip
+  /// Process a drawing point from finger tip with speed-based pen control
   void _processDrawingPoint(double x, double y) {
     // Transform coordinates based on sensor orientation
     final sensorOrientation = state.uiState.sensorOrientation ?? 0;
@@ -286,20 +327,56 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
     }
 
     final point = Offset(transformedX, transformedY);
+    final now = DateTime.now();
 
-    // Skip if point is too close to last point (reduces noise)
-    if (_currentPathPoints.isNotEmpty) {
-      final lastPoint = _currentPathPoints.last;
-      final distance = (point - lastPoint).distance;
-      if (distance < 0.01) return; // Threshold for minimum movement
+    // Calculate movement speed to detect pen down/up
+    if (_lastDrawPoint != null && _lastDrawTime != null) {
+      final distance = (point - _lastDrawPoint!).distance;
+      final timeDelta = now.difference(_lastDrawTime!).inMilliseconds;
+
+      // Velocity threshold: if hand moves too fast, lift pen (start new path)
+      const maxVelocity = 2.0; // Threshold for "fast movement" (adjust as needed)
+      final velocity = timeDelta > 0 ? distance / (timeDelta / 1000.0) : 0.0;
+
+      if (velocity > maxVelocity) {
+        // Hand moving too fast - lift pen and start new path
+        if (_isPenDown && _currentPathPoints.isNotEmpty) {
+          _finishCurrentPath();
+        }
+        _isPenDown = false;
+      } else {
+        // Hand moving slowly - pen down, continue drawing
+        _isPenDown = true;
+      }
+    } else {
+      // First point - pen down
+      _isPenDown = true;
     }
 
-    _currentPathPoints.add(point);
+    // Only add point if pen is down
+    if (_isPenDown) {
+      // Skip if point is too close to last point (reduces noise)
+      if (_currentPathPoints.isNotEmpty) {
+        final lastPoint = _currentPathPoints.last;
+        final distance = (point - lastPoint).distance;
+        if (distance < 0.01) {
+          _lastDrawPoint = point;
+          _lastDrawTime = now;
+          return; // Too close, skip
+        }
+      }
+
+      _currentPathPoints.add(point);
+    }
+
+    _lastDrawPoint = point;
+    _lastDrawTime = now;
   }
 
-  /// Finish current drawing path and save it
+  /// Finish current drawing path and save it (no shape recognition)
   void _finishCurrentPath() {
     if (_currentPathPoints.length >= 2) {
+      // Save raw path as-is (no shape normalization)
       final newPath = DrawingPathUi(
         points: List.from(_currentPathPoints),
         strokeWidth: 4.0,
@@ -310,6 +387,7 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
           drawingPaths: [...state.uiState.drawingPaths, newPath],
         ),
       );
+      debugPrint('Path saved: ${_currentPathPoints.length} points');
     }
     _currentPathPoints.clear();
   }
@@ -318,6 +396,15 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
   void onClearDrawing() {
     _currentPathPoints.clear();
     _wasDrawing = false;
+    _lastHandDetectedTime = null;
+    _timerDialogShown = false;
+    _gestureDetector.reset();
+
+    // Reset pen state
+    _lastDrawPoint = null;
+    _lastDrawTime = null;
+    _isPenDown = false;
+
     state = state.copyWith(
       uiState: state.uiState.copyWith(
         drawingPaths: [],
@@ -347,9 +434,34 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
         return null;
       }
 
-      // Image size (you can adjust this)
-      const imageWidth = 512.0;
-      const imageHeight = 512.0;
+      // Use camera preview aspect ratio to prevent distortion
+      final previewSize = state.uiState.previewSize;
+      final sensorOrientation = state.uiState.sensorOrientation ?? 0;
+      double imageWidth = 1080.0;
+      double imageHeight = 1920.0;
+
+      if (previewSize != null) {
+        // Calculate aspect ratio considering sensor orientation
+        // When sensor is rotated (90 or 270), width and height are swapped on screen
+        double aspectRatio;
+        if (sensorOrientation == 90 || sensorOrientation == 270) {
+          // Camera is rotated - screen shows swapped dimensions
+          aspectRatio = previewSize.width / previewSize.height;
+        } else {
+          // Camera is not rotated - screen shows normal dimensions
+          aspectRatio = previewSize.height / previewSize.width;
+        }
+
+        // Set width to 1080 and calculate height to match screen aspect ratio
+        imageWidth = 1080.0;
+        imageHeight = imageWidth * aspectRatio;
+
+        debugPrint('Preview size: ${previewSize.width}x${previewSize.height}');
+        debugPrint('Sensor orientation: $sensorOrientation°');
+        debugPrint('Screen aspect ratio: $aspectRatio');
+      }
+
+      debugPrint('Image size: ${imageWidth.toInt()}x${imageHeight.toInt()}');
 
       // Create a picture recorder
       final recorder = ui.PictureRecorder();
@@ -426,6 +538,40 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
     } catch (e) {
       debugPrint('Error creating image: $e');
       return null;
+    }
+  }
+
+  /// Save image to gallery
+  Future<bool> onSaveToGallery(Uint8List imageBytes) async {
+    try {
+      // Request storage permission
+      final status = await Permission.photos.request();
+      if (!status.isGranted) {
+        debugPrint('Gallery permission denied');
+        state = state.copyWith(
+          action: HandTrackingPageAction.showError('갤러리 권한이 필요합니다'),
+        );
+        return false;
+      }
+
+      // Save to temporary file first
+      final tempDir = await getTemporaryDirectory();
+      final file = File(
+        '${tempDir.path}/hand_drawing_${DateTime.now().millisecondsSinceEpoch}.png',
+      );
+      await file.writeAsBytes(imageBytes);
+
+      // Save to gallery using gal package
+      await Gal.putImage(file.path, album: 'HandDrawings');
+
+      debugPrint('Image saved to gallery: ${file.path}');
+      return true;
+    } catch (e) {
+      debugPrint('Error saving to gallery: $e');
+      state = state.copyWith(
+        action: HandTrackingPageAction.showError('갤러리 저장 실패: $e'),
+      );
+      return false;
     }
   }
 

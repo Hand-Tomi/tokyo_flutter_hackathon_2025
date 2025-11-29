@@ -30,6 +30,8 @@ class GestureRecognizer {
     if (landmarks.length < 21) return 0;
 
     int count = 0;
+    final fingerNames = ['Thumb', 'Index', 'Middle', 'Ring', 'Pinky'];
+    final extendedFingers = <String>[];
 
     // Thumb: Compare tip (4) with MCP joint (2) on X-axis
     // Thumb is extended if tip is further from palm center
@@ -40,8 +42,10 @@ class GestureRecognizer {
     // Calculate if thumb is extended based on distance from wrist
     final thumbTipDist = _distance(thumbTip, wrist);
     final thumbMcpDist = _distance(thumbMcp, wrist);
-    if (thumbTipDist > thumbMcpDist * 1.2) {
+    final thumbRatio = thumbTipDist / thumbMcpDist;
+    if (thumbTipDist > thumbMcpDist * 1.25) {
       count++;
+      extendedFingers.add('Thumb(${thumbRatio.toStringAsFixed(2)})');
     }
 
     // Other fingers: Compare tip with PIP joint on Y-axis
@@ -52,12 +56,18 @@ class GestureRecognizer {
     for (int i = 0; i < 4; i++) {
       final tipY = landmarks[fingerTips[i]].y;
       final pipY = landmarks[fingerPips[i]].y;
+      final diff = pipY - tipY;
 
       // Tip should be above (lower Y value) PIP for extended finger
-      if (tipY < pipY - 0.03) {
+      // Balanced threshold for better detection
+      if (tipY < pipY - 0.05) {
         count++;
+        extendedFingers.add('${fingerNames[i + 1]}(${diff.toStringAsFixed(3)})');
       }
     }
+
+    // Debug logging
+    print('Extended fingers: $count - ${extendedFingers.join(", ")}');
 
     return count;
   }
