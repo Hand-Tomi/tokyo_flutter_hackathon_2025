@@ -2,10 +2,9 @@ import 'package:camera/camera.dart';
 import 'package:design_system/hand_tracking/hand_tracking_template.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 
 import 'hand_tracking_page_view_model.dart';
-import '../image/image_analysis_page.dart';
-import '../image/image_analysis_page_view_model.dart';
 
 /// Hand Tracking Page
 ///
@@ -44,6 +43,9 @@ class _HandTrackingPageState extends ConsumerState<HandTrackingPage> {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(message)),
             );
+          },
+          navigateToSceneList: () {
+            context.go('/scene-list');
           },
           showConfirmDialog: () {
             showDialog(
@@ -84,30 +86,16 @@ class _HandTrackingPageState extends ConsumerState<HandTrackingPage> {
                                 onPressed: () async {
                                   Navigator.of(context).pop();
 
-                                  // 이미지 저장
-                                  final saved = await viewModel.onSaveToGallery(imageBytes);
+                                  // 스케치 저장 및 Scene List로 이동
+                                  final success = await viewModel.onSaveSketchAndNavigate(imageBytes);
 
-                                  if (saved && context.mounted) {
+                                  if (success && context.mounted) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                         content: Text('저장되었습니다!'),
                                         duration: Duration(seconds: 2),
                                       ),
                                     );
-
-                                    // 이미지 분석 페이지의 ViewModel에 이미지 설정
-                                    await ref
-                                        .read(imageAnalysisPageViewModelProvider.notifier)
-                                        .onSetImageFromBytes(imageBytes);
-
-                                    // 이미지 분석 페이지로 이동
-                                    if (context.mounted) {
-                                      Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) => const ImageAnalysisPage(),
-                                        ),
-                                      );
-                                    }
                                   }
                                 },
                                 child: const Text('저장'),

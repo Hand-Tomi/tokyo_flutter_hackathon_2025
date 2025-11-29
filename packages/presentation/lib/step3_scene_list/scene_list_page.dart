@@ -39,7 +39,7 @@ class SceneListPage extends ConsumerWidget {
 
     return SceneListTemplate(
       uiState: state.uiState,
-      onBackPressed: () => context.pop(),
+      onBackPressed: () => context.go('/'),
       onAddScenePressed: notifier.onAddScenePressed,
       onGenerateVideoPressed: notifier.onGenerateVideoPressed,
       onSceneTap: notifier.onSceneTap,

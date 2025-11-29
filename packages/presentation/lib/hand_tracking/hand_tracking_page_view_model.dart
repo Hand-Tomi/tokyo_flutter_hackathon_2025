@@ -3,12 +3,15 @@ import 'dart:ui' as ui;
 
 import 'package:camera/camera.dart';
 import 'package:design_system/hand_tracking/hand_tracking_ui_state.dart';
+import 'package:domain/domain.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:hand_landmarker/hand_landmarker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:presentation/page_state.dart';
+import 'package:presentation/services/scene_state_provider.dart';
+import 'package:presentation/src/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'gesture_recognizer.dart';
@@ -504,10 +507,10 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
       totalLength += (finalPoints[i] - finalPoints[i - 1]).distance;
     }
 
-    // Minimum path length threshold (normalized coordinates, ~3% of screen)
-    const double minPathLength = 0.03;
+    // Minimum path length threshold (normalized coordinates, ~1% of screen)
+    const double minPathLength = 0.01;
     if (totalLength < minPathLength) {
-      debugPrint('Path too short (length: ${totalLength.toStringAsFixed(4)}) - discarded');
+      debugPrint('⚠️ Path too short (length: ${totalLength.toStringAsFixed(4)}) - discarded');
       _currentPathPoints.clear();
       return;
     }
@@ -567,11 +570,36 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
   /// Convert drawing paths to white background image
   Future<Uint8List?> onCreateImage() async {
     try {
-      final paths = state.uiState.drawingPaths;
-      if (paths.isEmpty) {
-        debugPrint('No paths to convert');
+      debugPrint('🖼️ onCreateImage called');
+      debugPrint('   - Saved paths: ${state.uiState.drawingPaths.length}');
+      debugPrint('   - Current points: ${_currentPathPoints.length}');
+
+      // Finish current path if drawing and get all paths
+      List<DrawingPathUi> allPaths = List.from(state.uiState.drawingPaths);
+
+      if (_currentPathPoints.isNotEmpty) {
+        debugPrint('⚡ Forcing save of current path before image creation');
+        // Manually create the path without state update - NO MINIMUM LENGTH CHECK
+        if (_currentPathPoints.length >= 2) {
+          final newPath = DrawingPathUi(
+            points: List.from(_currentPathPoints),
+            strokeWidth: 4.0,
+            color: const Color(0xFF000000),
+          );
+          allPaths.add(newPath);
+          debugPrint('✅ Added current path to image: ${_currentPathPoints.length} points');
+        } else {
+          debugPrint('⚠️ Current path has only ${_currentPathPoints.length} points, skipping');
+        }
+      }
+
+      if (allPaths.isEmpty) {
+        debugPrint('❌ No paths to convert - returning null');
         return null;
       }
+
+      debugPrint('✅ Creating image with ${allPaths.length} paths');
+      final paths = allPaths;
 
       // Use camera preview aspect ratio to prevent distortion
       final previewSize = state.uiState.previewSize;
@@ -681,7 +709,8 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
   }
 
   /// Save image to app documents directory media/sketches with sequential numbering
-  Future<bool> onSaveToGallery(Uint8List imageBytes) async {
+  /// Returns the filename (e.g., "sketches_01.png") on success, null on failure
+  Future<String?> onSaveToGallery(Uint8List imageBytes) async {
     try {
       // Get app's documents directory (always available, no permission required)
       final Directory appDir = await getApplicationDocumentsDirectory();
@@ -714,15 +743,84 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
 
       // 4. Save to media/sketches with sequential name (with leading zeros)
       final numberStr = nextNumber.toString().padLeft(2, '0');
-      final sketchFile = File('${sketchesDir.path}/sketches_$numberStr.png');
+      final fileName = 'sketches_$numberStr.png';
+      final sketchFile = File('${sketchesDir.path}/$fileName');
       await sketchFile.writeAsBytes(imageBytes);
       debugPrint('✅ Saved to: ${sketchFile.path}');
 
-      return true;
+      return fileName;
     } catch (e) {
       debugPrint('❌ Error saving image: $e');
       state = state.copyWith(
         action: HandTrackingPageAction.showError('이미지 저장 실패: $e'),
+      );
+      return null;
+    }
+  }
+
+  /// Save sketch and navigate to Scene List
+  /// Updates the latest Scene's sketchFileName and triggers navigation
+  Future<bool> onSaveSketchAndNavigate(Uint8List imageBytes) async {
+    try {
+      debugPrint('🚀 [HandTracking] onSaveSketchAndNavigate started');
+
+      // 1. Save sketch to file
+      final fileName = await onSaveToGallery(imageBytes);
+      if (fileName == null) {
+        debugPrint('❌ [HandTracking] Failed to save sketch file');
+        logger.e('[HandTracking] Failed to save sketch file');
+        return false;
+      }
+      debugPrint('✅ [HandTracking] Sketch saved: $fileName');
+      logger.i('[HandTracking] Sketch saved: $fileName');
+
+      // 2. Get latest Scene or create new one if not exists
+      final sceneList = ref.read(sceneListProvider);
+      debugPrint('📋 [HandTracking] Current scene list: ${sceneList.length} scenes');
+
+      var latestScene = ref.read(sceneListProvider.notifier).latest;
+      if (latestScene == null) {
+        debugPrint('⚠️ [HandTracking] No Scene found, creating new Scene');
+        logger.w('[HandTracking] No Scene found, creating new Scene');
+        // Create a new Scene if none exists (직접 Hand Tracking 진입 시)
+        final newId = sceneList.length + 1;
+        ref.read(sceneListProvider.notifier).addScene(
+          SceneData(
+            id: newId,
+            sketchFileName: fileName,
+          ),
+        );
+        debugPrint('✅ [HandTracking] Created new Scene with id=$newId, sketch=$fileName');
+        logger.i('[HandTracking] Created new Scene with id=$newId, sketch=$fileName');
+
+        // Verify scene was added
+        final updatedList = ref.read(sceneListProvider);
+        debugPrint('📋 [HandTracking] After add: ${updatedList.length} scenes');
+      } else {
+        debugPrint('🔄 [HandTracking] Updating existing Scene ${latestScene.id}');
+        // Update existing Scene's sketchFileName
+        ref.read(sceneListProvider.notifier).updateSketch(
+          latestScene.id,
+          fileName,
+        );
+        debugPrint('✅ [HandTracking] Updated Scene ${latestScene.id} with sketch: $fileName');
+        logger.i('[HandTracking] Updated Scene ${latestScene.id} with sketch: $fileName');
+      }
+
+      // 3. Trigger navigation to Scene List
+      state = state.copyWith(
+        action: HandTrackingPageAction.navigateToSceneList(),
+      );
+      debugPrint('🧭 [HandTracking] Navigation triggered to Scene List');
+      logger.i('[HandTracking] Navigating to Scene List');
+
+      return true;
+    } catch (e, stackTrace) {
+      debugPrint('❌ [HandTracking] Error in onSaveSketchAndNavigate: $e');
+      debugPrint('Stack trace: $stackTrace');
+      logger.e('[HandTracking] Error in onSaveSketchAndNavigate', error: e);
+      state = state.copyWith(
+        action: HandTrackingPageAction.showError('저장 실패: $e'),
       );
       return false;
     }

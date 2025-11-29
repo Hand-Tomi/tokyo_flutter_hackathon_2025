@@ -31,6 +31,9 @@ class SceneCreationPage extends ConsumerWidget {
           navigateToSceneList: () {
             context.go('/scene-list');
           },
+          navigateToHandTracking: () {
+            context.go('/hand-tracking');
+          },
           showSceneCreated: (sceneNumber) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text('Scene $sceneNumber created!')),

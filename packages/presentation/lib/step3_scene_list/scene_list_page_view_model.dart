@@ -29,17 +29,28 @@ class SceneListPageViewModel extends _$SceneListPageViewModel {
     final sceneDataList = ref.watch(sceneListProvider);
     final appPathAsync = ref.watch(appDocumentsPathProvider);
 
-    // 테스트용: 전역 상태가 비어있으면 테스트 Scene 추가 (스케치 포함)
-    if (sceneDataList.isEmpty) {
-      Future.microtask(() => _setupTestScene());
-    }
+    debugPrint('🎬 [SceneList] Build called - ${sceneDataList.length} scenes in list');
 
     // 최신 Scene에 sketchFileName이 있고 illustrationFileName이 없으면 자동 생성
     final latestScene = ref.read(sceneListProvider.notifier).latest;
+    debugPrint('🎬 [SceneList] Build - Latest scene: ${latestScene?.id}');
+    debugPrint('   - sketchFileName: ${latestScene?.sketchFileName}');
+    debugPrint('   - illustrationFileName: ${latestScene?.illustrationFileName}');
+    debugPrint('   - storyScript: ${latestScene?.storyScript}');
+
     if (latestScene != null &&
         latestScene.sketchFileName != null &&
         latestScene.illustrationFileName == null) {
+      debugPrint('✅ [SceneList] Triggering illustration generation for Scene ${latestScene.id}');
       Future.microtask(() => _generateIllustration(latestScene));
+    } else {
+      if (latestScene == null) {
+        debugPrint('⚠️ [SceneList] No latest scene found');
+      } else if (latestScene.sketchFileName == null) {
+        debugPrint('⚠️ [SceneList] Latest scene has no sketch');
+      } else if (latestScene.illustrationFileName != null) {
+        debugPrint('ℹ️ [SceneList] Latest scene already has illustration');
+      }
     }
 
     // 앱 경로가 로드될 때까지 기다림
@@ -104,7 +115,7 @@ class SceneListPageViewModel extends _$SceneListPageViewModel {
           .addScene(
             const SceneData(
               id: 1,
-              storyScript: '옛날옛날에 한 왕이 살고 있었어요.',
+              storyScript: '왕자가 울고있어요',
               sketchFileName: testSketchFileName,
             ),
           );
@@ -121,7 +132,9 @@ class SceneListPageViewModel extends _$SceneListPageViewModel {
   /// 최신 Scene의 스케치를 일러스트로 변환
   Future<void> _generateIllustration(SceneData scene) async {
     try {
-      debugPrint('일러스트 생성 시작: ${scene.id}');
+      debugPrint('🎨 [SceneList] 일러스트 생성 시작: Scene ${scene.id}');
+      debugPrint('   - sketchFileName: ${scene.sketchFileName}');
+      debugPrint('   - storyScript: ${scene.storyScript}');
 
       // 스케치 파일 경로 생성
       final appDir = await getApplicationDocumentsDirectory();
@@ -188,5 +201,10 @@ class SceneListPageViewModel extends _$SceneListPageViewModel {
 
   void onSceneDelete(int sceneId) {
     ref.read(sceneListProvider.notifier).removeScene(sceneId);
+  }
+
+  /// 테스트용: 모든 Scene 삭제
+  void onClearAllScenes() {
+    ref.read(sceneListProvider.notifier).clear();
   }
 }
