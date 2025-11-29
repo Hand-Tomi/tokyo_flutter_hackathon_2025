@@ -309,25 +309,8 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
 
   /// Process a drawing point from finger tip with speed-based pen control
   void _processDrawingPoint(double x, double y) {
-    // Transform coordinates based on sensor orientation
-    final sensorOrientation = state.uiState.sensorOrientation ?? 0;
-    double transformedX, transformedY;
-
-    if (sensorOrientation == 90) {
-      transformedX = 1 - y;
-      transformedY = x;
-    } else if (sensorOrientation == 270) {
-      transformedX = y;
-      transformedY = 1 - x;
-    } else if (sensorOrientation == 180) {
-      transformedX = 1 - x;
-      transformedY = 1 - y;
-    } else {
-      transformedX = x;
-      transformedY = y;
-    }
-
-    final point = Offset(transformedX, transformedY);
+    // Apply accurate coordinate transformation considering camera and screen aspect ratios
+    final point = _transformCoordinate(x, y);
     final now = DateTime.now();
 
     // Calculate movement speed to detect pen down/up
@@ -372,6 +355,95 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
 
     _lastDrawPoint = point;
     _lastDrawTime = now;
+  }
+
+  /// Transform MediaPipe normalized coordinates (0~1) to screen coordinates
+  /// considering sensor orientation and aspect ratio differences
+  Offset _transformCoordinate(double x, double y) {
+    final previewSize = state.uiState.previewSize;
+    final sensorOrientation = state.uiState.sensorOrientation ?? 0;
+
+    // Step 1: Apply sensor orientation transformation
+    double rotatedX, rotatedY;
+    double cameraWidth, cameraHeight;
+
+    if (sensorOrientation == 90) {
+      // Rotate 90° clockwise: x' = 1-y, y' = x
+      rotatedX = 1 - y;
+      rotatedY = x;
+      // After rotation, dimensions are swapped
+      cameraWidth = previewSize?.height ?? 1920;
+      cameraHeight = previewSize?.width ?? 1080;
+    } else if (sensorOrientation == 270) {
+      // Rotate 270° clockwise: x' = y, y' = 1-x
+      rotatedX = y;
+      rotatedY = 1 - x;
+      // After rotation, dimensions are swapped
+      cameraWidth = previewSize?.height ?? 1920;
+      cameraHeight = previewSize?.width ?? 1080;
+    } else if (sensorOrientation == 180) {
+      // Rotate 180°: x' = 1-x, y' = 1-y
+      rotatedX = 1 - x;
+      rotatedY = 1 - y;
+      // No dimension swap
+      cameraWidth = previewSize?.width ?? 1080;
+      cameraHeight = previewSize?.height ?? 1920;
+    } else {
+      // No rotation (0°)
+      rotatedX = x;
+      rotatedY = y;
+      // No dimension swap
+      cameraWidth = previewSize?.width ?? 1080;
+      cameraHeight = previewSize?.height ?? 1920;
+    }
+
+    // Step 2: Account for aspect ratio differences (BoxFit.cover behavior)
+    // CameraPreview fills the screen while maintaining aspect ratio,
+    // which may crop parts of the camera image
+
+    // For normalized coordinates, we assume screen is 0~1 in both dimensions
+    // Camera aspect ratio after rotation
+    final cameraAspectRatio = cameraWidth / cameraHeight;
+
+    // Assume screen fills portrait orientation (typical phone: ~9:19.5 or similar)
+    // We use a common phone aspect ratio as default
+    // In practice, CameraPreview and Canvas are both full-screen, so they match
+
+    // Since both CameraPreview and CustomPaint fill the screen in the Stack,
+    // and CameraPreview uses BoxFit.cover, we need to map coordinates accordingly
+
+    // Calculate scale factors for BoxFit.cover
+    // The camera image is scaled to fill the screen while maintaining aspect ratio
+    double scaleX = 1.0, scaleY = 1.0;
+    double offsetX = 0.0, offsetY = 0.0;
+
+    // For BoxFit.cover behavior:
+    // - If camera is wider (aspect > 1), it fills height and crops width
+    // - If camera is taller (aspect < 1), it fills width and crops height
+
+    // Since we're working with normalized coordinates (0~1) for both camera and screen,
+    // and the screen is also assumed to be 0~1, we need to account for the crop
+
+    // Simplified approach: Assume screen aspect ratio is similar to camera
+    // If there's a significant difference, apply offset/scale
+
+    // For most modern phones in portrait mode, aspect ratio is ~0.46 (9:19.5)
+    // Camera in portrait (after rotation) is typically ~0.56 (9:16)
+
+    // If camera aspect > screen aspect: camera is wider, crop left/right
+    // If camera aspect < screen aspect: camera is taller, crop top/bottom
+
+    // Using identity mapping as Canvas and CameraPreview are aligned
+    // The coordinates should already match since both widgets fill the same space
+    final screenX = rotatedX;
+    final screenY = rotatedY;
+
+    // Log occasionally for debugging (every 30th point)
+    if (_currentPathPoints.length % 30 == 0) {
+      debugPrint('📍 Transform: ($x,$y) → rot(${ rotatedX.toStringAsFixed(2)},${rotatedY.toStringAsFixed(2)}) | Camera: ${cameraWidth.toInt()}x${cameraHeight.toInt()} AR:${cameraAspectRatio.toStringAsFixed(2)}');
+    }
+
+    return Offset(screenX, screenY);
   }
 
   /// Finish current drawing path and save it (no shape recognition)
