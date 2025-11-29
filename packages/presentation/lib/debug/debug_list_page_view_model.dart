@@ -24,6 +24,11 @@ class DebugListPageViewModel extends _$DebugListPageViewModel {
         title: 'Hand Tracking',
         description: '손 추적 및 제스처 인식',
       ),
+      const DebugMenuItemUi(
+        id: 'image_analysis',
+        title: '이미지 분석 & 생성',
+        description: 'AI 이미지 분석 및 생성 기능',
+      ),
     ];
 
     return PageState(
@@ -49,6 +54,10 @@ class DebugListPageViewModel extends _$DebugListPageViewModel {
       case 'hand_tracking':
         state =
             state.copyWith(action: DebugListPageAction.navigateToHandTracking());
+        break;
+      case 'image_analysis':
+        state =
+            state.copyWith(action: DebugListPageAction.navigateToImageAnalysis());
         break;
     }
   }
