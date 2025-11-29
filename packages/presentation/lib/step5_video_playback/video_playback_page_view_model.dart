@@ -240,6 +240,9 @@ class VideoPlaybackPageViewModel extends _$VideoPlaybackPageViewModel {
         thumbnailPath: firstImagePath,
       );
 
+      // Scene 리스트 초기화 (새 스토리 생성을 위해)
+      ref.read(sceneListProvider.notifier).clear();
+
       debugPrint('슬라이드쇼 JSON 저장 완료: $jsonPath');
     } catch (e) {
       debugPrint('슬라이드쇼 JSON 저장 실패: $e');
