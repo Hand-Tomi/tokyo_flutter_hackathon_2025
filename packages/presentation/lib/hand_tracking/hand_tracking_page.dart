@@ -64,6 +64,7 @@ class _HandTrackingPageState extends ConsumerState<HandTrackingPage> {
       onSettingsToggle: viewModel.onSettingsToggle,
       onFrameSkipChanged: viewModel.onFrameSkipChanged,
       onResolutionChanged: viewModel.onResolutionChanged,
+      onClearDrawing: viewModel.onClearDrawing,
     );
   }
 }

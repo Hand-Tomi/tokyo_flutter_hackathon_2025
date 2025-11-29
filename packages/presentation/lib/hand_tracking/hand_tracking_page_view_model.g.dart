@@ -7,7 +7,7 @@ part of 'hand_tracking_page_view_model.dart';
 // **************************************************************************
 
 String _$handTrackingPageViewModelHash() =>
-    r'f21c77b7f96640c05082742267043caf3edc5f8c';
+    r'9bfaebb06c9ad8a6581038111c168482201fa60a';
 
 /// Hand Tracking Page ViewModel
 ///

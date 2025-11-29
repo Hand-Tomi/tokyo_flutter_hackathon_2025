@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'drawing_canvas_painter.dart';
 import 'hand_info_panel.dart';
 import 'hand_landmark_painter.dart';
 import 'hand_tracking_settings_panel.dart';
@@ -15,6 +16,7 @@ class HandTrackingPageTemplate extends StatelessWidget {
     required this.onSettingsToggle,
     required this.onFrameSkipChanged,
     required this.onResolutionChanged,
+    this.onClearDrawing,
   });
 
   final HandTrackingPageUiState uiState;
@@ -22,6 +24,7 @@ class HandTrackingPageTemplate extends StatelessWidget {
   final VoidCallback onSettingsToggle;
   final ValueChanged<int> onFrameSkipChanged;
   final ValueChanged<ResolutionPresetUi> onResolutionChanged;
+  final VoidCallback? onClearDrawing;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +62,7 @@ class HandTrackingPageTemplate extends StatelessWidget {
               onResolutionChanged: onResolutionChanged,
             ),
 
-          // Camera preview
+          // Camera preview with drawing overlay
           Expanded(
             child: uiState.isInitialized
                 ? Stack(
@@ -75,6 +78,56 @@ class HandTrackingPageTemplate extends StatelessWidget {
                             uiState.landmarks,
                             uiState.previewSize!,
                             uiState.sensorOrientation!,
+                          ),
+                        ),
+                      // Drawing canvas overlay
+                      CustomPaint(
+                        painter: DrawingCanvasPainter(
+                          paths: uiState.drawingPaths,
+                          currentPath: uiState.currentPath,
+                          isDrawing: uiState.isFingerDown,
+                        ),
+                      ),
+                      // Drawing mode indicator
+                      if (uiState.isDrawingMode)
+                        Positioned(
+                          top: 16,
+                          left: 16,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.green.withValues(alpha: 0.8),
+                              borderRadius: BorderRadius.circular(16),
+                            ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(Icons.edit, color: Colors.white, size: 16),
+                                SizedBox(width: 4),
+                                Text(
+                                  'Drawing',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      // Clear button (show when there are drawings)
+                      if (uiState.drawingPaths.isNotEmpty ||
+                          uiState.currentPath.isNotEmpty)
+                        Positioned(
+                          top: 16,
+                          right: 16,
+                          child: FloatingActionButton.small(
+                            onPressed: onClearDrawing,
+                            backgroundColor: Colors.red.withValues(alpha: 0.8),
+                            child: const Icon(Icons.clear, color: Colors.white),
                           ),
                         ),
                     ],
