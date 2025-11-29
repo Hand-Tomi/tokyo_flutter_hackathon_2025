@@ -11,3 +11,4 @@ export 'services/stt_service.dart';
 export 'services/video_generation_service.dart';
 export 'todo.dart';
 export 'scene_data.dart';
+export 'slideshow_data.dart';
