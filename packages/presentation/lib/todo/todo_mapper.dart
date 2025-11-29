@@ -1,6 +1,6 @@
 import 'package:design_system/todo/todo_ui.dart';
 import 'package:domain/todo.dart';
-import 'package:intl/intl.dart';
+import 'package:presentation/utils/formatters.dart';
 
 /// Todo Domain Model → UI Model の変換拡張
 ///
@@ -13,7 +13,7 @@ extension TodoMapper on Todo {
       title: title,
       description: description,
       isCompleted: isCompleted,
-      formattedDate: DateFormat('yyyy/MM/dd HH:mm').format(createdAt),
+      formattedDate: Formatters.formatDateTime(createdAt),
     );
   }
 }

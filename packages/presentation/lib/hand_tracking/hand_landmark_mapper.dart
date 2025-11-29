@@ -1,5 +1,6 @@
 import 'package:design_system/hand_tracking/hand_tracking_ui_state.dart';
-import 'package:hand_landmarker/hand_landmarker.dart';
+
+import 'platform/hand_landmarker.dart';
 
 /// Hand Domain Model -> UI Model conversion extension
 ///

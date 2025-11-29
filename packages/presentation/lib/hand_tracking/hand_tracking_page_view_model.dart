@@ -3,13 +3,13 @@ import 'dart:ui';
 import 'package:camera/camera.dart';
 import 'package:design_system/hand_tracking/hand_tracking_ui_state.dart';
 import 'package:flutter/foundation.dart';
-import 'package:hand_landmarker/hand_landmarker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:presentation/page_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'gesture_recognizer.dart';
 import 'hand_landmark_mapper.dart';
+import 'platform/hand_landmarker.dart';
 
 part 'hand_tracking_page_view_model.g.dart';
 

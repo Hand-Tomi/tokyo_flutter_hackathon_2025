@@ -10,6 +10,8 @@ import 'gemini_image_generation_service.dart';
 import 'gemini_sketch_to_image_service.dart';
 import 'imagen_generation_service.dart';
 import 'imagen_sketch_to_image_service.dart';
+import 'fal_video_generation_service.dart';
+import 'kling_video_generation_service.dart';
 
 part 'service_providers.g.dart';
 
@@ -44,34 +46,74 @@ Future<Uint8List?> styleReferenceImage(StyleReferenceImageRef ref) async {
 /// Vision Service Provider
 /// Gemini 2.5 Flash 고정
 @riverpod
-VisionService visionService(VisionServiceRef ref) {
+GeminiVisionService visionService(VisionServiceRef ref) {
   final apiKey = dotenv.env['GEMINI_API_KEY'];
+
   if (apiKey == null || apiKey.isEmpty) {
     throw Exception('GEMINI_API_KEY가 .env 파일에 설정되지 않았습니다.');
   }
+
   return GeminiVisionService(apiKey: apiKey);
 }
 
 /// Image Generation Service Provider
-///
-/// 환경 변수 IMAGE_GEN_PROVIDER로 선택:
-/// - 'imagen': Imagen 3 API (기본값, 추천)
-/// - 'gemini': Gemini 2.0 Flash 이미지 생성
+/// Gemini 2.0 Flash Experimental 고정
 @riverpod
-ImageGenerationService imageGenerationService(
-  ImageGenerationServiceRef ref,
-) {
-  final provider = dotenv.env['IMAGE_GEN_PROVIDER'] ?? 'imagen';
+GeminiImageGenerationService imageGenerationService(ImageGenerationServiceRef ref) {
   final apiKey = dotenv.env['GEMINI_API_KEY'];
 
   if (apiKey == null || apiKey.isEmpty) {
     throw Exception('GEMINI_API_KEY가 .env 파일에 설정되지 않았습니다.');
   }
 
-  if (provider.toLowerCase() == 'gemini') {
-    return GeminiImageGenerationService(apiKey: apiKey);
+  return GeminiImageGenerationService(apiKey: apiKey);
+}
+
+/// Video Generation Provider Type
+enum VideoGenProvider { fal, kling }
+
+/// Current Video Generation Provider
+@riverpod
+VideoGenProvider videoGenProvider(VideoGenProviderRef ref) {
+  final provider = dotenv.env['VIDEO_GEN_PROVIDER']?.toLowerCase() ?? 'fal';
+  return provider == 'kling' ? VideoGenProvider.kling : VideoGenProvider.fal;
+}
+
+/// fal.ai Video Generation Service Provider
+/// Image-to-Video using fal.ai Kling wrapper (recommended)
+@riverpod
+FalVideoGenerationService falVideoGenerationService(
+  FalVideoGenerationServiceRef ref,
+) {
+  final apiKey = dotenv.env['FAL_KEY'];
+
+  if (apiKey == null || apiKey.isEmpty) {
+    throw Exception('FAL_KEY가 .env 파일에 설정되지 않았습니다.');
   }
-  return ImagenGenerationService(apiKey: apiKey);
+
+  return FalVideoGenerationService(apiKey: apiKey);
+}
+
+/// Kling Video Generation Service Provider (Direct API)
+/// Image-to-Video using Kling AI API directly
+@riverpod
+KlingVideoGenerationService klingVideoGenerationService(
+  KlingVideoGenerationServiceRef ref,
+) {
+  final accessKey = dotenv.env['KLING_ACCESS_KEY'];
+  final secretKey = dotenv.env['KLING_SECRET_KEY'];
+
+  if (accessKey == null || accessKey.isEmpty) {
+    throw Exception('KLING_ACCESS_KEY가 .env 파일에 설정되지 않았습니다.');
+  }
+  if (secretKey == null || secretKey.isEmpty) {
+    throw Exception('KLING_SECRET_KEY가 .env 파일에 설정되지 않았습니다.');
+  }
+
+  return KlingVideoGenerationService(
+    accessKey: accessKey,
+    secretKey: secretKey,
+  );
 }
 
 /// Sketch to Image Service Provider
