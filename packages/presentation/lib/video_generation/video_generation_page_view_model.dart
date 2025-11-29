@@ -1,9 +1,11 @@
-import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:design_system/video_generation/video_generation_ui.dart';
 import 'package:design_system/video_generation/video_generation_ui_state.dart';
 import 'package:domain/video_generation.dart';
 import 'package:presentation/page_state.dart';
+import 'package:presentation/services/kling_video_generation_service.dart';
+import 'package:presentation/services/service_providers.dart';
 import 'package:presentation/utils/formatters.dart';
 import 'package:presentation/video_generation/video_generation_mapper.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -18,16 +20,11 @@ part 'video_generation_page_view_model.g.dart';
 /// 비즈니스 로직과 상태 관리를 담당
 @riverpod
 class VideoGenerationPageViewModel extends _$VideoGenerationPageViewModel {
-  // 진행 상황 구독
-  StreamSubscription<VideoGenerationProgress>? _progressSubscription;
+  // 이미지 바이트 저장소 (ID → bytes)
+  final Map<String, Uint8List> _imageBytes = {};
 
   @override
   PageState<VideoGenerationPageUiState, VideoGenerationPageAction> build() {
-    // 구독 해제
-    ref.onDispose(() {
-      _progressSubscription?.cancel();
-    });
-
     return PageState(
       uiState: VideoGenerationPageUiState(),
       action: VideoGenerationPageAction.none(),
@@ -52,8 +49,12 @@ class VideoGenerationPageViewModel extends _$VideoGenerationPageViewModel {
   /// 이미지 추가
   void onImagesSelected(List<SelectedImageInfo> images) {
     final newImages = images.map((info) {
+      final id = const Uuid().v4();
+      // 바이트 데이터 저장
+      _imageBytes[id] = info.bytes;
+
       return FileInfoMapper.createImageUi(
-        id: const Uuid().v4(),
+        id: id,
         path: info.path,
         fileName: info.fileName,
         fileSizeBytes: info.fileSizeBytes,
@@ -70,6 +71,9 @@ class VideoGenerationPageViewModel extends _$VideoGenerationPageViewModel {
 
   /// 이미지 제거
   void onRemoveImage(String id) {
+    // 바이트 데이터도 제거
+    _imageBytes.remove(id);
+
     state = state.copyWith(
       uiState: state.uiState.copyWith(
         selectedImages: state.uiState.selectedImages
@@ -147,8 +151,16 @@ class VideoGenerationPageViewModel extends _$VideoGenerationPageViewModel {
     );
 
     try {
-      // 시뮬레이션: 실제 구현 시 외부 API 호출로 대체
-      await _simulateVideoGeneration();
+      await _generateVideoWithKlingApi();
+    } on KlingApiException catch (e) {
+      state = state.copyWith(
+        uiState: state.uiState.copyWith(
+          isLoading: false,
+          isGenerating: false,
+          progress: null,
+        ),
+        action: VideoGenerationPageAction.showError('Kling API 오류: ${e.message}'),
+      );
     } on Object catch (e) {
       state = state.copyWith(
         uiState: state.uiState.copyWith(
@@ -161,43 +173,60 @@ class VideoGenerationPageViewModel extends _$VideoGenerationPageViewModel {
     }
   }
 
-  /// 비디오 생성 시뮬레이션 (실제 구현 시 API 호출로 대체)
-  Future<void> _simulateVideoGeneration() async {
-    // 이미지 처리 단계
+  /// Kling AI API를 사용한 실제 비디오 생성
+  Future<void> _generateVideoWithKlingApi() async {
+    final klingService = ref.read(klingVideoGenerationServiceProvider);
+    final firstImage = state.uiState.selectedImages.first;
+
+    // 저장된 바이트 데이터 가져오기
+    final imageBytes = _imageBytes[firstImage.id];
+    if (imageBytes == null || imageBytes.isEmpty) {
+      throw KlingApiException('이미지 데이터를 찾을 수 없습니다');
+    }
+
+    // Step 1: 이미지 처리 시작
+    await _updateProgress(
+      VideoGenerationStatus.processingImages,
+      0.1,
+      '이미지 업로드 중...',
+    );
+
+    // Step 2: Kling API에 태스크 생성
     await _updateProgress(
       VideoGenerationStatus.processingImages,
       0.2,
-      '이미지 분석 중...',
+      'Kling AI에 요청 전송 중...',
     );
-    await Future<void>.delayed(const Duration(seconds: 2));
 
-    // 오디오 처리 단계 (오디오가 있는 경우)
-    if (state.uiState.selectedAudio != null) {
-      await _updateProgress(
-        VideoGenerationStatus.processingAudio,
-        0.4,
-        '오디오 처리 중...',
-      );
-      await Future<void>.delayed(const Duration(seconds: 2));
-    }
+    final taskResult = await klingService.createImageToVideoTask(
+      imageBytes: imageBytes,
+      fileName: firstImage.fileName,
+      prompt: state.uiState.prompt.isNotEmpty ? state.uiState.prompt : null,
+      duration: '5',
+      mode: 'std',
+    );
 
-    // 비디오 생성 단계
+    // Step 3: 비디오 생성 진행 상황 폴링
     await _updateProgress(
       VideoGenerationStatus.generatingVideo,
-      0.6,
-      '비디오 생성 중...',
+      0.3,
+      '비디오 생성 중... (태스크 ID: ${taskResult.taskId})',
     );
-    await Future<void>.delayed(const Duration(seconds: 3));
 
-    // 진행률 업데이트
-    await _updateProgress(
-      VideoGenerationStatus.generatingVideo,
-      0.8,
-      '비디오 인코딩 중...',
+    final videoResult = await klingService.pollForCompletion(
+      taskId: taskResult.taskId,
+      onProgress: (status) {
+        final progress = 0.3 + (status.progressPercentage * 0.6);
+        final message = _getStatusMessage(status.taskStatus);
+        _updateProgressSync(
+          VideoGenerationStatus.generatingVideo,
+          progress,
+          message,
+        );
+      },
     );
-    await Future<void>.delayed(const Duration(seconds: 2));
 
-    // 완료
+    // Step 4: 완료
     await _updateProgress(
       VideoGenerationStatus.completed,
       1.0,
@@ -206,11 +235,13 @@ class VideoGenerationPageViewModel extends _$VideoGenerationPageViewModel {
 
     // 결과 생성
     final generatedVideo = GeneratedVideoUi(
-      id: const Uuid().v4(),
-      outputPath: '/path/to/generated_video.${state.uiState.selectedOutputFormat.name}',
+      id: videoResult.id.isNotEmpty ? videoResult.id : const Uuid().v4(),
+      outputPath: videoResult.url,
       format: state.uiState.selectedOutputFormat,
-      durationFormatted: '00:15',
-      fileSizeFormatted: '12.5 MB',
+      durationFormatted: videoResult.duration.isNotEmpty
+          ? videoResult.duration
+          : '00:05',
+      fileSizeFormatted: '-',
       thumbnailPath: null,
       createdAtFormatted: Formatters.formatDateTime(DateTime.now()),
     );
@@ -224,6 +255,38 @@ class VideoGenerationPageViewModel extends _$VideoGenerationPageViewModel {
       ),
       action: VideoGenerationPageAction.showGenerationComplete(
         generatedVideo.outputPath,
+      ),
+    );
+  }
+
+  String _getStatusMessage(String taskStatus) {
+    switch (taskStatus) {
+      case 'submitted':
+        return '태스크가 제출되었습니다...';
+      case 'processing':
+        return 'AI가 비디오를 생성하고 있습니다...';
+      case 'completed':
+        return '비디오 생성 완료!';
+      case 'failed':
+        return '비디오 생성 실패';
+      default:
+        return '처리 중...';
+    }
+  }
+
+  void _updateProgressSync(
+    VideoGenerationStatus status,
+    double progress,
+    String message,
+  ) {
+    state = state.copyWith(
+      uiState: state.uiState.copyWith(
+        progress: VideoGenerationProgressUi(
+          status: status,
+          progress: progress,
+          progressPercentage: '${(progress * 100).toInt()}%',
+          message: message,
+        ),
       ),
     );
   }
@@ -247,8 +310,6 @@ class VideoGenerationPageViewModel extends _$VideoGenerationPageViewModel {
 
   /// 비디오 생성 취소
   void onCancelGeneration() {
-    _progressSubscription?.cancel();
-
     state = state.copyWith(
       uiState: state.uiState.copyWith(
         isLoading: false,
@@ -286,12 +347,14 @@ class SelectedImageInfo {
     required this.path,
     required this.fileName,
     required this.fileSizeBytes,
+    required this.bytes,
     this.thumbnailPath,
   });
 
   final String path;
   final String fileName;
   final int fileSizeBytes;
+  final Uint8List bytes; // 이미지 바이트 데이터 (웹/모바일 호환)
   final String? thumbnailPath;
 }
 

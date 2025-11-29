@@ -42,27 +42,6 @@ enum OutputFormat {
   final String emoji;
 }
 
-/// 비디오 생성 요청
-@freezed
-class VideoGenerationRequest with _$VideoGenerationRequest {
-  const factory VideoGenerationRequest({
-    required String id,
-    required List<String> imagePaths,
-    String? audioPath,
-    @Default(VideoApiType.kling) VideoApiType apiType,
-    @Default(OutputFormat.mp4) OutputFormat outputFormat,
-    String? prompt,
-    @Default(1080) int width,
-    @Default(1920) int height,
-    @Default(30) int fps,
-    @Default(VideoGenerationStatus.pending) VideoGenerationStatus status,
-    required DateTime createdAt,
-  }) = _VideoGenerationRequest;
-
-  factory VideoGenerationRequest.fromJson(Map<String, dynamic> json) =>
-      _$VideoGenerationRequestFromJson(json);
-}
-
 /// 생성된 비디오 결과
 @freezed
 class GeneratedVideo with _$GeneratedVideo {

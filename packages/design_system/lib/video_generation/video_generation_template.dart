@@ -1,3 +1,4 @@
+import 'package:design_system/video_generation/file_image.dart';
 import 'package:design_system/video_generation/video_generation_ui.dart';
 import 'package:design_system/video_generation/video_generation_ui_state.dart';
 import 'package:domain/video_generation.dart';
@@ -155,25 +156,7 @@ class VideoGenerationPageTemplate extends StatelessWidget {
           ),
           child: ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: image.thumbnailPath != null
-                ? Image.asset(image.thumbnailPath!, fit: BoxFit.cover)
-                : Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.image, color: Colors.grey),
-                      const SizedBox(height: 4),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4),
-                        child: Text(
-                          image.fileName,
-                          style: const TextStyle(fontSize: 10),
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ],
-                  ),
+            child: _buildImageWidget(image),
           ),
         ),
         Positioned(
@@ -189,6 +172,38 @@ class VideoGenerationPageTemplate extends StatelessWidget {
               ),
               child: const Icon(Icons.close, size: 16, color: Colors.white),
             ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildImageWidget(SelectedImageUi image) {
+    final imagePath = image.thumbnailPath ?? image.path;
+
+    return buildFileImage(
+      path: imagePath,
+      width: 100,
+      height: 120,
+      fit: BoxFit.cover,
+      errorBuilder: () => _buildImagePlaceholder(image),
+    );
+  }
+
+  Widget _buildImagePlaceholder(SelectedImageUi image) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Icon(Icons.image, color: Colors.grey),
+        const SizedBox(height: 4),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 4),
+          child: Text(
+            image.fileName,
+            style: const TextStyle(fontSize: 10),
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
           ),
         ),
       ],

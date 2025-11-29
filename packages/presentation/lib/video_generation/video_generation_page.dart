@@ -1,6 +1,7 @@
 import 'package:design_system/video_generation/video_generation_template.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:presentation/video_generation/video_generation_page_view_model.dart';
 
 /// 비디오 생성 페이지
@@ -113,47 +114,87 @@ class VideoGenerationPage extends ConsumerWidget {
     );
   }
 
-  /// 이미지 선택 다이얼로그 표시 (실제 구현 시 image_picker 사용)
-  void _showImagePicker(BuildContext context, WidgetRef ref) {
-    // 데모용: 실제로는 image_picker 패키지 사용
-    showDialog<void>(
+  /// 이미지 선택 다이얼로그 표시
+  Future<void> _showImagePicker(BuildContext context, WidgetRef ref) async {
+    final picker = ImagePicker();
+
+    // 선택 방법 다이얼로그
+    final source = await showDialog<ImageSource>(
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('🖼️ 이미지 선택'),
-        content: const Text(
-          '실제 구현에서는 image_picker 또는 file_picker를 사용하여\n'
-          '갤러리에서 이미지를 선택합니다.\n\n'
-          '데모를 위해 샘플 이미지를 추가합니다.',
-        ),
+        content: const Text('이미지를 가져올 방법을 선택하세요'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
             child: const Text('취소'),
           ),
           TextButton(
-            onPressed: () {
-              // 샘플 이미지 추가
-              ref
-                  .read(videoGenerationPageViewModelProvider.notifier)
-                  .onImagesSelected([
-                const SelectedImageInfo(
-                  path: '/sample/image1.jpg',
-                  fileName: 'sample_image_1.jpg',
-                  fileSizeBytes: 1024 * 500, // 500KB
-                ),
-                const SelectedImageInfo(
-                  path: '/sample/image2.jpg',
-                  fileName: 'sample_image_2.jpg',
-                  fileSizeBytes: 1024 * 750, // 750KB
-                ),
-              ]);
-              Navigator.of(context).pop();
-            },
-            child: const Text('샘플 추가'),
+            onPressed: () => Navigator.of(context).pop(ImageSource.camera),
+            child: const Text('📷 카메라'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(ImageSource.gallery),
+            child: const Text('🖼️ 갤러리'),
           ),
         ],
       ),
     );
+
+    if (source == null) return;
+
+    try {
+      final List<XFile> pickedFiles;
+
+      if (source == ImageSource.gallery) {
+        // 갤러리에서 여러 이미지 선택
+        pickedFiles = await picker.pickMultiImage(
+          imageQuality: 85,
+          maxWidth: 1920,
+          maxHeight: 1920,
+        );
+      } else {
+        // 카메라로 단일 이미지 촬영
+        final file = await picker.pickImage(
+          source: ImageSource.camera,
+          imageQuality: 85,
+          maxWidth: 1920,
+          maxHeight: 1920,
+        );
+        pickedFiles = file != null ? [file] : [];
+      }
+
+      if (pickedFiles.isEmpty) return;
+
+      // 선택된 이미지 정보 생성
+      final selectedImages = <SelectedImageInfo>[];
+      for (final xFile in pickedFiles) {
+        // XFile API는 웹과 모바일 모두에서 작동
+        final fileSize = await xFile.length();
+        final bytes = await xFile.readAsBytes();
+
+        selectedImages.add(SelectedImageInfo(
+          path: xFile.path,
+          fileName: xFile.name,
+          fileSizeBytes: fileSize,
+          bytes: bytes,
+          thumbnailPath: xFile.path, // 실제 이미지 경로를 썸네일로 사용
+        ));
+      }
+
+      ref
+          .read(videoGenerationPageViewModelProvider.notifier)
+          .onImagesSelected(selectedImages);
+    } on Exception catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('이미지 선택 실패: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   /// 오디오 선택 다이얼로그 표시 (실제 구현 시 file_picker 사용)
