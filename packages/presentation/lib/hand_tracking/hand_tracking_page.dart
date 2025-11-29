@@ -84,13 +84,13 @@ class _HandTrackingPageState extends ConsumerState<HandTrackingPage> {
                                 onPressed: () async {
                                   Navigator.of(context).pop();
 
-                                  // 갤러리에 저장
+                                  // 이미지 저장
                                   final saved = await viewModel.onSaveToGallery(imageBytes);
 
                                   if (saved && context.mounted) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
-                                        content: Text('갤러리에 저장되었습니다!'),
+                                        content: Text('저장되었습니다!'),
                                         duration: Duration(seconds: 2),
                                       ),
                                     );

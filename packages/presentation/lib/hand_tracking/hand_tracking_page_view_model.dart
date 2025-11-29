@@ -5,7 +5,6 @@ import 'package:camera/camera.dart';
 import 'package:design_system/hand_tracking/hand_tracking_ui_state.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
-import 'package:gal/gal.dart';
 import 'package:hand_landmarker/hand_landmarker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:presentation/page_state.dart';
@@ -725,17 +724,13 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
       final numberStr = nextNumber.toString().padLeft(2, '0');
       final sketchFile = File('${sketchesDir.path}/sketches_$numberStr.png');
       await sketchFile.writeAsBytes(imageBytes);
-      debugPrint('✅ Original saved to: ${sketchFile.path}');
-
-      // 4. Also save to gallery using gal package
-      await Gal.putImage(sketchFile.path, album: 'HandDrawings');
-      debugPrint('✅ Image saved to gallery');
+      debugPrint('✅ Saved to: ${sketchFile.path}');
 
       return true;
     } catch (e) {
-      debugPrint('Error saving to gallery: $e');
+      debugPrint('Error saving image: $e');
       state = state.copyWith(
-        action: HandTrackingPageAction.showError('갤러리 저장 실패: $e'),
+        action: HandTrackingPageAction.showError('이미지 저장 실패: $e'),
       );
       return false;
     }
