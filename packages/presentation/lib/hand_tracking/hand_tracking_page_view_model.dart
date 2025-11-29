@@ -6,6 +6,7 @@ import 'package:design_system/hand_tracking/hand_tracking_ui_state.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:hand_landmarker/hand_landmarker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:presentation/page_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -679,29 +680,39 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
     }
   }
 
-  /// Save image to /storage/emulated/0/Download/media/sketches with sequential numbering
+  /// Save image to external storage media/sketches with sequential numbering
   Future<bool> onSaveToGallery(Uint8List imageBytes) async {
     try {
       // Request storage permission
       final storageStatus = await Permission.storage.request();
 
       if (!storageStatus.isGranted) {
-        debugPrint('Storage permission denied');
+        debugPrint('❌ Storage permission denied');
         state = state.copyWith(
           action: HandTrackingPageAction.showError('저장소 권한이 필요합니다'),
         );
         return false;
       }
 
-      // 1. Create /storage/emulated/0/Download/media/sketches directory
-      final sketchesDir = Directory('/storage/emulated/0/Download/media/sketches');
-
-      if (!await sketchesDir.exists()) {
-        await sketchesDir.create(recursive: true);
-        debugPrint('Created sketches directory: ${sketchesDir.path}');
+      // 1. Get app's external storage directory
+      // This will be /storage/emulated/0/Android/data/com.example.flutter_architecture_sample/files
+      final Directory? appDir = await getExternalStorageDirectory();
+      if (appDir == null) {
+        debugPrint('❌ Cannot access external storage');
+        state = state.copyWith(
+          action: HandTrackingPageAction.showError('외부 저장소에 접근할 수 없습니다'),
+        );
+        return false;
       }
 
-      // 2. Find the next sequential number (with leading zeros)
+      // 2. Create media/sketches subdirectory
+      final sketchesDir = Directory('${appDir.path}/media/sketches');
+      if (!await sketchesDir.exists()) {
+        await sketchesDir.create(recursive: true);
+        debugPrint('📁 Created sketches directory: ${sketchesDir.path}');
+      }
+
+      // 3. Find the next sequential number (with leading zeros)
       int nextNumber = 1;
       final existingFiles = await sketchesDir.list().toList();
 
@@ -719,7 +730,7 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
         }
       }
 
-      // 3. Save to /storage/emulated/0/media/sketches with sequential name (with leading zeros)
+      // 4. Save to media/sketches with sequential name (with leading zeros)
       final numberStr = nextNumber.toString().padLeft(2, '0');
       final sketchFile = File('${sketchesDir.path}/sketches_$numberStr.png');
       await sketchFile.writeAsBytes(imageBytes);
@@ -727,7 +738,7 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
 
       return true;
     } catch (e) {
-      debugPrint('Error saving image: $e');
+      debugPrint('❌ Error saving image: $e');
       state = state.copyWith(
         action: HandTrackingPageAction.showError('이미지 저장 실패: $e'),
       );
