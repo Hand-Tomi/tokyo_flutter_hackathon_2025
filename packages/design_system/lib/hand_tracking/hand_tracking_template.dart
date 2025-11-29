@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'drawing_canvas_painter.dart';
-import 'hand_info_panel.dart';
-import 'hand_landmark_painter.dart';
-import 'hand_tracking_settings_panel.dart';
 import 'hand_tracking_ui_state.dart';
 
 /// Hand Tracking Page Template
-/// Pure UI layout without state management
+/// Pure UI layout without state management - Minimal version
 class HandTrackingPageTemplate extends StatelessWidget {
   const HandTrackingPageTemplate({
     super.key,
@@ -29,122 +26,36 @@ class HandTrackingPageTemplate extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Hand Tracking Test'),
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        actions: [
-          IconButton(
-            icon: Icon(uiState.showSettings ? Icons.close : Icons.settings),
-            onPressed: onSettingsToggle,
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          // Status message
-          Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(16),
-            color: Colors.blue.shade100,
-            child: Text(
-              uiState.statusMessage,
-              style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-              textAlign: TextAlign.center,
-            ),
-          ),
-
-          // Performance settings panel (collapsible)
-          if (uiState.showSettings)
-            HandTrackingSettingsPanel(
-              frameSkip: uiState.frameSkip,
-              resolution: uiState.resolution,
-              onFrameSkipChanged: onFrameSkipChanged,
-              onResolutionChanged: onResolutionChanged,
-            ),
-
-          // Camera preview with drawing overlay
-          Expanded(
-            child: uiState.isInitialized
-                ? Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      // Camera view (fill screen)
-                      cameraPreview,
-                      // Landmark overlay (full screen)
-                      if (uiState.previewSize != null &&
-                          uiState.sensorOrientation != null)
-                        CustomPaint(
-                          painter: HandLandmarkPainter(
-                            uiState.landmarks,
-                            uiState.previewSize!,
-                            uiState.sensorOrientation!,
-                          ),
-                        ),
-                      // Drawing canvas overlay
-                      CustomPaint(
-                        painter: DrawingCanvasPainter(
-                          paths: uiState.drawingPaths,
-                          currentPath: uiState.currentPath,
-                          isDrawing: uiState.isFingerDown,
-                        ),
-                      ),
-                      // Drawing mode indicator
-                      if (uiState.isDrawingMode)
-                        Positioned(
-                          top: 16,
-                          left: 16,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Colors.green.withValues(alpha: 0.8),
-                              borderRadius: BorderRadius.circular(16),
-                            ),
-                            child: const Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Icon(Icons.edit, color: Colors.white, size: 16),
-                                SizedBox(width: 4),
-                                Text(
-                                  'Drawing',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      // Clear button (show when there are drawings)
-                      if (uiState.drawingPaths.isNotEmpty ||
-                          uiState.currentPath.isNotEmpty)
-                        Positioned(
-                          top: 16,
-                          right: 16,
-                          child: FloatingActionButton.small(
-                            onPressed: onClearDrawing,
-                            backgroundColor: Colors.red.withValues(alpha: 0.8),
-                            child: const Icon(Icons.clear, color: Colors.white),
-                          ),
-                        ),
-                    ],
-                  )
-                : const Center(
-                    child: CircularProgressIndicator(),
+      backgroundColor: Colors.black,
+      body: uiState.isInitialized
+          ? Stack(
+              fit: StackFit.expand,
+              children: [
+                // Camera view (full screen)
+                cameraPreview,
+                // Drawing canvas overlay
+                CustomPaint(
+                  painter: DrawingCanvasPainter(
+                    paths: uiState.drawingPaths,
+                    currentPath: uiState.currentPath,
+                    isDrawing: uiState.isFingerDown,
                   ),
-          ),
-
-          // Detected hand information with gesture recognition
-          HandInfoPanel(
-            landmarks: uiState.landmarks,
-            frameSkip: uiState.frameSkip,
-            gestureInfo: uiState.gestureInfo,
-          ),
-        ],
-      ),
+                ),
+                // Clear button (always show)
+                Positioned(
+                  bottom: 80,
+                  right: 16,
+                  child: FloatingActionButton.small(
+                    onPressed: onClearDrawing,
+                    backgroundColor: Colors.red.withValues(alpha: 0.8),
+                    child: const Icon(Icons.clear, color: Colors.white),
+                  ),
+                ),
+              ],
+            )
+          : const Center(
+              child: CircularProgressIndicator(),
+            ),
     );
   }
 }

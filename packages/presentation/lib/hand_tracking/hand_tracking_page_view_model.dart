@@ -394,6 +394,7 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
 
   /// Clear all drawings
   void onClearDrawing() {
+    debugPrint('🗑️ Clear drawing button pressed');
     _currentPathPoints.clear();
     _wasDrawing = false;
     _lastHandDetectedTime = null;
@@ -412,6 +413,7 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
         isFingerDown: false,
       ),
     );
+    debugPrint('✅ Drawings cleared: ${state.uiState.drawingPaths.length} paths');
   }
 
   ResolutionPreset _mapResolutionPreset(ResolutionPresetUi preset) {
