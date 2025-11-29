@@ -18,9 +18,11 @@ class VideoGenerationPageViewModel extends _$VideoGenerationPageViewModel {
   @override
   PageState<VideoGenerationPageUiState, VideoGenerationPageAction> build() {
     final scenes = ref.watch(sceneListProvider);
+    final videoService = ref.read(videoGenerationServiceProvider);
+    final sceneListNotifier = ref.read(sceneListProvider.notifier);
 
     // 페이지 진입 시 자동으로 영상 생성 시작
-    Future.microtask(() => _generateVideo());
+    Future.microtask(() => _generateVideo(scenes, videoService, sceneListNotifier));
 
     return PageState(
       uiState: VideoGenerationPageUiState(
@@ -33,17 +35,21 @@ class VideoGenerationPageViewModel extends _$VideoGenerationPageViewModel {
   }
 
   /// 실제 영상 생성
-  Future<void> _generateVideo() async {
+  Future<void> _generateVideo(
+    List<SceneData> initialScenes,
+    VideoGenerationService videoService,
+    SceneList sceneListNotifier,
+  ) async {
     final totalStopwatch = Stopwatch()..start();
 
     try {
-      var scenes = ref.read(sceneListProvider);
+      var scenes = initialScenes;
 
       // Scene이 비어있으면 테스트용 Scene 설정
       if (scenes.isEmpty) {
         debugPrint('Scene이 비어있어 테스트 Scene 설정 중...');
-        await _setupTestScene();
-        scenes = ref.read(sceneListProvider);
+        await _setupTestScene(sceneListNotifier);
+        scenes = sceneListNotifier.state;
       }
 
       if (scenes.isEmpty) {
@@ -72,9 +78,6 @@ class VideoGenerationPageViewModel extends _$VideoGenerationPageViewModel {
       final appDir = await getApplicationDocumentsDirectory();
       final mediaBasePath = '${appDir.path}/media';
 
-      // 2. 영상 생성 서비스 호출
-      final service = ref.read(videoGenerationServiceProvider);
-
       state = state.copyWith(
         uiState: state.uiState.copyWith(
           step: VideoGenerationStep.combiningImages,
@@ -83,7 +86,7 @@ class VideoGenerationPageViewModel extends _$VideoGenerationPageViewModel {
         ),
       );
 
-      final video = await service.generateVideo(
+      final video = await videoService.generateVideo(
         scenes: scenes,
         mediaBasePath: mediaBasePath,
         onProgress: (progress, message) {
@@ -145,6 +148,10 @@ class VideoGenerationPageViewModel extends _$VideoGenerationPageViewModel {
 
   /// 재시도
   void onRetryPressed() {
+    final scenes = ref.read(sceneListProvider);
+    final videoService = ref.read(videoGenerationServiceProvider);
+    final sceneListNotifier = ref.read(sceneListProvider.notifier);
+
     state = state.copyWith(
       uiState: state.uiState.copyWith(
         step: VideoGenerationStep.preparing,
@@ -153,11 +160,11 @@ class VideoGenerationPageViewModel extends _$VideoGenerationPageViewModel {
       ),
       action: VideoGenerationPageAction.none(),
     );
-    _generateVideo();
+    _generateVideo(scenes, videoService, sceneListNotifier);
   }
 
   /// 테스트용 Scene 설정 (assets에서 일러스트 + 오디오 복사 후 Scene 추가)
-  Future<void> _setupTestScene() async {
+  Future<void> _setupTestScene(SceneList sceneListNotifier) async {
     try {
       debugPrint('테스트 Scene 설정 시작 (영상 생성용)');
 
@@ -200,7 +207,7 @@ class VideoGenerationPageViewModel extends _$VideoGenerationPageViewModel {
       }
 
       // 3. Scene 추가 (illustrationFileName + audioFileName 포함)
-      ref.read(sceneListProvider.notifier).addScene(
+      sceneListNotifier.addScene(
         SceneData(
           id: 'test_video_1',
           storyScript: '옛날옛날에 한 왕이 살고 있었어요.',

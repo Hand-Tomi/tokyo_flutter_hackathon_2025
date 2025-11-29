@@ -1,8 +1,8 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 
 import 'package:design_system/step5_video_playback/video_playback_ui_state.dart';
+import 'package:domain/domain.dart';
 import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:presentation/page_state.dart';
@@ -26,8 +26,11 @@ class VideoPlaybackPageViewModel extends _$VideoPlaybackPageViewModel {
       _audioPlayer?.dispose();
     });
 
-    // 슬라이드쇼 정보 로드
-    Future.microtask(() => _loadSlideshowInfo());
+    // build() 내에서 ref.read()를 먼저 수행
+    final sceneDataList = ref.read(sceneListProvider);
+
+    // 슬라이드쇼 정보 로드 (sceneDataList를 파라미터로 전달)
+    Future.microtask(() => _loadSlideshowInfo(sceneDataList));
 
     return PageState(
       uiState: const VideoPlaybackPageUiState(
@@ -38,13 +41,10 @@ class VideoPlaybackPageViewModel extends _$VideoPlaybackPageViewModel {
   }
 
   /// 슬라이드쇼 정보 로드
-  Future<void> _loadSlideshowInfo() async {
+  Future<void> _loadSlideshowInfo(List<SceneData> sceneDataList) async {
     try {
       final appDir = await getApplicationDocumentsDirectory();
       final mediaBasePath = '${appDir.path}/media';
-
-      // Scene 데이터에서 직접 슬라이드쇼 정보 생성
-      final sceneDataList = ref.read(sceneListProvider);
 
       if (sceneDataList.isEmpty) {
         state = state.copyWith(
