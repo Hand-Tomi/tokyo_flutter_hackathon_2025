@@ -1,8 +1,9 @@
-import 'dart:ui';
+import 'dart:ui' as ui;
 
 import 'package:camera/camera.dart';
 import 'package:design_system/hand_tracking/hand_tracking_ui_state.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/rendering.dart';
 import 'package:hand_landmarker/hand_landmarker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:presentation/page_state.dart';
@@ -26,6 +27,13 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
   // Drawing state
   bool _wasDrawing = false;
   List<Offset> _currentPathPoints = [];
+
+  // Fist gesture state
+  bool _wasFist = false;
+
+  // Hand detection timer
+  DateTime? _lastHandDetectedTime;
+  bool _timerDialogShown = false;
 
   @override
   PageState<HandTrackingPageUiState, HandTrackingPageAction> build() {
@@ -183,20 +191,40 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
       bool isDrawingMode = false;
 
       if (hands.isNotEmpty) {
+        // Hand detected - reset timer
+        _lastHandDetectedTime = DateTime.now();
+        _timerDialogShown = false;
+
         statusMessage = '${hands.length} hand(s) detected!';
         // Recognize gesture from first hand
         final firstHand = hands[0].landmarks;
         gestureInfo = GestureRecognizer.getHandDescription(firstHand);
 
-        // Always in drawing mode when hand is detected
-        isDrawingMode = true;
+        // Simple fist detection
+        final extendedFingers = GestureRecognizer.countExtendedFingers(firstHand);
+        final isFist = extendedFingers == 0;
 
-        // Track drawing path using index finger tip
-        final fingerTip = GestureRecognizer.getIndexFingerTip(firstHand);
-        if (fingerTip != null) {
-          _processDrawingPoint(fingerTip.x, fingerTip.y);
+        if (isFist) {
+          // Fist detected - save current path and stop drawing
+          if (!_wasFist && _wasDrawing) {
+            _finishCurrentPath();
+            statusMessage = 'Fist - Path saved!';
+          }
+          _wasFist = true;
+          _wasDrawing = false;
+        } else {
+          // Any other hand gesture - draw with index finger
+          isDrawingMode = true;
+          _wasFist = false;
+          statusMessage = 'Drawing... ($extendedFingers fingers)';
+
+          // Track drawing path using index finger tip
+          final fingerTip = GestureRecognizer.getIndexFingerTip(firstHand);
+          if (fingerTip != null) {
+            _processDrawingPoint(fingerTip.x, fingerTip.y);
+          }
+          _wasDrawing = true;
         }
-        _wasDrawing = true;
       } else {
         statusMessage = 'Looking for hands...';
         // No hand detected - finish current path
@@ -204,6 +232,20 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
           _finishCurrentPath();
         }
         _wasDrawing = false;
+        _wasFist = false;
+
+        // Check timer for dialog
+        if (_lastHandDetectedTime != null && !_timerDialogShown) {
+          final timeSinceLastHand =
+              DateTime.now().difference(_lastHandDetectedTime!);
+          if (timeSinceLastHand.inSeconds >= 5) {
+            // Show confirmation dialog
+            state = state.copyWith(
+              action: HandTrackingPageAction.showConfirmDialog(),
+            );
+            _timerDialogShown = true;
+          }
+        }
       }
 
       state = state.copyWith(
@@ -293,6 +335,97 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
         return ResolutionPreset.medium;
       case ResolutionPresetUi.high:
         return ResolutionPreset.high;
+    }
+  }
+
+  /// Convert drawing paths to white background image
+  Future<Uint8List?> onCreateImage() async {
+    try {
+      final paths = state.uiState.drawingPaths;
+      if (paths.isEmpty) {
+        debugPrint('No paths to convert');
+        return null;
+      }
+
+      // Image size (you can adjust this)
+      const imageWidth = 512.0;
+      const imageHeight = 512.0;
+
+      // Create a picture recorder
+      final recorder = ui.PictureRecorder();
+      final canvas = Canvas(recorder);
+
+      // Draw white background
+      final backgroundPaint = Paint()..color = const Color(0xFFFFFFFF);
+      canvas.drawRect(
+        Rect.fromLTWH(0, 0, imageWidth, imageHeight),
+        backgroundPaint,
+      );
+
+      // Draw all paths
+      for (final pathData in paths) {
+        if (pathData.points.length < 2) continue;
+
+        final paint = Paint()
+          ..color = pathData.color
+          ..strokeWidth = pathData.strokeWidth
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round
+          ..strokeJoin = StrokeJoin.round;
+
+        final path = Path();
+        final firstPoint = Offset(
+          pathData.points.first.dx * imageWidth,
+          pathData.points.first.dy * imageHeight,
+        );
+        path.moveTo(firstPoint.dx, firstPoint.dy);
+
+        // Draw smooth curves
+        for (int i = 1; i < pathData.points.length - 1; i++) {
+          final p0 = Offset(
+            pathData.points[i].dx * imageWidth,
+            pathData.points[i].dy * imageHeight,
+          );
+          final p1 = Offset(
+            pathData.points[i + 1].dx * imageWidth,
+            pathData.points[i + 1].dy * imageHeight,
+          );
+          final midPoint = Offset((p0.dx + p1.dx) / 2, (p0.dy + p1.dy) / 2);
+          path.quadraticBezierTo(p0.dx, p0.dy, midPoint.dx, midPoint.dy);
+        }
+
+        // Add last point
+        if (pathData.points.length > 1) {
+          final lastPoint = Offset(
+            pathData.points.last.dx * imageWidth,
+            pathData.points.last.dy * imageHeight,
+          );
+          path.lineTo(lastPoint.dx, lastPoint.dy);
+        }
+
+        canvas.drawPath(path, paint);
+      }
+
+      // Convert to image
+      final picture = recorder.endRecording();
+      final image = await picture.toImage(
+        imageWidth.toInt(),
+        imageHeight.toInt(),
+      );
+
+      // Convert to PNG bytes
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+      if (byteData == null) {
+        debugPrint('Failed to convert image to bytes');
+        return null;
+      }
+
+      final pngBytes = byteData.buffer.asUint8List();
+      debugPrint('Image created: ${pngBytes.length} bytes');
+      return pngBytes;
+    } catch (e) {
+      debugPrint('Error creating image: $e');
+      return null;
     }
   }
 

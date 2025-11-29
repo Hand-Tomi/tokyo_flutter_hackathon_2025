@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'hand_tracking_page_view_model.dart';
+import '../image/image_analysis_page.dart';
+import '../image/image_analysis_page_view_model.dart';
 
 /// Hand Tracking Page
 ///
@@ -41,6 +43,72 @@ class _HandTrackingPageState extends ConsumerState<HandTrackingPage> {
           showError: (message) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(message)),
+            );
+          },
+          showConfirmDialog: () {
+            showDialog(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text('그림 완성'),
+                content: const Text('이대로 그림을 만들까요?'),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('취소'),
+                  ),
+                  TextButton(
+                    onPressed: () async {
+                      Navigator.of(context).pop();
+                      // Create image from drawing paths
+                      final imageBytes = await viewModel.onCreateImage();
+                      if (imageBytes != null && context.mounted) {
+                        // Show image preview dialog
+                        showDialog(
+                          context: context,
+                          builder: (context) => AlertDialog(
+                            title: const Text('생성된 이미지'),
+                            content: SizedBox(
+                              width: 300,
+                              height: 300,
+                              child: Image.memory(
+                                imageBytes,
+                                fit: BoxFit.contain,
+                              ),
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => Navigator.of(context).pop(),
+                                child: const Text('닫기'),
+                              ),
+                              TextButton(
+                                onPressed: () async {
+                                  Navigator.of(context).pop();
+
+                                  // 이미지 분석 페이지의 ViewModel에 이미지 설정
+                                  await ref
+                                      .read(imageAnalysisPageViewModelProvider.notifier)
+                                      .onSetImageFromBytes(imageBytes);
+
+                                  // 이미지 분석 페이지로 이동
+                                  if (context.mounted) {
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => const ImageAnalysisPage(),
+                                      ),
+                                    );
+                                  }
+                                },
+                                child: const Text('저장'),
+                              ),
+                            ],
+                          ),
+                        );
+                      }
+                    },
+                    child: const Text('확인'),
+                  ),
+                ],
+              ),
             );
           },
         );

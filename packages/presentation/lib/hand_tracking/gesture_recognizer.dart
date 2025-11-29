@@ -68,8 +68,8 @@ class GestureRecognizer {
 
     final extendedFingers = countExtendedFingers(landmarks);
 
-    // Rock: 0-1 fingers extended (fist)
-    if (extendedFingers <= 1) {
+    // Rock: 0 fingers extended (complete fist only)
+    if (extendedFingers == 0) {
       return HandGesture.rock;
     }
 
@@ -201,6 +201,7 @@ class GestureRecognizer {
     if (landmarks.isEmpty) return 'No hand detected';
 
     final fingerCount = countExtendedFingers(landmarks);
+    final drawing = isDrawingGesture(landmarks);
     final gesture = detectRockPaperScissors(landmarks);
     final thumbsUp = isThumbsUp(landmarks);
     final peace = isPeaceSign(landmarks);
@@ -208,7 +209,10 @@ class GestureRecognizer {
     final parts = <String>[];
     parts.add('$fingerCount finger${fingerCount != 1 ? 's' : ''} extended');
 
-    if (gesture != HandGesture.unknown) {
+    // Check drawing gesture FIRST before other gestures
+    if (drawing) {
+      parts.add('Drawing Gesture');
+    } else if (gesture != HandGesture.unknown) {
       parts.add(gesture.toString());
     } else if (thumbsUp) {
       parts.add('Thumbs Up');
