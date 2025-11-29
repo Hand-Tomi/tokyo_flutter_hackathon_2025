@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:design_system/step3_scene_list/scene_ui.dart';
 import 'package:design_system/theme/app_colors.dart';
 import 'package:design_system/theme/app_spacing.dart';
@@ -80,28 +82,6 @@ class SceneCard extends StatelessWidget {
                 ),
               ),
 
-            // 삭제 버튼
-            if (onDelete != null)
-              Positioned(
-                top: 8,
-                right: 8,
-                child: GestureDetector(
-                  onTap: onDelete,
-                  child: Container(
-                    width: 28,
-                    height: 28,
-                    decoration: BoxDecoration(
-                      color: Colors.red.withValues(alpha: 0.8),
-                      shape: BoxShape.circle,
-                    ),
-                    child: const Icon(
-                      Icons.close,
-                      color: Colors.white,
-                      size: 18,
-                    ),
-                  ),
-                ),
-              ),
           ],
         ),
       ),
@@ -110,15 +90,24 @@ class SceneCard extends StatelessWidget {
 
   Widget _buildThumbnail() {
     if (scene.thumbnailPath != null) {
-      // 실제 썸네일 이미지
-      return Container(
-        color: AppColors.overlayMedium,
-        child: const Center(
-          child: Icon(
-            Icons.image,
-            color: Colors.white54,
-            size: 48,
-          ),
+      // 실제 썸네일 이미지 표시
+      return SizedBox.expand(
+        child: Image.file(
+          File(scene.thumbnailPath!),
+          fit: BoxFit.cover,
+          errorBuilder: (context, error, stackTrace) {
+            // 이미지 로드 실패 시 플레이스홀더
+            return Container(
+              color: AppColors.overlayMedium,
+              child: const Center(
+                child: Icon(
+                  Icons.broken_image,
+                  color: Colors.white54,
+                  size: 48,
+                ),
+              ),
+            );
+          },
         ),
       );
     }
