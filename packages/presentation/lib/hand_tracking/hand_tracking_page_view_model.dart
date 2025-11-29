@@ -244,7 +244,8 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
           statusMessage = 'Fist detected - path saved!';
 
           if (_wasDrawing) {
-            _finishCurrentPath();
+            // Trim last points before saving (remove finger-bending motion)
+            _finishCurrentPath(trimLastPoints: true);
             debugPrint('Path saved - fist gesture detected');
           }
           _wasDrawing = false;
@@ -374,21 +375,86 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
   }
 
   /// Finish current drawing path and save it (no shape recognition)
-  void _finishCurrentPath() {
-    if (_currentPathPoints.length >= 2) {
-      // Save raw path as-is (no shape normalization)
-      final newPath = DrawingPathUi(
-        points: List.from(_currentPathPoints),
-        strokeWidth: 4.0,
-        color: const Color(0xFF000000),
-      );
-      state = state.copyWith(
-        uiState: state.uiState.copyWith(
-          drawingPaths: [...state.uiState.drawingPaths, newPath],
-        ),
-      );
-      debugPrint('Path saved: ${_currentPathPoints.length} points');
+  /// If [trimLastPoints] is true, removes the last portion of the path
+  /// to eliminate unwanted lines from finger-bending motion
+  void _finishCurrentPath({bool trimLastPoints = false}) {
+    if (_currentPathPoints.length < 2) {
+      _currentPathPoints.clear();
+      return;
     }
+
+    List<Offset> finalPoints = List.from(_currentPathPoints);
+
+    // Trim last points if requested (remove finger-bending motion)
+    if (trimLastPoints && finalPoints.length > 3) {
+      // Calculate total path length
+      double totalLength = 0.0;
+      for (int i = 1; i < finalPoints.length; i++) {
+        totalLength += (finalPoints[i] - finalPoints[i - 1]).distance;
+      }
+
+      // Remove last points to eliminate finger-bending motion
+      // Strategy: Remove last 8 points OR last 15% of path length, whichever is smaller
+      const int maxPointsToRemove = 8;
+      const double lengthPercentToRemove = 0.15; // 15%
+
+      int pointsToRemove = maxPointsToRemove;
+      double lengthToRemove = totalLength * lengthPercentToRemove;
+
+      // Calculate how many points represent the length to remove
+      double accumulatedLength = 0.0;
+      int pointsByLength = 0;
+      for (int i = finalPoints.length - 1; i > 0; i--) {
+        accumulatedLength += (finalPoints[i] - finalPoints[i - 1]).distance;
+        pointsByLength++;
+        if (accumulatedLength >= lengthToRemove) break;
+      }
+
+      // Use the smaller of the two removal strategies
+      pointsToRemove = pointsByLength < pointsToRemove ? pointsByLength : pointsToRemove;
+
+      // Ensure we don't remove too many points
+      if (pointsToRemove < finalPoints.length - 2) {
+        finalPoints = finalPoints.sublist(0, finalPoints.length - pointsToRemove);
+        debugPrint('Trimmed $pointsToRemove points from end of stroke');
+      }
+    }
+
+    // Check if resulting path is too short (likely accidental)
+    if (finalPoints.length < 3) {
+      debugPrint('Path too short (${finalPoints.length} points) - discarded');
+      _currentPathPoints.clear();
+      return;
+    }
+
+    // Calculate total path length to filter out very short strokes
+    double totalLength = 0.0;
+    for (int i = 1; i < finalPoints.length; i++) {
+      totalLength += (finalPoints[i] - finalPoints[i - 1]).distance;
+    }
+
+    // Minimum path length threshold (normalized coordinates, ~3% of screen)
+    const double minPathLength = 0.03;
+    if (totalLength < minPathLength) {
+      debugPrint('Path too short (length: ${totalLength.toStringAsFixed(4)}) - discarded');
+      _currentPathPoints.clear();
+      return;
+    }
+
+    // Save the finalized path
+    final newPath = DrawingPathUi(
+      points: finalPoints,
+      strokeWidth: 4.0,
+      color: const Color(0xFF000000),
+    );
+
+    state = state.copyWith(
+      uiState: state.uiState.copyWith(
+        drawingPaths: [...state.uiState.drawingPaths, newPath],
+      ),
+    );
+
+    debugPrint('✅ Path saved: ${finalPoints.length} points, length: ${totalLength.toStringAsFixed(4)}');
     _currentPathPoints.clear();
   }
 
