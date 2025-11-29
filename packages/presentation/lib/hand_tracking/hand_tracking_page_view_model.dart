@@ -507,8 +507,8 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
       totalLength += (finalPoints[i] - finalPoints[i - 1]).distance;
     }
 
-    // Minimum path length threshold (normalized coordinates, ~1% of screen)
-    const double minPathLength = 0.01;
+    // Minimum path length threshold (normalized coordinates, ~0.3% of screen)
+    const double minPathLength = 0.003;
     if (totalLength < minPathLength) {
       debugPrint('⚠️ Path too short (length: ${totalLength.toStringAsFixed(4)}) - discarded');
       _currentPathPoints.clear();
