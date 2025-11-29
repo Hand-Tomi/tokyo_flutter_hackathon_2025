@@ -46,6 +46,9 @@ class SketchTestPage extends ConsumerWidget {
       onStoryTextChanged: viewModel.onStoryTextChanged,
       onGenerate: viewModel.onGenerate,
       onClear: viewModel.onClear,
+      onDownload: pageState.uiState.generatedImagePath != null
+          ? viewModel.onDownload
+          : null,
     );
   }
 }

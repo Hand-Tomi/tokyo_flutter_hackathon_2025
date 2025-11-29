@@ -1,5 +1,6 @@
 import 'package:design_system/design_system.dart';
 import 'package:flutter/foundation.dart';
+import 'package:gal/gal.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:presentation/page_state.dart';
 import 'package:presentation/services/service_providers.dart';
@@ -73,17 +74,22 @@ class SketchTestPageViewModel extends _$SketchTestPageViewModel {
     );
 
     try {
-      final service = ref.read(sketchToImageServiceProvider);
+      final service = await ref.read(sketchToImageServiceProvider.future);
       final result = await service.generateFromSketch(
         sketchBytes: sketchBytes,
         storyText: state.uiState.storyText,
       );
 
+      // 생성된 이미지를 앱 내부에 자동 저장
+      final repository = ref.read(illustrationsRepositoryProvider);
+      final savedImage = await repository.save(result);
+      debugPrint('이미지 저장 완료: ${savedImage.imagePath}');
+
       state = state.copyWith(
         uiState: state.uiState.copyWith(
           isLoading: false,
-          statusMessage: '이미지 생성 완료!',
-          generatedImagePath: result.imagePath,
+          statusMessage: '이미지 생성 및 저장 완료!',
+          generatedImagePath: savedImage.imagePath,
         ),
         action: SketchTestPageAction.showSuccess('동화풍 이미지가 생성되었습니다!'),
       );
@@ -105,5 +111,28 @@ class SketchTestPageViewModel extends _$SketchTestPageViewModel {
       uiState: const SketchTestPageUiState(),
       action: SketchTestPageAction.none(),
     );
+  }
+
+  /// 이미지 다운로드 (갤러리에 저장)
+  Future<void> onDownload() async {
+    final imagePath = state.uiState.generatedImagePath;
+    if (imagePath == null) {
+      state = state.copyWith(
+        action: SketchTestPageAction.showError('저장할 이미지가 없습니다.'),
+      );
+      return;
+    }
+
+    try {
+      await Gal.putImage(imagePath);
+      state = state.copyWith(
+        action: SketchTestPageAction.showSuccess('갤러리에 저장되었습니다!'),
+      );
+    } catch (e) {
+      debugPrint('이미지 저장 오류: $e');
+      state = state.copyWith(
+        action: SketchTestPageAction.showError('저장 실패: $e'),
+      );
+    }
   }
 }

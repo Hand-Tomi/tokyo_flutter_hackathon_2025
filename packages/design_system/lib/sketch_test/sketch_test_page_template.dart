@@ -13,6 +13,7 @@ class SketchTestPageTemplate extends StatelessWidget {
   final ValueChanged<String> onStoryTextChanged;
   final VoidCallback onGenerate;
   final VoidCallback onClear;
+  final VoidCallback? onDownload;
 
   const SketchTestPageTemplate({
     super.key,
@@ -21,6 +22,7 @@ class SketchTestPageTemplate extends StatelessWidget {
     required this.onStoryTextChanged,
     required this.onGenerate,
     required this.onClear,
+    this.onDownload,
   });
 
   @override
@@ -162,7 +164,21 @@ class SketchTestPageTemplate extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('생성된 동화풍 이미지', style: Theme.of(context).textTheme.titleMedium),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              '생성된 동화풍 이미지',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            if (onDownload != null)
+              IconButton(
+                onPressed: onDownload,
+                icon: const Icon(Icons.download),
+                tooltip: '갤러리에 저장',
+              ),
+          ],
+        ),
         const SizedBox(height: 8),
         ClipRRect(
           borderRadius: BorderRadius.circular(12),
