@@ -12,9 +12,9 @@ export 'theme/app_theme.dart';
 export 'components/sky_background.dart';
 export 'components/game_button.dart';
 
-// Home
-export 'home/home_page_ui_state.dart';
-export 'home/home_page_template.dart';
+// Step 1: Home
+export 'step1_home/home_page_ui_state.dart';
+export 'step1_home/home_page_template.dart';
 
 // Todo
 export 'todo/todo_card.dart';
@@ -39,24 +39,24 @@ export 'image/image_analysis_page_template.dart';
 export 'sketch_test/sketch_test_ui_state.dart';
 export 'sketch_test/sketch_test_page_template.dart';
 
-// Scene Creation
-export 'scene_creation/scene_creation_ui_state.dart';
-export 'scene_creation/scene_creation_template.dart';
+// Step 2: Scene Creation
+export 'step2_scene_creation/scene_creation_ui_state.dart';
+export 'step2_scene_creation/scene_creation_template.dart';
 
-// Scene List
-export 'scene_list/scene_ui.dart';
-export 'scene_list/scene_card.dart';
-export 'scene_list/scene_list_ui_state.dart';
-export 'scene_list/scene_list_template.dart';
+// Step 3: Scene List
+export 'step3_scene_list/scene_ui.dart';
+export 'step3_scene_list/scene_card.dart';
+export 'step3_scene_list/scene_list_ui_state.dart';
+export 'step3_scene_list/scene_list_template.dart';
 
-// Video Generation
-export 'video_generation/video_generation_ui_state.dart';
-export 'video_generation/video_generation_template.dart';
+// Step 4: Video Generation
+export 'step4_video_generation/video_generation_ui_state.dart';
+export 'step4_video_generation/video_generation_template.dart';
 
-// Video Playback
-export 'video_playback/video_playback_ui_state.dart';
-export 'video_playback/video_playback_template.dart';
+// Step 5: Video Playback
+export 'step5_video_playback/video_playback_ui_state.dart';
+export 'step5_video_playback/video_playback_template.dart';
 
-// Save Share
-export 'save_share/save_share_ui_state.dart';
-export 'save_share/save_share_template.dart';
+// Step 6: Save Share
+export 'step6_save_share/save_share_ui_state.dart';
+export 'step6_save_share/save_share_template.dart';
