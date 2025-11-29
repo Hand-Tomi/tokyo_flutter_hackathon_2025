@@ -22,7 +22,9 @@ class VideoGenerationPageViewModel extends _$VideoGenerationPageViewModel {
     final sceneListNotifier = ref.read(sceneListProvider.notifier);
 
     // 페이지 진입 시 자동으로 영상 생성 시작
-    Future.microtask(() => _generateVideo(scenes, videoService, sceneListNotifier));
+    Future.microtask(
+      () => _generateVideo(scenes, videoService, sceneListNotifier),
+    );
 
     return PageState(
       uiState: VideoGenerationPageUiState(
@@ -107,7 +109,10 @@ class VideoGenerationPageViewModel extends _$VideoGenerationPageViewModel {
               step: step,
               progress: mappedProgress,
               statusMessage: message,
-              currentScene: ((progress * scenes.length).ceil()).clamp(1, scenes.length),
+              currentScene: ((progress * scenes.length).ceil()).clamp(
+                1,
+                scenes.length,
+              ),
             ),
           );
         },
@@ -116,7 +121,9 @@ class VideoGenerationPageViewModel extends _$VideoGenerationPageViewModel {
       // 3. 완료
       totalStopwatch.stop();
       debugPrint('✅ 영상 생성 완료: ${video.videoPath}');
-      debugPrint('⏱️ 총 소요 시간: ${totalStopwatch.elapsedMilliseconds}ms (${(totalStopwatch.elapsedMilliseconds / 1000).toStringAsFixed(1)}초)');
+      debugPrint(
+        '⏱️ 총 소요 시간: ${totalStopwatch.elapsedMilliseconds}ms (${(totalStopwatch.elapsedMilliseconds / 1000).toStringAsFixed(1)}초)',
+      );
       debugPrint('━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━');
 
       state = state.copyWith(
@@ -181,8 +188,9 @@ class VideoGenerationPageViewModel extends _$VideoGenerationPageViewModel {
       }
 
       const testIllustrationFileName = 'test_illustration.png';
-      final illustrationFile =
-          File('${illustrationsDir.path}/$testIllustrationFileName');
+      final illustrationFile = File(
+        '${illustrationsDir.path}/$testIllustrationFileName',
+      );
       await illustrationFile.writeAsBytes(imageByteData.buffer.asUint8List());
       debugPrint('테스트 일러스트 저장 완료: ${illustrationFile.path}');
 
@@ -209,14 +217,15 @@ class VideoGenerationPageViewModel extends _$VideoGenerationPageViewModel {
       // 3. Scene 추가 (illustrationFileName + audioFileName 포함)
       sceneListNotifier.addScene(
         SceneData(
-          id: 'test_video_1',
+          id: 1,
           storyScript: '옛날옛날에 한 왕이 살고 있었어요.',
           illustrationFileName: testIllustrationFileName,
           audioFileName: testAudioFileName,
         ),
       );
       debugPrint(
-          '테스트 Scene 추가 완료 (illustrationFileName: $testIllustrationFileName, audioFileName: $testAudioFileName)');
+        '테스트 Scene 추가 완료 (illustrationFileName: $testIllustrationFileName, audioFileName: $testAudioFileName)',
+      );
     } catch (e) {
       debugPrint('테스트 Scene 설정 실패: $e');
     }

@@ -782,16 +782,15 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
       if (latestScene == null) {
         debugPrint('⚠️ [HandTracking] No Scene found, creating new Scene');
         logger.w('[HandTracking] No Scene found, creating new Scene');
-        // Create a new Scene if none exists (테스트용 storyScript 포함)
+        // Create a new Scene if none exists (직접 Hand Tracking 진입 시)
         final newId = sceneList.length + 1;
         ref.read(sceneListProvider.notifier).addScene(
           SceneData(
             id: newId,
             sketchFileName: fileName,
-            storyScript: '왕자가 울고있어요', // 테스트용 TTS 문장
           ),
         );
-        debugPrint('✅ [HandTracking] Created new Scene with id=$newId, sketch=$fileName, storyScript="왕자가 울고있어요"');
+        debugPrint('✅ [HandTracking] Created new Scene with id=$newId, sketch=$fileName');
         logger.i('[HandTracking] Created new Scene with id=$newId, sketch=$fileName');
 
         // Verify scene was added

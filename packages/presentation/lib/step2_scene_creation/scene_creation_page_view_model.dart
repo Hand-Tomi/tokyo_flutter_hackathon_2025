@@ -175,14 +175,15 @@ class SceneCreationPageViewModel extends _$SceneCreationPageViewModel {
         );
         break;
       case SceneCreationStep.sttResult:
+        // STT 결과 확인 후 Hand Tracking으로 이동
         state = state.copyWith(
-          uiState: state.uiState.copyWith(currentStep: SceneCreationStep.airScribble),
+          action: SceneCreationPageAction.navigateToHandTracking(),
         );
         break;
       case SceneCreationStep.airScribble:
-        // airScribble 이후에는 바로 장면 리스트로 이동
+        // 이 케이스는 더 이상 사용되지 않음 (STT → Hand Tracking으로 바로 이동)
         state = state.copyWith(
-          action: SceneCreationPageAction.navigateToSceneList(),
+          action: SceneCreationPageAction.navigateToHandTracking(),
         );
         break;
     }
