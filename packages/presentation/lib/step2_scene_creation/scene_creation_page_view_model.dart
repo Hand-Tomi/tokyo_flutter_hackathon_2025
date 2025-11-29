@@ -122,26 +122,25 @@ class SceneCreationPageViewModel extends _$SceneCreationPageViewModel {
   /// 다음 단계로 이동
   void onNextStepPressed() {
     final currentStep = state.uiState.currentStep;
-    SceneCreationStep nextStep;
 
     switch (currentStep) {
       case SceneCreationStep.recording:
-        nextStep = SceneCreationStep.sttResult;
+        state = state.copyWith(
+          uiState: state.uiState.copyWith(currentStep: SceneCreationStep.sttResult),
+        );
         break;
       case SceneCreationStep.sttResult:
-        nextStep = SceneCreationStep.airScribble;
+        state = state.copyWith(
+          uiState: state.uiState.copyWith(currentStep: SceneCreationStep.airScribble),
+        );
         break;
       case SceneCreationStep.airScribble:
-        nextStep = SceneCreationStep.confirmation;
-        break;
-      case SceneCreationStep.confirmation:
-        nextStep = SceneCreationStep.confirmation;
+        // airScribble 이후에는 바로 장면 리스트로 이동
+        state = state.copyWith(
+          action: SceneCreationPageAction.navigateToSceneList(),
+        );
         break;
     }
-
-    state = state.copyWith(
-      uiState: state.uiState.copyWith(currentStep: nextStep),
-    );
   }
 
   /// 그림 지우기
@@ -149,32 +148,4 @@ class SceneCreationPageViewModel extends _$SceneCreationPageViewModel {
     // TODO: 실제 그림 지우기 로직
   }
 
-  /// 장면 확정
-  void onConfirmScenePressed() {
-    state = state.copyWith(
-      uiState: state.uiState.copyWith(
-        currentStep: SceneCreationStep.confirmation,
-      ),
-    );
-  }
-
-  /// 장면 추가
-  void onAddMoreScenePressed() {
-    state = state.copyWith(
-      uiState: state.uiState.copyWith(
-        sceneNumber: state.uiState.sceneNumber + 1,
-        currentStep: SceneCreationStep.recording,
-        sttText: '',
-        isRecording: false,
-        currentRecordingPath: '',
-      ),
-    );
-  }
-
-  /// 완료 (장면 리스트로 이동)
-  void onFinishPressed() {
-    state = state.copyWith(
-      action: SceneCreationPageAction.navigateToSceneList(),
-    );
-  }
 }

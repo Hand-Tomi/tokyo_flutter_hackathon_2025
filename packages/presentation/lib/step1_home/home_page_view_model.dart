@@ -15,6 +15,11 @@ class HomePageViewModel extends _$HomePageViewModel {
     );
   }
 
+  /// PLAY 버튼 클릭 시 장면 생성 화면으로 이동
+  void onPlayPressed() {
+    state = state.copyWith(action: HomePageAction.navigateToSceneCreation());
+  }
+
   /// 액션 완료 시의 상태 리셋
   void onFinishedAction() {
     state = state.copyWith(action: HomePageAction.none());

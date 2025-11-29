@@ -50,9 +50,6 @@ class SceneCreationPage extends ConsumerWidget {
       onReRecordPressed: notifier.onReRecordPressed,
       onNextStepPressed: notifier.onNextStepPressed,
       onClearDrawingPressed: notifier.onClearDrawingPressed,
-      onConfirmScenePressed: notifier.onConfirmScenePressed,
-      onAddMoreScenePressed: notifier.onAddMoreScenePressed,
-      onFinishPressed: notifier.onFinishPressed,
     );
   }
 }

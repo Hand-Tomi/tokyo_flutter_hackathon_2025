@@ -7,7 +7,7 @@ import 'package:design_system/theme/app_typography.dart';
 import 'package:flutter/material.dart';
 
 /// 장면 생성 페이지 Template
-/// 4단계 흐름: 녹음 → STT 확인 → Air Scribble → 확정
+/// 3단계 흐름: 녹음 → STT 확인 → Air Scribble → 장면 리스트로 이동
 class SceneCreationTemplate extends StatelessWidget {
   const SceneCreationTemplate({
     super.key,
@@ -18,9 +18,6 @@ class SceneCreationTemplate extends StatelessWidget {
     this.onReRecordPressed,
     this.onNextStepPressed,
     this.onClearDrawingPressed,
-    this.onConfirmScenePressed,
-    this.onAddMoreScenePressed,
-    this.onFinishPressed,
   });
 
   final SceneCreationPageUiState uiState;
@@ -30,9 +27,6 @@ class SceneCreationTemplate extends StatelessWidget {
   final VoidCallback? onReRecordPressed;
   final VoidCallback? onNextStepPressed;
   final VoidCallback? onClearDrawingPressed;
-  final VoidCallback? onConfirmScenePressed;
-  final VoidCallback? onAddMoreScenePressed;
-  final VoidCallback? onFinishPressed;
 
   @override
   Widget build(BuildContext context) {
@@ -107,8 +101,6 @@ class SceneCreationTemplate extends StatelessWidget {
         return 'Check your story';
       case SceneCreationStep.airScribble:
         return 'Draw in the air!';
-      case SceneCreationStep.confirmation:
-        return 'Scene ready!';
     }
   }
 
@@ -121,8 +113,6 @@ class SceneCreationTemplate extends StatelessWidget {
         _buildStepDot(1, SceneCreationStep.sttResult),
         _buildStepLine(1),
         _buildStepDot(2, SceneCreationStep.airScribble),
-        _buildStepLine(2),
-        _buildStepDot(3, SceneCreationStep.confirmation),
       ],
     );
   }
@@ -160,8 +150,6 @@ class SceneCreationTemplate extends StatelessWidget {
         return _buildSttResultContent();
       case SceneCreationStep.airScribble:
         return _buildAirScribbleContent();
-      case SceneCreationStep.confirmation:
-        return _buildConfirmationContent();
     }
   }
 
@@ -307,69 +295,23 @@ class SceneCreationTemplate extends StatelessWidget {
     );
   }
 
-  Widget _buildConfirmationContent() {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        // 성공 아이콘
-        Container(
-          width: 120,
-          height: 120,
-          decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppColors.buttonGreen.withValues(alpha: 0.3),
-          ),
-          child: const Icon(Icons.check_circle, size: 80, color: Colors.white),
-        ),
-        const SizedBox(height: AppSpacing.lg),
-        Text(
-          'Scene ${uiState.sceneNumber} created!',
-          style: AppTypography.headlineMedium,
-        ),
-        const SizedBox(height: AppSpacing.sm),
-        Text(
-          uiState.isGeneratingImage
-              ? 'Generating image...'
-              : 'Your scene is ready',
-          style: AppTypography.bodyLarge,
-        ),
-        if (uiState.isGeneratingImage) ...[
-          const SizedBox(height: AppSpacing.md),
-          const CircularProgressIndicator(color: Colors.white),
-        ],
-      ],
-    );
-  }
-
   Widget _buildBottomButtons() {
     switch (uiState.currentStep) {
       case SceneCreationStep.recording:
         return const SizedBox.shrink();
       case SceneCreationStep.sttResult:
-      case SceneCreationStep.airScribble:
         return GameButton(
           onPressed: onNextStepPressed,
           style: GameButtonStyle.primary,
           icon: Icons.arrow_forward,
           label: 'Next',
         );
-      case SceneCreationStep.confirmation:
-        return Column(
-          children: [
-            GameButton(
-              onPressed: onAddMoreScenePressed,
-              style: GameButtonStyle.secondary,
-              icon: Icons.add,
-              label: 'Add Scene',
-            ),
-            const SizedBox(height: AppSpacing.buttonGap),
-            GameButton(
-              onPressed: onFinishPressed,
-              style: GameButtonStyle.primary,
-              icon: Icons.check,
-              label: 'Finish',
-            ),
-          ],
+      case SceneCreationStep.airScribble:
+        return GameButton(
+          onPressed: onNextStepPressed,
+          style: GameButtonStyle.primary,
+          icon: Icons.check,
+          label: 'Done',
         );
     }
   }

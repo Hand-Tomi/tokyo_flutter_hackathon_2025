@@ -7,7 +7,6 @@ enum SceneCreationStep {
   recording, // 음성 녹음
   sttResult, // STT 결과 확인
   airScribble, // Air Scribble 그리기
-  confirmation, // 장면 확정
 }
 
 /// 장면 생성 페이지의 UI 상태

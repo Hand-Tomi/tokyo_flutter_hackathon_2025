@@ -1,6 +1,7 @@
 import 'package:design_system/step1_home/home_page_template.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:presentation/step1_home/home_page_view_model.dart';
 
 /// Home 페이지
@@ -21,6 +22,9 @@ class HomePage extends ConsumerWidget {
 
         next.when(
           none: () {},
+          navigateToSceneCreation: () {
+            context.push('/scene-creation');
+          },
         );
 
         ref.read(homePageViewModelProvider.notifier).onFinishedAction();
@@ -30,6 +34,8 @@ class HomePage extends ConsumerWidget {
     // Template에 데이터 전달
     return HomePageTemplate(
       uiState: state.uiState,
+      onPlayPressed:
+          ref.read(homePageViewModelProvider.notifier).onPlayPressed,
     );
   }
 }

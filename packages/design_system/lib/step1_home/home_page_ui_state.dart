@@ -12,4 +12,5 @@ class HomePageUiState with _$HomePageUiState {
 @freezed
 class HomePageAction with _$HomePageAction {
   factory HomePageAction.none() = _None;
+  factory HomePageAction.navigateToSceneCreation() = _NavigateToSceneCreation;
 }
