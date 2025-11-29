@@ -21,6 +21,7 @@ class VideoGenerationPageUiState with _$VideoGenerationPageUiState {
     @Default(0) int currentScene,
     @Default(0) int totalScenes,
     @Default('Preparing...') String statusMessage,
+    String? videoPath,
   }) = _VideoGenerationPageUiState;
 }
 

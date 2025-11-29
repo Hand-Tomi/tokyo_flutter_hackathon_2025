@@ -12,6 +12,7 @@ import 'gemini_sketch_to_image_service.dart';
 import 'imagen_generation_service.dart';
 import 'imagen_sketch_to_image_service.dart';
 import 'openai_whisper_service.dart';
+import 'slideshow_video_service.dart';
 
 part 'service_providers.g.dart';
 
@@ -123,4 +124,11 @@ SttService sttService(SttServiceRef ref) {
     throw Exception('OPENAI_API_KEY가 .env 파일에 설정되지 않았습니다.');
   }
   return OpenAiWhisperService(apiKey: apiKey);
+}
+
+/// Video Generation Service Provider
+/// 슬라이드쇼 방식으로 이미지+오디오+자막 정보 준비
+@riverpod
+VideoGenerationService videoGenerationService(VideoGenerationServiceRef ref) {
+  return SlideshowVideoService();
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:design_system/components/game_button.dart';
 import 'package:design_system/components/sky_background.dart';
 import 'package:design_system/theme/app_colors.dart';
@@ -92,88 +94,139 @@ class VideoPlaybackTemplate extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
         border: Border.all(color: AppColors.overlayMedium, width: 2),
       ),
-      child: Stack(
-        children: [
-          // 비디오 플레이스홀더
-          const Center(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.movie, size: 80, color: Colors.white38),
-                SizedBox(height: AppSpacing.md),
-                Text(
-                  'Video Preview',
-                  style: TextStyle(color: Colors.white54, fontSize: 18),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(AppSpacing.radiusCard - 2),
+        child: Stack(
+          children: [
+            // 슬라이드쇼 이미지
+            if (uiState.currentImagePath != null)
+              Positioned.fill(
+                child: Image.file(
+                  File(uiState.currentImagePath!),
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) => const Center(
+                    child: Icon(Icons.broken_image, size: 80, color: Colors.white38),
+                  ),
                 ),
-              ],
-            ),
-          ),
+              )
+            else
+              const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Icon(Icons.movie, size: 80, color: Colors.white38),
+                    SizedBox(height: AppSpacing.md),
+                    Text(
+                      'Loading...',
+                      style: TextStyle(color: Colors.white54, fontSize: 18),
+                    ),
+                  ],
+                ),
+              ),
 
-          // 로딩 인디케이터
-          if (uiState.status == PlaybackStatus.loading)
-            const Center(child: CircularProgressIndicator(color: Colors.white)),
-
-          // 재생/일시정지 오버레이
-          if (uiState.status != PlaybackStatus.loading)
-            Positioned.fill(
-              child: GestureDetector(
-                onTap: onPlayPausePressed,
+            // 자막 (하단)
+            if (uiState.currentSubtitle != null &&
+                uiState.currentSubtitle!.isNotEmpty)
+              Positioned(
+                left: 16,
+                right: 16,
+                bottom: 24,
                 child: Container(
-                  color: Colors.transparent,
-                  child: Center(
-                    child: Container(
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppColors.overlayMedium,
-                      ),
-                      child: Icon(
-                        uiState.status == PlaybackStatus.playing
-                            ? Icons.pause
-                            : Icons.play_arrow,
-                        size: 48,
-                        color: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Colors.black.withValues(alpha: 0.7),
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    uiState.currentSubtitle!,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500,
+                      height: 1.4,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ),
+
+            // 로딩 인디케이터
+            if (uiState.status == PlaybackStatus.loading)
+              const Center(child: CircularProgressIndicator(color: Colors.white)),
+
+            // 재생/일시정지 오버레이 (재생 중이 아닐 때만)
+            if (uiState.status != PlaybackStatus.loading &&
+                uiState.status != PlaybackStatus.playing)
+              Positioned.fill(
+                child: GestureDetector(
+                  onTap: onPlayPausePressed,
+                  child: Container(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    child: Center(
+                      child: Container(
+                        width: 80,
+                        height: 80,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: AppColors.overlayMedium,
+                        ),
+                        child: const Icon(
+                          Icons.play_arrow,
+                          size: 48,
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
 
-          // 재생 완료 시 다시 재생 버튼
-          if (uiState.status == PlaybackStatus.completed)
-            Positioned.fill(
-              child: Container(
-                color: Colors.black.withValues(alpha: 0.5),
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
-                        onTap: onReplayPressed,
-                        child: Container(
-                          width: 100,
-                          height: 100,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: AppColors.buttonOrange,
-                          ),
-                          child: const Icon(
-                            Icons.replay,
-                            size: 60,
-                            color: Colors.white,
+            // 재생 중일 때 탭하면 일시정지
+            if (uiState.status == PlaybackStatus.playing)
+              Positioned.fill(
+                child: GestureDetector(
+                  onTap: onPlayPausePressed,
+                  child: Container(color: Colors.transparent),
+                ),
+              ),
+
+            // 재생 완료 시 다시 재생 버튼
+            if (uiState.status == PlaybackStatus.completed)
+              Positioned.fill(
+                child: Container(
+                  color: Colors.black.withValues(alpha: 0.5),
+                  child: Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        GestureDetector(
+                          onTap: onReplayPressed,
+                          child: Container(
+                            width: 100,
+                            height: 100,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: AppColors.buttonOrange,
+                            ),
+                            child: const Icon(
+                              Icons.replay,
+                              size: 60,
+                              color: Colors.white,
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(height: AppSpacing.md),
-                      Text('Watch Again', style: AppTypography.titleMedium),
-                    ],
+                        const SizedBox(height: AppSpacing.md),
+                        Text('Watch Again', style: AppTypography.titleMedium),
+                      ],
+                    ),
                   ),
                 ),
               ),
-            ),
-        ],
+          ],
+        ),
       ),
     );
   }
