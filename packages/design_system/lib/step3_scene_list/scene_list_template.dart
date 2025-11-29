@@ -22,8 +22,8 @@ class SceneListTemplate extends StatelessWidget {
   final VoidCallback? onBackPressed;
   final VoidCallback? onAddScenePressed;
   final VoidCallback? onGenerateVideoPressed;
-  final void Function(String sceneId)? onSceneTap;
-  final void Function(String sceneId)? onSceneDelete;
+  final void Function(int sceneId)? onSceneTap;
+  final void Function(int sceneId)? onSceneDelete;
 
   @override
   Widget build(BuildContext context) {

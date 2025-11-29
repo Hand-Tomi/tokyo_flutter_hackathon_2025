@@ -6,7 +6,7 @@ part 'scene_data.g.dart';
 @freezed
 class SceneData with _$SceneData {
   const factory SceneData({
-    required String id,
+    required int id,
     String? audioFileName,
     String? sketchFileName,
     String? illustrationFileName,

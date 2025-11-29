@@ -14,7 +14,7 @@ enum SceneStatus {
 @freezed
 class SceneUi with _$SceneUi {
   const factory SceneUi({
-    required String id,
+    required int id,
     required int sceneNumber,
     required String sttText,
     required SceneStatus status,

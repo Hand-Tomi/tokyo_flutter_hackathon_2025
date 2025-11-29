@@ -68,7 +68,8 @@ class SceneListPageViewModel extends _$SceneListPageViewModel {
     return PageState(
       uiState: SceneListPageUiState(
         scenes: scenes,
-        canGenerateVideo: scenes.isNotEmpty &&
+        canGenerateVideo:
+            scenes.isNotEmpty &&
             scenes.every((s) => s.status == SceneStatus.completed),
       ),
       action: SceneListPageAction.none(),
@@ -98,20 +99,22 @@ class SceneListPageViewModel extends _$SceneListPageViewModel {
       debugPrint('테스트 스케치 저장 완료: ${sketchFile.path}');
 
       // 3. Scene 추가 (sketchFileName 포함)
-      ref.read(sceneListProvider.notifier).addScene(
-        const SceneData(
-          id: 'test_1',
-          storyScript: '옛날옛날에 한 왕이 살고 있었어요.',
-          sketchFileName: testSketchFileName,
-        ),
-      );
+      ref
+          .read(sceneListProvider.notifier)
+          .addScene(
+            const SceneData(
+              id: 1,
+              storyScript: '옛날옛날에 한 왕이 살고 있었어요.',
+              sketchFileName: testSketchFileName,
+            ),
+          );
       debugPrint('테스트 Scene 추가 완료 (sketchFileName: $testSketchFileName)');
     } catch (e) {
       debugPrint('테스트 Scene 설정 실패: $e');
       // 실패해도 기본 Scene은 추가
-      ref.read(sceneListProvider.notifier).addScene(
-        const SceneData(id: 'test_1', storyScript: 'Test scene'),
-      );
+      ref
+          .read(sceneListProvider.notifier)
+          .addScene(const SceneData(id: 1, storyScript: 'Test scene'));
     }
   }
 
@@ -122,7 +125,8 @@ class SceneListPageViewModel extends _$SceneListPageViewModel {
 
       // 스케치 파일 경로 생성
       final appDir = await getApplicationDocumentsDirectory();
-      final sketchPath = '${appDir.path}/media/sketches/${scene.sketchFileName}';
+      final sketchPath =
+          '${appDir.path}/media/sketches/${scene.sketchFileName}';
       final sketchFile = File(sketchPath);
 
       if (!await sketchFile.exists()) {
@@ -145,10 +149,9 @@ class SceneListPageViewModel extends _$SceneListPageViewModel {
 
       // 파일명만 추출하여 전역 상태 업데이트
       final fileName = savedImage.imagePath.split('/').last;
-      ref.read(sceneListProvider.notifier).updateIllustration(
-        scene.id,
-        fileName,
-      );
+      ref
+          .read(sceneListProvider.notifier)
+          .updateIllustration(scene.id, fileName);
     } catch (e) {
       debugPrint('일러스트 생성 실패: $e');
       state = state.copyWith(
@@ -179,11 +182,11 @@ class SceneListPageViewModel extends _$SceneListPageViewModel {
     );
   }
 
-  void onSceneTap(String sceneId) {
+  void onSceneTap(int sceneId) {
     // TODO: 장면 상세 보기
   }
 
-  void onSceneDelete(String sceneId) {
+  void onSceneDelete(int sceneId) {
     ref.read(sceneListProvider.notifier).removeScene(sceneId);
   }
 }
