@@ -8,6 +8,7 @@ import 'package:presentation/step3_scene_list/scene_list_page.dart';
 import 'package:presentation/todo/todo_list_page.dart';
 import 'package:presentation/step4_video_generation/video_generation_page.dart';
 import 'package:presentation/step5_video_playback/video_playback_page.dart';
+import 'package:presentation/step7_my_stories/my_stories_list_page.dart';
 
 /// アプリ全体のルーター設定
 final appRouter = GoRouter(
@@ -48,6 +49,11 @@ final appRouter = GoRouter(
       path: '/save-share',
       name: 'saveShare',
       builder: (context, state) => const SaveSharePage(),
+    ),
+    GoRoute(
+      path: '/my-stories',
+      name: 'myStories',
+      builder: (context, state) => const MyStoriesListPage(),
     ),
     // 기존 화면들
     GoRoute(

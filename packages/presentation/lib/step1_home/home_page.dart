@@ -36,6 +36,7 @@ class HomePage extends ConsumerWidget {
       uiState: state.uiState,
       onPlayPressed:
           ref.read(homePageViewModelProvider.notifier).onPlayPressed,
+      onMyStoriesPressed: () => context.push('/my-stories'),
     );
   }
 }
