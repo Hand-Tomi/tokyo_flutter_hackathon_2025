@@ -26,6 +26,11 @@ class DebugListPageViewModel extends _$DebugListPageViewModel {
         description: '음성 녹음 + Air Scribble로 장면 만들기',
       ),
       const DebugMenuItemUi(
+        id: 'hand_tracking',
+        title: '2-1. 카메라 화면',
+        description: '손 제스처로 그림 그리기',
+      ),
+      const DebugMenuItemUi(
         id: 'scene_list',
         title: '3. 장면 리스트 화면 (SceneList)',
         description: '생성된 장면들 관리',
@@ -50,11 +55,6 @@ class DebugListPageViewModel extends _$DebugListPageViewModel {
         id: 'todo_list',
         title: 'Todo 리스트',
         description: 'Todo 관리 화면',
-      ),
-      const DebugMenuItemUi(
-        id: 'hand_tracking',
-        title: 'Hand Tracking',
-        description: '손 추적 및 제스처 인식',
       ),
       const DebugMenuItemUi(
         id: 'image_analysis',

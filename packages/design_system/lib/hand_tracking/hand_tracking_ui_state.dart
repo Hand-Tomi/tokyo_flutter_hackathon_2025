@@ -42,6 +42,7 @@ class DrawingPathUi with _$DrawingPathUi {
 class HandTrackingPageAction with _$HandTrackingPageAction {
   factory HandTrackingPageAction.none() = _None;
   factory HandTrackingPageAction.showError(String message) = _ShowError;
+  factory HandTrackingPageAction.showConfirmDialog() = _ShowConfirmDialog;
 }
 
 /// UI model for hand landmark data (decoupled from hand_landmarker package)
