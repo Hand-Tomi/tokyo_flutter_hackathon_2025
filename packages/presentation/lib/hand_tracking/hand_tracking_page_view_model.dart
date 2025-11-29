@@ -679,14 +679,13 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
     }
   }
 
-  /// Save image to /storage/emulated/0/media/sketches with sequential numbering
+  /// Save image to /storage/emulated/0/Download/media/sketches with sequential numbering
   Future<bool> onSaveToGallery(Uint8List imageBytes) async {
     try {
       // Request storage permission
       final storageStatus = await Permission.storage.request();
-      final manageStatus = await Permission.manageExternalStorage.request();
 
-      if (!storageStatus.isGranted && !manageStatus.isGranted) {
+      if (!storageStatus.isGranted) {
         debugPrint('Storage permission denied');
         state = state.copyWith(
           action: HandTrackingPageAction.showError('저장소 권한이 필요합니다'),
@@ -694,8 +693,8 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
         return false;
       }
 
-      // 1. Create /storage/emulated/0/media/sketches directory
-      final sketchesDir = Directory('/storage/emulated/0/media/sketches');
+      // 1. Create /storage/emulated/0/Download/media/sketches directory
+      final sketchesDir = Directory('/storage/emulated/0/Download/media/sketches');
 
       if (!await sketchesDir.exists()) {
         await sketchesDir.create(recursive: true);
