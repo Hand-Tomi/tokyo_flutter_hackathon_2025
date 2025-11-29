@@ -33,34 +33,33 @@ class SceneListTemplate extends StatelessWidget {
           children: [
             // 메인 컨텐츠
             SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 60),
+              child: SizedBox.expand(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 60),
 
-                    // 헤더
-                    Text(
-                      'My Scenes',
-                      style: AppTypography.headlineLarge,
-                    ),
+                      // 헤더
+                      Text('My Scenes', style: AppTypography.headlineLarge),
 
-                    const SizedBox(height: AppSpacing.lg),
+                      const SizedBox(height: AppSpacing.lg),
 
-                    // 장면 그리드
-                    Expanded(
-                      child: uiState.scenes.isEmpty
-                          ? _buildEmptyState()
-                          : _buildSceneGrid(),
-                    ),
+                      // 장면 그리드
+                      Expanded(
+                        child: uiState.scenes.isEmpty
+                            ? _buildEmptyState()
+                            : _buildSceneGrid(),
+                      ),
 
-                    const SizedBox(height: AppSpacing.md),
+                      const SizedBox(height: AppSpacing.md),
 
-                    // 하단 버튼들
-                    _buildBottomButtons(),
+                      // 하단 버튼들
+                      _buildBottomButtons(),
 
-                    const SizedBox(height: 140),
-                  ],
+                      const SizedBox(height: 140),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -91,17 +90,11 @@ class SceneListTemplate extends StatelessWidget {
             color: Colors.white38,
           ),
           const SizedBox(height: AppSpacing.md),
-          Text(
-            'No scenes yet',
-            style: AppTypography.titleMedium,
-          ),
+          Text('No scenes yet', style: AppTypography.titleMedium),
           const SizedBox(height: AppSpacing.sm),
           const Text(
             'Start creating your story!',
-            style: TextStyle(
-              color: Colors.white70,
-              fontSize: 14,
-            ),
+            style: TextStyle(color: Colors.white70, fontSize: 14),
           ),
         ],
       ),

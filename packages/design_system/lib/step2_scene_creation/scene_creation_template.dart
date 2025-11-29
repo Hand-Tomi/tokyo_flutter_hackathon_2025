@@ -42,32 +42,31 @@ class SceneCreationTemplate extends StatelessWidget {
           children: [
             // 메인 컨텐츠
             SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 60), // 뒤로가기 버튼 공간
+              child: SizedBox.expand(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 60), // 뒤로가기 버튼 공간
+                      // 헤더
+                      _buildHeader(),
 
-                    // 헤더
-                    _buildHeader(),
+                      const SizedBox(height: AppSpacing.lg),
 
-                    const SizedBox(height: AppSpacing.lg),
+                      // 단계 인디케이터
+                      _buildStepIndicator(),
 
-                    // 단계 인디케이터
-                    _buildStepIndicator(),
+                      const SizedBox(height: AppSpacing.xl),
 
-                    const SizedBox(height: AppSpacing.xl),
+                      // 단계별 컨텐츠
+                      Expanded(child: _buildStepContent()),
 
-                    // 단계별 컨텐츠
-                    Expanded(
-                      child: _buildStepContent(),
-                    ),
+                      // 하단 버튼 영역
+                      _buildBottomButtons(),
 
-                    // 하단 버튼 영역
-                    _buildBottomButtons(),
-
-                    const SizedBox(height: 140), // 잔디 공간
-                  ],
+                      const SizedBox(height: 140), // 잔디 공간
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -95,10 +94,7 @@ class SceneCreationTemplate extends StatelessWidget {
           style: AppTypography.headlineLarge,
         ),
         const SizedBox(height: AppSpacing.xs),
-        Text(
-          _getStepTitle(),
-          style: AppTypography.titleMedium,
-        ),
+        Text(_getStepTitle(), style: AppTypography.titleMedium),
       ],
     );
   }
@@ -141,9 +137,7 @@ class SceneCreationTemplate extends StatelessWidget {
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: isActive ? AppColors.buttonOrange : AppColors.overlayMedium,
-        border: isCurrent
-            ? Border.all(color: Colors.white, width: 3)
-            : null,
+        border: isCurrent ? Border.all(color: Colors.white, width: 3) : null,
       ),
     );
   }
@@ -186,10 +180,7 @@ class SceneCreationTemplate extends StatelessWidget {
               color: uiState.isRecording
                   ? AppColors.buttonOrange
                   : AppColors.overlayMedium,
-              border: Border.all(
-                color: Colors.white,
-                width: 4,
-              ),
+              border: Border.all(color: Colors.white, width: 4),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.2),
@@ -229,18 +220,11 @@ class SceneCreationTemplate extends StatelessWidget {
           decoration: BoxDecoration(
             color: AppColors.overlayLight,
             borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
-            border: Border.all(
-              color: AppColors.overlayMedium,
-              width: 2,
-            ),
+            border: Border.all(color: AppColors.overlayMedium, width: 2),
           ),
           child: Column(
             children: [
-              const Icon(
-                Icons.format_quote,
-                size: 40,
-                color: Colors.white,
-              ),
+              const Icon(Icons.format_quote, size: 40, color: Colors.white),
               const SizedBox(height: AppSpacing.md),
               Text(
                 uiState.sttText.isEmpty
@@ -274,35 +258,22 @@ class SceneCreationTemplate extends StatelessWidget {
             decoration: BoxDecoration(
               color: AppColors.overlayLight,
               borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
-              border: Border.all(
-                color: AppColors.overlayMedium,
-                width: 2,
-              ),
+              border: Border.all(color: AppColors.overlayMedium, width: 2),
             ),
             child: const Center(
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(
-                    Icons.gesture,
-                    size: 80,
-                    color: Colors.white54,
-                  ),
+                  Icon(Icons.gesture, size: 80, color: Colors.white54),
                   SizedBox(height: AppSpacing.md),
                   Text(
                     'Camera preview here',
-                    style: TextStyle(
-                      color: Colors.white54,
-                      fontSize: 16,
-                    ),
+                    style: TextStyle(color: Colors.white54, fontSize: 16),
                   ),
                   SizedBox(height: AppSpacing.xs),
                   Text(
                     'Draw with your finger!',
-                    style: TextStyle(
-                      color: Colors.white54,
-                      fontSize: 14,
-                    ),
+                    style: TextStyle(color: Colors.white54, fontSize: 14),
                   ),
                 ],
               ),
@@ -333,11 +304,7 @@ class SceneCreationTemplate extends StatelessWidget {
             shape: BoxShape.circle,
             color: AppColors.buttonGreen.withValues(alpha: 0.3),
           ),
-          child: const Icon(
-            Icons.check_circle,
-            size: 80,
-            color: Colors.white,
-          ),
+          child: const Icon(Icons.check_circle, size: 80, color: Colors.white),
         ),
         const SizedBox(height: AppSpacing.lg),
         Text(
@@ -353,9 +320,7 @@ class SceneCreationTemplate extends StatelessWidget {
         ),
         if (uiState.isGeneratingImage) ...[
           const SizedBox(height: AppSpacing.md),
-          const CircularProgressIndicator(
-            color: Colors.white,
-          ),
+          const CircularProgressIndicator(color: Colors.white),
         ],
       ],
     );
@@ -431,8 +396,7 @@ class _RecordingIndicatorState extends State<_RecordingIndicator>
           mainAxisAlignment: MainAxisAlignment.center,
           children: List.generate(3, (index) {
             final delay = index * 0.2;
-            final value =
-                (((_controller.value + delay) % 1.0) * 2 - 1).abs();
+            final value = (((_controller.value + delay) % 1.0) * 2 - 1).abs();
             return Container(
               margin: const EdgeInsets.symmetric(horizontal: 4),
               width: 8,

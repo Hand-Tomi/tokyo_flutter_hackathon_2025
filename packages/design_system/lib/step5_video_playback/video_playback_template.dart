@@ -33,42 +33,39 @@ class VideoPlaybackTemplate extends StatelessWidget {
           children: [
             // 메인 컨텐츠
             SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    const SizedBox(height: 60),
+              child: SizedBox.expand(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    children: [
+                      const SizedBox(height: 60),
 
-                    // 헤더
-                    Text(
-                      'Your Story',
-                      style: AppTypography.headlineLarge,
-                    ),
+                      // 헤더
+                      Text('Your Story', style: AppTypography.headlineLarge),
 
-                    const SizedBox(height: AppSpacing.lg),
+                      const SizedBox(height: AppSpacing.lg),
 
-                    // 비디오 플레이어 영역
-                    Expanded(
-                      child: _buildVideoPlayer(),
-                    ),
+                      // 비디오 플레이어 영역
+                      Expanded(child: _buildVideoPlayer()),
 
-                    const SizedBox(height: AppSpacing.md),
+                      const SizedBox(height: AppSpacing.md),
 
-                    // 재생 컨트롤
-                    _buildPlaybackControls(),
+                      // 재생 컨트롤
+                      _buildPlaybackControls(),
 
-                    const SizedBox(height: AppSpacing.lg),
+                      const SizedBox(height: AppSpacing.lg),
 
-                    // 저장 & 공유 버튼
-                    GameButton(
-                      onPressed: onSaveSharePressed,
-                      style: GameButtonStyle.primary,
-                      icon: Icons.share,
-                      label: 'Save & Share',
-                    ),
+                      // 저장 & 공유 버튼
+                      GameButton(
+                        onPressed: onSaveSharePressed,
+                        style: GameButtonStyle.primary,
+                        icon: Icons.share,
+                        label: 'Save & Share',
+                      ),
 
-                    const SizedBox(height: 140),
-                  ],
+                      const SizedBox(height: 140),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -93,10 +90,7 @@ class VideoPlaybackTemplate extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.black.withValues(alpha: 0.3),
         borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
-        border: Border.all(
-          color: AppColors.overlayMedium,
-          width: 2,
-        ),
+        border: Border.all(color: AppColors.overlayMedium, width: 2),
       ),
       child: Stack(
         children: [
@@ -105,18 +99,11 @@ class VideoPlaybackTemplate extends StatelessWidget {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                Icon(
-                  Icons.movie,
-                  size: 80,
-                  color: Colors.white38,
-                ),
+                Icon(Icons.movie, size: 80, color: Colors.white38),
                 SizedBox(height: AppSpacing.md),
                 Text(
                   'Video Preview',
-                  style: TextStyle(
-                    color: Colors.white54,
-                    fontSize: 18,
-                  ),
+                  style: TextStyle(color: Colors.white54, fontSize: 18),
                 ),
               ],
             ),
@@ -124,11 +111,7 @@ class VideoPlaybackTemplate extends StatelessWidget {
 
           // 로딩 인디케이터
           if (uiState.status == PlaybackStatus.loading)
-            const Center(
-              child: CircularProgressIndicator(
-                color: Colors.white,
-              ),
-            ),
+            const Center(child: CircularProgressIndicator(color: Colors.white)),
 
           // 재생/일시정지 오버레이
           if (uiState.status != PlaybackStatus.loading)
@@ -184,10 +167,7 @@ class VideoPlaybackTemplate extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: AppSpacing.md),
-                      Text(
-                        'Watch Again',
-                        style: AppTypography.titleMedium,
-                      ),
+                      Text('Watch Again', style: AppTypography.titleMedium),
                     ],
                   ),
                 ),
@@ -201,7 +181,7 @@ class VideoPlaybackTemplate extends StatelessWidget {
   Widget _buildPlaybackControls() {
     final progress = uiState.totalDuration.inMilliseconds > 0
         ? uiState.currentPosition.inMilliseconds /
-            uiState.totalDuration.inMilliseconds
+              uiState.totalDuration.inMilliseconds
         : 0.0;
 
     return Column(
@@ -211,10 +191,7 @@ class VideoPlaybackTemplate extends StatelessWidget {
           children: [
             Text(
               _formatDuration(uiState.currentPosition),
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-              ),
+              style: const TextStyle(color: Colors.white, fontSize: 14),
             ),
             Expanded(
               child: Slider(
@@ -226,10 +203,7 @@ class VideoPlaybackTemplate extends StatelessWidget {
             ),
             Text(
               _formatDuration(uiState.totalDuration),
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-              ),
+              style: const TextStyle(color: Colors.white, fontSize: 14),
             ),
           ],
         ),

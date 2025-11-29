@@ -34,44 +34,46 @@ class SaveShareTemplate extends StatelessWidget {
 
             // 메인 컨텐츠
             SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24),
-                child: Column(
-                  children: [
-                    const Spacer(flex: 1),
+              child: SizedBox.expand(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24),
+                  child: Column(
+                    children: [
+                      const Spacer(flex: 1),
 
-                    // 축하 아이콘
-                    _buildCelebrationIcon(),
+                      // 축하 아이콘
+                      _buildCelebrationIcon(),
 
-                    const SizedBox(height: AppSpacing.lg),
+                      const SizedBox(height: AppSpacing.lg),
 
-                    // 축하 메시지
-                    Text(
-                      'Congratulations!',
-                      style: AppTypography.displayMedium,
-                      textAlign: TextAlign.center,
-                    ),
+                      // 축하 메시지
+                      Text(
+                        'Congratulations!',
+                        style: AppTypography.displayMedium,
+                        textAlign: TextAlign.center,
+                      ),
 
-                    const SizedBox(height: AppSpacing.sm),
+                      const SizedBox(height: AppSpacing.sm),
 
-                    Text(
-                      'Your story is complete!',
-                      style: AppTypography.titleMedium,
-                      textAlign: TextAlign.center,
-                    ),
+                      Text(
+                        'Your story is complete!',
+                        style: AppTypography.titleMedium,
+                        textAlign: TextAlign.center,
+                      ),
 
-                    const SizedBox(height: AppSpacing.xl),
+                      const SizedBox(height: AppSpacing.xl),
 
-                    // 썸네일
-                    _buildThumbnail(),
+                      // 썸네일
+                      _buildThumbnail(),
 
-                    const Spacer(flex: 1),
+                      const Spacer(flex: 1),
 
-                    // 버튼들
-                    _buildButtons(),
+                      // 버튼들
+                      _buildButtons(),
 
-                    const SizedBox(height: 140),
-                  ],
+                      const SizedBox(height: 140),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -94,17 +96,9 @@ class SaveShareTemplate extends StatelessWidget {
   List<Widget> _buildCelebrationDecorations(BuildContext context) {
     return [
       // 왼쪽 위 별
-      Positioned(
-        top: 100,
-        left: 30,
-        child: _buildStar(24),
-      ),
+      Positioned(top: 100, left: 30, child: _buildStar(24)),
       // 오른쪽 위 별
-      Positioned(
-        top: 150,
-        right: 40,
-        child: _buildStar(32),
-      ),
+      Positioned(top: 150, right: 40, child: _buildStar(32)),
       // 왼쪽 중간 별
       Positioned(
         top: MediaQuery.of(context).size.height * 0.4,
@@ -143,11 +137,7 @@ class SaveShareTemplate extends StatelessWidget {
           ),
         ],
       ),
-      child: const Icon(
-        Icons.celebration,
-        size: 64,
-        color: Colors.white,
-      ),
+      child: const Icon(Icons.celebration, size: 64, color: Colors.white),
     );
   }
 
@@ -158,10 +148,7 @@ class SaveShareTemplate extends StatelessWidget {
       decoration: BoxDecoration(
         color: AppColors.overlayLight,
         borderRadius: BorderRadius.circular(AppSpacing.radiusCard),
-        border: Border.all(
-          color: Colors.white,
-          width: 4,
-        ),
+        border: Border.all(color: Colors.white, width: 4),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.2),
@@ -176,18 +163,11 @@ class SaveShareTemplate extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(
-                Icons.movie,
-                size: 64,
-                color: Colors.white54,
-              ),
+              Icon(Icons.movie, size: 64, color: Colors.white54),
               SizedBox(height: 8),
               Text(
                 'Story Thumbnail',
-                style: TextStyle(
-                  color: Colors.white54,
-                  fontSize: 14,
-                ),
+                style: TextStyle(color: Colors.white54, fontSize: 14),
               ),
             ],
           ),
@@ -211,8 +191,8 @@ class SaveShareTemplate extends StatelessWidget {
           label: uiState.saveStatus == SaveStatus.saving
               ? 'Saving...'
               : uiState.saveStatus == SaveStatus.saved
-                  ? 'Saved!'
-                  : 'Download',
+              ? 'Saved!'
+              : 'Download',
         ),
 
         const SizedBox(height: AppSpacing.buttonGap),

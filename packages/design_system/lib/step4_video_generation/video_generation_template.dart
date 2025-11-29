@@ -7,10 +7,7 @@ import 'package:flutter/material.dart';
 
 /// 영상 생성 페이지 Template
 class VideoGenerationTemplate extends StatelessWidget {
-  const VideoGenerationTemplate({
-    super.key,
-    required this.uiState,
-  });
+  const VideoGenerationTemplate({super.key, required this.uiState});
 
   final VideoGenerationPageUiState uiState;
 
@@ -19,53 +16,55 @@ class VideoGenerationTemplate extends StatelessWidget {
     return Scaffold(
       body: SkyBackground(
         child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(
-              children: [
-                const Spacer(flex: 2),
+          child: SizedBox.expand(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24),
+              child: Column(
+                children: [
+                  const Spacer(flex: 2),
 
-                // 마법 아이콘 / 완료 아이콘
-                _buildIcon(),
+                  // 마법 아이콘 / 완료 아이콘
+                  _buildIcon(),
 
-                const SizedBox(height: AppSpacing.xl),
+                  const SizedBox(height: AppSpacing.xl),
 
-                // 타이틀
-                Text(
-                  _getTitle(),
-                  style: AppTypography.headlineLarge,
-                  textAlign: TextAlign.center,
-                ),
-
-                const SizedBox(height: AppSpacing.md),
-
-                // 상태 메시지
-                Text(
-                  uiState.statusMessage,
-                  style: AppTypography.bodyLarge,
-                  textAlign: TextAlign.center,
-                ),
-
-                const SizedBox(height: AppSpacing.xl),
-
-                // 진행률 바
-                if (uiState.step != VideoGenerationStep.completed &&
-                    uiState.step != VideoGenerationStep.error)
-                  _buildProgressBar(),
-
-                // 장면 진행 표시
-                if (uiState.totalScenes > 0 &&
-                    uiState.step == VideoGenerationStep.combiningImages)
-                  Padding(
-                    padding: const EdgeInsets.only(top: AppSpacing.md),
-                    child: Text(
-                      'Scene ${uiState.currentScene} / ${uiState.totalScenes}',
-                      style: AppTypography.bodyMedium,
-                    ),
+                  // 타이틀
+                  Text(
+                    _getTitle(),
+                    style: AppTypography.headlineLarge,
+                    textAlign: TextAlign.center,
                   ),
 
-                const Spacer(flex: 3),
-              ],
+                  const SizedBox(height: AppSpacing.md),
+
+                  // 상태 메시지
+                  Text(
+                    uiState.statusMessage,
+                    style: AppTypography.bodyLarge,
+                    textAlign: TextAlign.center,
+                  ),
+
+                  const SizedBox(height: AppSpacing.xl),
+
+                  // 진행률 바
+                  if (uiState.step != VideoGenerationStep.completed &&
+                      uiState.step != VideoGenerationStep.error)
+                    _buildProgressBar(),
+
+                  // 장면 진행 표시
+                  if (uiState.totalScenes > 0 &&
+                      uiState.step == VideoGenerationStep.combiningImages)
+                    Padding(
+                      padding: const EdgeInsets.only(top: AppSpacing.md),
+                      child: Text(
+                        'Scene ${uiState.currentScene} / ${uiState.totalScenes}',
+                        style: AppTypography.bodyMedium,
+                      ),
+                    ),
+
+                  const Spacer(flex: 3),
+                ],
+              ),
             ),
           ),
         ),
@@ -82,11 +81,7 @@ class VideoGenerationTemplate extends StatelessWidget {
           shape: BoxShape.circle,
           color: AppColors.buttonGreen.withValues(alpha: 0.3),
         ),
-        child: const Icon(
-          Icons.check_circle,
-          size: 100,
-          color: Colors.white,
-        ),
+        child: const Icon(Icons.check_circle, size: 100, color: Colors.white),
       );
     }
 
@@ -98,11 +93,7 @@ class VideoGenerationTemplate extends StatelessWidget {
           shape: BoxShape.circle,
           color: Colors.red.withValues(alpha: 0.3),
         ),
-        child: const Icon(
-          Icons.error_outline,
-          size: 100,
-          color: Colors.white,
-        ),
+        child: const Icon(Icons.error_outline, size: 100, color: Colors.white),
       );
     }
 
@@ -217,11 +208,7 @@ class _MagicWandAnimationState extends State<_MagicWandAnimation>
               );
             }),
             // 마법 지팡이
-            const Icon(
-              Icons.auto_fix_high,
-              size: 80,
-              color: Colors.white,
-            ),
+            const Icon(Icons.auto_fix_high, size: 80, color: Colors.white),
           ],
         );
       },
@@ -237,10 +224,7 @@ extension on double {
 double _cos(double x) {
   // Simple cos approximation
   x = x % (2 * 3.14159);
-  return 1 -
-      (x * x) / 2 +
-      (x * x * x * x) / 24 -
-      (x * x * x * x * x * x) / 720;
+  return 1 - (x * x) / 2 + (x * x * x * x) / 24 - (x * x * x * x * x * x) / 720;
 }
 
 double _sin(double x) {

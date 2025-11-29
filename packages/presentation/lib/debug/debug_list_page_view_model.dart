@@ -16,33 +16,33 @@ class DebugListPageViewModel extends _$DebugListPageViewModel {
     final menuItems = [
       const DebugMenuItemUi(
         id: 'home',
-        title: 'Home',
+        title: '1. 홈 화면 (Home)',
         description: '홈 화면',
       ),
       // StorySpark 화면들
       const DebugMenuItemUi(
         id: 'scene_creation',
-        title: '장면 생성',
+        title: '2. 장면 생성 화면 (SceneCreation)',
         description: '음성 녹음 + Air Scribble로 장면 만들기',
       ),
       const DebugMenuItemUi(
         id: 'scene_list',
-        title: '장면 리스트',
+        title: '3. 장면 리스트 화면 (SceneList)',
         description: '생성된 장면들 관리',
       ),
       const DebugMenuItemUi(
         id: 'video_generation',
-        title: '영상 생성',
+        title: '4. 영상 생성 화면 (VideoGeneration)',
         description: 'MP4 동화 영상 생성',
       ),
       const DebugMenuItemUi(
         id: 'video_playback',
-        title: '영상 재생',
+        title: '5. 영상 재생 화면 (VideoPlayback)',
         description: '완성된 동화 영상 재생',
       ),
       const DebugMenuItemUi(
         id: 'save_share',
-        title: '저장/공유',
+        title: '6. 저장/공유 화면 (SaveShare)',
         description: '영상 다운로드 및 공유',
       ),
       // 기존 디버그 화면들
@@ -90,39 +90,48 @@ class DebugListPageViewModel extends _$DebugListPageViewModel {
         break;
       case 'scene_creation':
         state = state.copyWith(
-            action: DebugListPageAction.navigateToSceneCreation());
+          action: DebugListPageAction.navigateToSceneCreation(),
+        );
         break;
       case 'scene_list':
-        state =
-            state.copyWith(action: DebugListPageAction.navigateToSceneList());
+        state = state.copyWith(
+          action: DebugListPageAction.navigateToSceneList(),
+        );
         break;
       case 'video_generation':
         state = state.copyWith(
-            action: DebugListPageAction.navigateToVideoGeneration());
+          action: DebugListPageAction.navigateToVideoGeneration(),
+        );
         break;
       case 'video_playback':
         state = state.copyWith(
-            action: DebugListPageAction.navigateToVideoPlayback());
+          action: DebugListPageAction.navigateToVideoPlayback(),
+        );
         break;
       case 'save_share':
-        state =
-            state.copyWith(action: DebugListPageAction.navigateToSaveShare());
+        state = state.copyWith(
+          action: DebugListPageAction.navigateToSaveShare(),
+        );
         break;
       case 'todo_list':
-        state =
-            state.copyWith(action: DebugListPageAction.navigateToTodoList());
+        state = state.copyWith(
+          action: DebugListPageAction.navigateToTodoList(),
+        );
         break;
       case 'hand_tracking':
         state = state.copyWith(
-            action: DebugListPageAction.navigateToHandTracking());
+          action: DebugListPageAction.navigateToHandTracking(),
+        );
         break;
       case 'image_analysis':
         state = state.copyWith(
-            action: DebugListPageAction.navigateToImageAnalysis());
+          action: DebugListPageAction.navigateToImageAnalysis(),
+        );
         break;
       case 'sketch_test':
-        state =
-            state.copyWith(action: DebugListPageAction.navigateToSketchTest());
+        state = state.copyWith(
+          action: DebugListPageAction.navigateToSketchTest(),
+        );
         break;
     }
   }
