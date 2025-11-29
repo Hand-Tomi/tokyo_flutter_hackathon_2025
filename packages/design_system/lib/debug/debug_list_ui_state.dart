@@ -19,6 +19,7 @@ class DebugListPageUiState with _$DebugListPageUiState {
 @freezed
 class DebugListPageAction with _$DebugListPageAction {
   factory DebugListPageAction.none() = _None;
+  factory DebugListPageAction.navigateToHome() = _NavigateToHome;
   factory DebugListPageAction.navigateToTodoList() = _NavigateToTodoList;
   factory DebugListPageAction.navigateToHandTracking() = _NavigateToHandTracking;
   factory DebugListPageAction.navigateToImageAnalysis() =

@@ -15,6 +15,11 @@ class DebugListPageViewModel extends _$DebugListPageViewModel {
     // 디버그 메뉴 항목 초기화
     final menuItems = [
       const DebugMenuItemUi(
+        id: 'home',
+        title: 'Home',
+        description: '홈 화면',
+      ),
+      const DebugMenuItemUi(
         id: 'todo_list',
         title: 'Todo 리스트',
         description: 'Todo 관리 화면',
@@ -53,6 +58,9 @@ class DebugListPageViewModel extends _$DebugListPageViewModel {
   /// 메뉴 항목 탭 시
   void onMenuItemTap(String id) {
     switch (id) {
+      case 'home':
+        state = state.copyWith(action: DebugListPageAction.navigateToHome());
+        break;
       case 'todo_list':
         state = state.copyWith(action: DebugListPageAction.navigateToTodoList());
         break;

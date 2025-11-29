@@ -24,6 +24,9 @@ class DebugListPage extends ConsumerWidget {
 
         next.when(
           none: () {},
+          navigateToHome: () {
+            context.push('/home');
+          },
           navigateToTodoList: () {
             context.push('/todo');
           },
