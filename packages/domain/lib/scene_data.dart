@@ -10,7 +10,7 @@ class SceneData with _$SceneData {
     String? audioFileName,
     String? sketchFileName,
     String? illustrationFileName,
-    String? text,
+    String? storyScript,
   }) = _SceneData;
 
   factory SceneData.fromJson(Map<String, dynamic> json) =>

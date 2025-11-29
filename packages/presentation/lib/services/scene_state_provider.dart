@@ -42,10 +42,10 @@ class SceneList extends _$SceneList {
     ];
   }
 
-  void updateText(String id, String text) {
+  void updateStoryScript(String id, String storyScript) {
     state = [
       for (final s in state)
-        if (s.id == id) s.copyWith(text: text) else s,
+        if (s.id == id) s.copyWith(storyScript: storyScript) else s,
     ];
   }
 
