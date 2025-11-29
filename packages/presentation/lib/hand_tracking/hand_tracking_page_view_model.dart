@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:camera/camera.dart';
 import 'package:design_system/hand_tracking/hand_tracking_ui_state.dart';
 import 'package:flutter/foundation.dart';
@@ -20,6 +22,10 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
   CameraController? _controller;
   bool _isDetecting = false;
   int _frameCounter = 0;
+
+  // Drawing state
+  bool _wasDrawing = false;
+  List<Offset> _currentPathPoints = [];
 
   @override
   PageState<HandTrackingPageUiState, HandTrackingPageAction> build() {
@@ -124,9 +130,10 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
       );
 
       // 4. Create HandLandmarker plugin
+      // Lower confidence for more sensitive detection
       _plugin = HandLandmarkerPlugin.create(
-        numHands: 2,
-        minHandDetectionConfidence: 0.5,
+        numHands: 1,
+        minHandDetectionConfidence: 0.3,
         delegate: HandLandmarkerDelegate.GPU,
       );
 
@@ -173,14 +180,30 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
       final landmarks = hands.map((h) => h.toUi()).toList();
       String statusMessage;
       String gestureInfo = '';
+      bool isDrawingMode = false;
 
       if (hands.isNotEmpty) {
         statusMessage = '${hands.length} hand(s) detected!';
         // Recognize gesture from first hand
         final firstHand = hands[0].landmarks;
         gestureInfo = GestureRecognizer.getHandDescription(firstHand);
+
+        // Always in drawing mode when hand is detected
+        isDrawingMode = true;
+
+        // Track drawing path using index finger tip
+        final fingerTip = GestureRecognizer.getIndexFingerTip(firstHand);
+        if (fingerTip != null) {
+          _processDrawingPoint(fingerTip.x, fingerTip.y);
+        }
+        _wasDrawing = true;
       } else {
         statusMessage = 'Looking for hands...';
+        // No hand detected - finish current path
+        if (_wasDrawing) {
+          _finishCurrentPath();
+        }
+        _wasDrawing = false;
       }
 
       state = state.copyWith(
@@ -188,6 +211,9 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
           landmarks: landmarks,
           statusMessage: statusMessage,
           gestureInfo: gestureInfo,
+          isDrawingMode: isDrawingMode,
+          currentPath: List.from(_currentPathPoints),
+          isFingerDown: isDrawingMode,
         ),
       );
     } catch (e) {
@@ -195,6 +221,68 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
     } finally {
       _isDetecting = false;
     }
+  }
+
+  /// Process a drawing point from finger tip
+  void _processDrawingPoint(double x, double y) {
+    // Transform coordinates based on sensor orientation
+    final sensorOrientation = state.uiState.sensorOrientation ?? 0;
+    double transformedX, transformedY;
+
+    if (sensorOrientation == 90) {
+      transformedX = 1 - y;
+      transformedY = x;
+    } else if (sensorOrientation == 270) {
+      transformedX = y;
+      transformedY = 1 - x;
+    } else if (sensorOrientation == 180) {
+      transformedX = 1 - x;
+      transformedY = 1 - y;
+    } else {
+      transformedX = x;
+      transformedY = y;
+    }
+
+    final point = Offset(transformedX, transformedY);
+
+    // Skip if point is too close to last point (reduces noise)
+    if (_currentPathPoints.isNotEmpty) {
+      final lastPoint = _currentPathPoints.last;
+      final distance = (point - lastPoint).distance;
+      if (distance < 0.01) return; // Threshold for minimum movement
+    }
+
+    _currentPathPoints.add(point);
+  }
+
+  /// Finish current drawing path and save it
+  void _finishCurrentPath() {
+    if (_currentPathPoints.length >= 2) {
+      final newPath = DrawingPathUi(
+        points: List.from(_currentPathPoints),
+        strokeWidth: 4.0,
+        color: const Color(0xFF000000),
+      );
+      state = state.copyWith(
+        uiState: state.uiState.copyWith(
+          drawingPaths: [...state.uiState.drawingPaths, newPath],
+        ),
+      );
+    }
+    _currentPathPoints.clear();
+  }
+
+  /// Clear all drawings
+  void onClearDrawing() {
+    _currentPathPoints.clear();
+    _wasDrawing = false;
+    state = state.copyWith(
+      uiState: state.uiState.copyWith(
+        drawingPaths: [],
+        currentPath: [],
+        isFingerDown: false,
+      ),
+    );
   }
 
   ResolutionPreset _mapResolutionPreset(ResolutionPresetUi preset) {

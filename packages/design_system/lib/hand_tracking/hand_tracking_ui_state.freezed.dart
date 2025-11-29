@@ -25,7 +25,12 @@ mixin _$HandTrackingPageUiState {
   int get frameSkip => throw _privateConstructorUsedError;
   ResolutionPresetUi get resolution => throw _privateConstructorUsedError;
   Size? get previewSize => throw _privateConstructorUsedError;
-  int? get sensorOrientation => throw _privateConstructorUsedError;
+  int? get sensorOrientation =>
+      throw _privateConstructorUsedError; // Drawing mode state
+  bool get isDrawingMode => throw _privateConstructorUsedError;
+  List<DrawingPathUi> get drawingPaths => throw _privateConstructorUsedError;
+  List<Offset> get currentPath => throw _privateConstructorUsedError;
+  bool get isFingerDown => throw _privateConstructorUsedError;
 
   /// Create a copy of HandTrackingPageUiState
   /// with the given fields replaced by the non-null parameter values.
@@ -51,6 +56,10 @@ abstract class $HandTrackingPageUiStateCopyWith<$Res> {
     ResolutionPresetUi resolution,
     Size? previewSize,
     int? sensorOrientation,
+    bool isDrawingMode,
+    List<DrawingPathUi> drawingPaths,
+    List<Offset> currentPath,
+    bool isFingerDown,
   });
 }
 
@@ -81,6 +90,10 @@ class _$HandTrackingPageUiStateCopyWithImpl<
     Object? resolution = null,
     Object? previewSize = freezed,
     Object? sensorOrientation = freezed,
+    Object? isDrawingMode = null,
+    Object? drawingPaths = null,
+    Object? currentPath = null,
+    Object? isFingerDown = null,
   }) {
     return _then(
       _value.copyWith(
@@ -120,6 +133,22 @@ class _$HandTrackingPageUiStateCopyWithImpl<
                 ? _value.sensorOrientation
                 : sensorOrientation // ignore: cast_nullable_to_non_nullable
                       as int?,
+            isDrawingMode: null == isDrawingMode
+                ? _value.isDrawingMode
+                : isDrawingMode // ignore: cast_nullable_to_non_nullable
+                      as bool,
+            drawingPaths: null == drawingPaths
+                ? _value.drawingPaths
+                : drawingPaths // ignore: cast_nullable_to_non_nullable
+                      as List<DrawingPathUi>,
+            currentPath: null == currentPath
+                ? _value.currentPath
+                : currentPath // ignore: cast_nullable_to_non_nullable
+                      as List<Offset>,
+            isFingerDown: null == isFingerDown
+                ? _value.isFingerDown
+                : isFingerDown // ignore: cast_nullable_to_non_nullable
+                      as bool,
           )
           as $Val,
     );
@@ -145,6 +174,10 @@ abstract class _$$HandTrackingPageUiStateImplCopyWith<$Res>
     ResolutionPresetUi resolution,
     Size? previewSize,
     int? sensorOrientation,
+    bool isDrawingMode,
+    List<DrawingPathUi> drawingPaths,
+    List<Offset> currentPath,
+    bool isFingerDown,
   });
 }
 
@@ -175,6 +208,10 @@ class __$$HandTrackingPageUiStateImplCopyWithImpl<$Res>
     Object? resolution = null,
     Object? previewSize = freezed,
     Object? sensorOrientation = freezed,
+    Object? isDrawingMode = null,
+    Object? drawingPaths = null,
+    Object? currentPath = null,
+    Object? isFingerDown = null,
   }) {
     return _then(
       _$HandTrackingPageUiStateImpl(
@@ -214,6 +251,22 @@ class __$$HandTrackingPageUiStateImplCopyWithImpl<$Res>
             ? _value.sensorOrientation
             : sensorOrientation // ignore: cast_nullable_to_non_nullable
                   as int?,
+        isDrawingMode: null == isDrawingMode
+            ? _value.isDrawingMode
+            : isDrawingMode // ignore: cast_nullable_to_non_nullable
+                  as bool,
+        drawingPaths: null == drawingPaths
+            ? _value._drawingPaths
+            : drawingPaths // ignore: cast_nullable_to_non_nullable
+                  as List<DrawingPathUi>,
+        currentPath: null == currentPath
+            ? _value._currentPath
+            : currentPath // ignore: cast_nullable_to_non_nullable
+                  as List<Offset>,
+        isFingerDown: null == isFingerDown
+            ? _value.isFingerDown
+            : isFingerDown // ignore: cast_nullable_to_non_nullable
+                  as bool,
       ),
     );
   }
@@ -232,7 +285,13 @@ class _$HandTrackingPageUiStateImpl implements _HandTrackingPageUiState {
     this.resolution = ResolutionPresetUi.medium,
     this.previewSize,
     this.sensorOrientation,
-  }) : _landmarks = landmarks;
+    this.isDrawingMode = false,
+    final List<DrawingPathUi> drawingPaths = const [],
+    final List<Offset> currentPath = const [],
+    this.isFingerDown = false,
+  }) : _landmarks = landmarks,
+       _drawingPaths = drawingPaths,
+       _currentPath = currentPath;
 
   @override
   @JsonKey()
@@ -265,10 +324,35 @@ class _$HandTrackingPageUiStateImpl implements _HandTrackingPageUiState {
   final Size? previewSize;
   @override
   final int? sensorOrientation;
+  // Drawing mode state
+  @override
+  @JsonKey()
+  final bool isDrawingMode;
+  final List<DrawingPathUi> _drawingPaths;
+  @override
+  @JsonKey()
+  List<DrawingPathUi> get drawingPaths {
+    if (_drawingPaths is EqualUnmodifiableListView) return _drawingPaths;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_drawingPaths);
+  }
+
+  final List<Offset> _currentPath;
+  @override
+  @JsonKey()
+  List<Offset> get currentPath {
+    if (_currentPath is EqualUnmodifiableListView) return _currentPath;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_currentPath);
+  }
+
+  @override
+  @JsonKey()
+  final bool isFingerDown;
 
   @override
   String toString() {
-    return 'HandTrackingPageUiState(statusMessage: $statusMessage, gestureInfo: $gestureInfo, landmarks: $landmarks, isInitialized: $isInitialized, showSettings: $showSettings, frameSkip: $frameSkip, resolution: $resolution, previewSize: $previewSize, sensorOrientation: $sensorOrientation)';
+    return 'HandTrackingPageUiState(statusMessage: $statusMessage, gestureInfo: $gestureInfo, landmarks: $landmarks, isInitialized: $isInitialized, showSettings: $showSettings, frameSkip: $frameSkip, resolution: $resolution, previewSize: $previewSize, sensorOrientation: $sensorOrientation, isDrawingMode: $isDrawingMode, drawingPaths: $drawingPaths, currentPath: $currentPath, isFingerDown: $isFingerDown)';
   }
 
   @override
@@ -295,7 +379,19 @@ class _$HandTrackingPageUiStateImpl implements _HandTrackingPageUiState {
             (identical(other.previewSize, previewSize) ||
                 other.previewSize == previewSize) &&
             (identical(other.sensorOrientation, sensorOrientation) ||
-                other.sensorOrientation == sensorOrientation));
+                other.sensorOrientation == sensorOrientation) &&
+            (identical(other.isDrawingMode, isDrawingMode) ||
+                other.isDrawingMode == isDrawingMode) &&
+            const DeepCollectionEquality().equals(
+              other._drawingPaths,
+              _drawingPaths,
+            ) &&
+            const DeepCollectionEquality().equals(
+              other._currentPath,
+              _currentPath,
+            ) &&
+            (identical(other.isFingerDown, isFingerDown) ||
+                other.isFingerDown == isFingerDown));
   }
 
   @override
@@ -310,6 +406,10 @@ class _$HandTrackingPageUiStateImpl implements _HandTrackingPageUiState {
     resolution,
     previewSize,
     sensorOrientation,
+    isDrawingMode,
+    const DeepCollectionEquality().hash(_drawingPaths),
+    const DeepCollectionEquality().hash(_currentPath),
+    isFingerDown,
   );
 
   /// Create a copy of HandTrackingPageUiState
@@ -335,6 +435,10 @@ abstract class _HandTrackingPageUiState implements HandTrackingPageUiState {
     final ResolutionPresetUi resolution,
     final Size? previewSize,
     final int? sensorOrientation,
+    final bool isDrawingMode,
+    final List<DrawingPathUi> drawingPaths,
+    final List<Offset> currentPath,
+    final bool isFingerDown,
   }) = _$HandTrackingPageUiStateImpl;
 
   @override
@@ -354,7 +458,15 @@ abstract class _HandTrackingPageUiState implements HandTrackingPageUiState {
   @override
   Size? get previewSize;
   @override
-  int? get sensorOrientation;
+  int? get sensorOrientation; // Drawing mode state
+  @override
+  bool get isDrawingMode;
+  @override
+  List<DrawingPathUi> get drawingPaths;
+  @override
+  List<Offset> get currentPath;
+  @override
+  bool get isFingerDown;
 
   /// Create a copy of HandTrackingPageUiState
   /// with the given fields replaced by the non-null parameter values.
@@ -362,6 +474,196 @@ abstract class _HandTrackingPageUiState implements HandTrackingPageUiState {
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$HandTrackingPageUiStateImplCopyWith<_$HandTrackingPageUiStateImpl>
   get copyWith => throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+mixin _$DrawingPathUi {
+  List<Offset> get points => throw _privateConstructorUsedError;
+  double get strokeWidth => throw _privateConstructorUsedError;
+  Color get color => throw _privateConstructorUsedError;
+
+  /// Create a copy of DrawingPathUi
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $DrawingPathUiCopyWith<DrawingPathUi> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $DrawingPathUiCopyWith<$Res> {
+  factory $DrawingPathUiCopyWith(
+    DrawingPathUi value,
+    $Res Function(DrawingPathUi) then,
+  ) = _$DrawingPathUiCopyWithImpl<$Res, DrawingPathUi>;
+  @useResult
+  $Res call({List<Offset> points, double strokeWidth, Color color});
+}
+
+/// @nodoc
+class _$DrawingPathUiCopyWithImpl<$Res, $Val extends DrawingPathUi>
+    implements $DrawingPathUiCopyWith<$Res> {
+  _$DrawingPathUiCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of DrawingPathUi
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? points = null,
+    Object? strokeWidth = null,
+    Object? color = null,
+  }) {
+    return _then(
+      _value.copyWith(
+            points: null == points
+                ? _value.points
+                : points // ignore: cast_nullable_to_non_nullable
+                      as List<Offset>,
+            strokeWidth: null == strokeWidth
+                ? _value.strokeWidth
+                : strokeWidth // ignore: cast_nullable_to_non_nullable
+                      as double,
+            color: null == color
+                ? _value.color
+                : color // ignore: cast_nullable_to_non_nullable
+                      as Color,
+          )
+          as $Val,
+    );
+  }
+}
+
+/// @nodoc
+abstract class _$$DrawingPathUiImplCopyWith<$Res>
+    implements $DrawingPathUiCopyWith<$Res> {
+  factory _$$DrawingPathUiImplCopyWith(
+    _$DrawingPathUiImpl value,
+    $Res Function(_$DrawingPathUiImpl) then,
+  ) = __$$DrawingPathUiImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({List<Offset> points, double strokeWidth, Color color});
+}
+
+/// @nodoc
+class __$$DrawingPathUiImplCopyWithImpl<$Res>
+    extends _$DrawingPathUiCopyWithImpl<$Res, _$DrawingPathUiImpl>
+    implements _$$DrawingPathUiImplCopyWith<$Res> {
+  __$$DrawingPathUiImplCopyWithImpl(
+    _$DrawingPathUiImpl _value,
+    $Res Function(_$DrawingPathUiImpl) _then,
+  ) : super(_value, _then);
+
+  /// Create a copy of DrawingPathUi
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? points = null,
+    Object? strokeWidth = null,
+    Object? color = null,
+  }) {
+    return _then(
+      _$DrawingPathUiImpl(
+        points: null == points
+            ? _value._points
+            : points // ignore: cast_nullable_to_non_nullable
+                  as List<Offset>,
+        strokeWidth: null == strokeWidth
+            ? _value.strokeWidth
+            : strokeWidth // ignore: cast_nullable_to_non_nullable
+                  as double,
+        color: null == color
+            ? _value.color
+            : color // ignore: cast_nullable_to_non_nullable
+                  as Color,
+      ),
+    );
+  }
+}
+
+/// @nodoc
+
+class _$DrawingPathUiImpl implements _DrawingPathUi {
+  const _$DrawingPathUiImpl({
+    required final List<Offset> points,
+    this.strokeWidth = 3.0,
+    this.color = const Color(0xFF000000),
+  }) : _points = points;
+
+  final List<Offset> _points;
+  @override
+  List<Offset> get points {
+    if (_points is EqualUnmodifiableListView) return _points;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_points);
+  }
+
+  @override
+  @JsonKey()
+  final double strokeWidth;
+  @override
+  @JsonKey()
+  final Color color;
+
+  @override
+  String toString() {
+    return 'DrawingPathUi(points: $points, strokeWidth: $strokeWidth, color: $color)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$DrawingPathUiImpl &&
+            const DeepCollectionEquality().equals(other._points, _points) &&
+            (identical(other.strokeWidth, strokeWidth) ||
+                other.strokeWidth == strokeWidth) &&
+            (identical(other.color, color) || other.color == color));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    runtimeType,
+    const DeepCollectionEquality().hash(_points),
+    strokeWidth,
+    color,
+  );
+
+  /// Create a copy of DrawingPathUi
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$DrawingPathUiImplCopyWith<_$DrawingPathUiImpl> get copyWith =>
+      __$$DrawingPathUiImplCopyWithImpl<_$DrawingPathUiImpl>(this, _$identity);
+}
+
+abstract class _DrawingPathUi implements DrawingPathUi {
+  const factory _DrawingPathUi({
+    required final List<Offset> points,
+    final double strokeWidth,
+    final Color color,
+  }) = _$DrawingPathUiImpl;
+
+  @override
+  List<Offset> get points;
+  @override
+  double get strokeWidth;
+  @override
+  Color get color;
+
+  /// Create a copy of DrawingPathUi
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$DrawingPathUiImplCopyWith<_$DrawingPathUiImpl> get copyWith =>
+      throw _privateConstructorUsedError;
 }
 
 /// @nodoc

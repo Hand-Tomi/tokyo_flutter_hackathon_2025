@@ -18,7 +18,22 @@ class HandTrackingPageUiState with _$HandTrackingPageUiState {
     @Default(ResolutionPresetUi.medium) ResolutionPresetUi resolution,
     Size? previewSize,
     int? sensorOrientation,
+    // Drawing mode state
+    @Default(false) bool isDrawingMode,
+    @Default([]) List<DrawingPathUi> drawingPaths,
+    @Default([]) List<Offset> currentPath,
+    @Default(false) bool isFingerDown,
   }) = _HandTrackingPageUiState;
+}
+
+/// Drawing path with stroke information
+@freezed
+class DrawingPathUi with _$DrawingPathUi {
+  const factory DrawingPathUi({
+    required List<Offset> points,
+    @Default(3.0) double strokeWidth,
+    @Default(Color(0xFF000000)) Color color,
+  }) = _DrawingPathUi;
 }
 
 /// Hand Tracking Page Actions

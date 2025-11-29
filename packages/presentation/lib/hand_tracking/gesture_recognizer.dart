@@ -159,6 +159,43 @@ class GestureRecognizer {
     return dx * dx + dy * dy + dz * dz; // No sqrt needed for comparison
   }
 
+  /// Check if hand is in drawing mode (pointing finger - only index extended)
+  static bool isDrawingGesture(List<Landmark> landmarks) {
+    if (landmarks.length < 21) return false;
+
+    // Index finger should be extended
+    final indexTip = landmarks[8];
+    final indexPip = landmarks[6];
+    final indexExtended = indexTip.y < indexPip.y - 0.03;
+
+    if (!indexExtended) return false;
+
+    // Other fingers (middle, ring, pinky) should be curled
+    final middleTip = landmarks[12];
+    final middlePip = landmarks[10];
+    final ringTip = landmarks[16];
+    final ringPip = landmarks[14];
+    final pinkyTip = landmarks[20];
+    final pinkyPip = landmarks[18];
+
+    final middleCurled = middleTip.y >= middlePip.y - 0.02;
+    final ringCurled = ringTip.y >= ringPip.y - 0.02;
+    final pinkyCurled = pinkyTip.y >= pinkyPip.y - 0.02;
+
+    // At least 2 of 3 fingers should be curled for drawing gesture
+    final curledCount =
+        (middleCurled ? 1 : 0) + (ringCurled ? 1 : 0) + (pinkyCurled ? 1 : 0);
+    return curledCount >= 2;
+  }
+
+  /// Get the index finger tip position (landmark 8)
+  static ({double x, double y, double z})? getIndexFingerTip(
+      List<Landmark> landmarks) {
+    if (landmarks.length < 21) return null;
+    final tip = landmarks[8];
+    return (x: tip.x, y: tip.y, z: tip.z);
+  }
+
   /// Get a human-readable description of the hand state
   static String getHandDescription(List<Landmark> landmarks) {
     if (landmarks.isEmpty) return 'No hand detected';

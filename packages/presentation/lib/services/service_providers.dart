@@ -3,6 +3,7 @@ import 'package:domain/domain.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'gemini_vision_service.dart';
 import 'gemini_image_generation_service.dart';
+import 'gemini_sketch_to_image_service.dart';
 import 'imagen_generation_service.dart';
 
 part 'service_providers.g.dart';
@@ -38,4 +39,15 @@ ImageGenerationService imageGenerationService(
     return GeminiImageGenerationService(apiKey: apiKey);
   }
   return ImagenGenerationService(apiKey: apiKey);
+}
+
+/// Sketch to Image Service Provider
+/// 스케치 + 텍스트 → 동화풍 이미지 변환
+@riverpod
+SketchToImageService sketchToImageService(SketchToImageServiceRef ref) {
+  final apiKey = dotenv.env['GEMINI_API_KEY'];
+  if (apiKey == null || apiKey.isEmpty) {
+    throw Exception('GEMINI_API_KEY가 .env 파일에 설정되지 않았습니다.');
+  }
+  return GeminiSketchToImageService(apiKey: apiKey);
 }

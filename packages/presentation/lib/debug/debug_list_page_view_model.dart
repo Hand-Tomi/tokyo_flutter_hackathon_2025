@@ -29,6 +29,11 @@ class DebugListPageViewModel extends _$DebugListPageViewModel {
         title: '이미지 분석 & 생성',
         description: 'AI 이미지 분석 및 생성 기능',
       ),
+      const DebugMenuItemUi(
+        id: 'sketch_test',
+        title: '스케치 → 동화 이미지',
+        description: '스케치 + 텍스트를 동화풍 이미지로 변환',
+      ),
     ];
 
     return PageState(
@@ -58,6 +63,10 @@ class DebugListPageViewModel extends _$DebugListPageViewModel {
       case 'image_analysis':
         state =
             state.copyWith(action: DebugListPageAction.navigateToImageAnalysis());
+        break;
+      case 'sketch_test':
+        state =
+            state.copyWith(action: DebugListPageAction.navigateToSketchTest());
         break;
     }
   }

@@ -23,4 +23,5 @@ class DebugListPageAction with _$DebugListPageAction {
   factory DebugListPageAction.navigateToHandTracking() = _NavigateToHandTracking;
   factory DebugListPageAction.navigateToImageAnalysis() =
       _NavigateToImageAnalysis;
+  factory DebugListPageAction.navigateToSketchTest() = _NavigateToSketchTest;
 }

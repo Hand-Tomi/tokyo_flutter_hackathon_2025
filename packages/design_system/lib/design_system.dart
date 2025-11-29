@@ -20,3 +20,7 @@ export 'image/image_analysis_ui.dart';
 export 'image/generated_image_ui.dart';
 export 'image/image_analysis_page_ui_state.dart';
 export 'image/image_analysis_page_template.dart';
+
+// Sketch Test
+export 'sketch_test/sketch_test_ui_state.dart';
+export 'sketch_test/sketch_test_page_template.dart';
