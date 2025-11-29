@@ -11,7 +11,6 @@ class VideoPlaybackPage extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final state = ref.watch(videoPlaybackPageViewModelProvider);
-    final notifier = ref.read(videoPlaybackPageViewModelProvider.notifier);
 
     ref.listen(
       videoPlaybackPageViewModelProvider.select((value) => value.action),
@@ -30,13 +29,14 @@ class VideoPlaybackPage extends ConsumerWidget {
           },
         );
 
-        notifier.onFinishedAction();
+        ref.read(videoPlaybackPageViewModelProvider.notifier).onFinishedAction();
       },
     );
 
+    final notifier = ref.read(videoPlaybackPageViewModelProvider.notifier);
+
     return VideoPlaybackTemplate(
       uiState: state.uiState,
-      onBackPressed: () => context.pop(),
       onPlayPausePressed: notifier.onPlayPausePressed,
       onSeek: notifier.onSeek,
       onSaveSharePressed: notifier.onSaveSharePressed,

@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:design_system/step5_video_playback/video_playback_ui_state.dart';
@@ -7,6 +8,7 @@ import 'package:flutter/foundation.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:presentation/page_state.dart';
 import 'package:presentation/services/scene_state_provider.dart';
+import 'package:presentation/services/slideshow_state_provider.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -98,6 +100,9 @@ class VideoPlaybackPageViewModel extends _$VideoPlaybackPageViewModel {
 
       debugPrint('슬라이드쇼 로드 완료: ${scenes.length}개 장면, 총 ${totalDurationMs}ms');
 
+      // 슬라이드쇼 데이터를 JSON으로 저장
+      await _saveSlideshowJson(scenes, totalDurationMs, mediaBasePath);
+
       // 첫 번째 장면으로 초기화
       state = state.copyWith(
         uiState: state.uiState.copyWith(
@@ -115,6 +120,53 @@ class VideoPlaybackPageViewModel extends _$VideoPlaybackPageViewModel {
         uiState: state.uiState.copyWith(status: PlaybackStatus.error),
         action: VideoPlaybackPageAction.showError('슬라이드쇼 로드 실패: $e'),
       );
+    }
+  }
+
+  /// 슬라이드쇼 데이터를 JSON 파일로 저장
+  Future<void> _saveSlideshowJson(
+    List<SlideshowScene> scenes,
+    int totalDurationMs,
+    String mediaBasePath,
+  ) async {
+    try {
+      final videosDir = Directory('$mediaBasePath/videos');
+      if (!await videosDir.exists()) {
+        await videosDir.create(recursive: true);
+      }
+
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+      final fileName = 'slideshow_$timestamp.json';
+      final jsonPath = '${videosDir.path}/$fileName';
+
+      final jsonData = {
+        'createdAt': DateTime.now().toIso8601String(),
+        'totalDurationMs': totalDurationMs,
+        'scenes': scenes.map((scene) => {
+          'index': scene.index,
+          'imagePath': scene.imagePath,
+          'audioPath': scene.audioPath,
+          'subtitle': scene.subtitle,
+          'durationMs': scene.durationMs,
+          'startTimeMs': scene.startTimeMs,
+        }).toList(),
+      };
+
+      final jsonFile = File(jsonPath);
+      await jsonFile.writeAsString(
+        const JsonEncoder.withIndent('  ').convert(jsonData),
+      );
+
+      // 전역 상태에 슬라이드쇼 정보 저장
+      final firstSubtitle = scenes.isNotEmpty ? scenes[0].subtitle : '';
+      ref.read(slideshowListProvider.notifier).addSlideshow(
+        title: firstSubtitle,
+        fileName: fileName,
+      );
+
+      debugPrint('슬라이드쇼 JSON 저장 완료: $jsonPath');
+    } catch (e) {
+      debugPrint('슬라이드쇼 JSON 저장 실패: $e');
     }
   }
 

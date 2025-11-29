@@ -13,7 +13,6 @@ class VideoPlaybackTemplate extends StatelessWidget {
   const VideoPlaybackTemplate({
     super.key,
     required this.uiState,
-    this.onBackPressed,
     this.onPlayPausePressed,
     this.onSeek,
     this.onSaveSharePressed,
@@ -21,7 +20,6 @@ class VideoPlaybackTemplate extends StatelessWidget {
   });
 
   final VideoPlaybackPageUiState uiState;
-  final VoidCallback? onBackPressed;
   final VoidCallback? onPlayPausePressed;
   final void Function(double)? onSeek;
   final VoidCallback? onSaveSharePressed;
@@ -72,15 +70,6 @@ class VideoPlaybackTemplate extends StatelessWidget {
               ),
             ),
 
-            // 뒤로가기 버튼
-            Positioned(
-              top: MediaQuery.of(context).padding.top + 16,
-              left: 16,
-              child: CircleIconButton(
-                onPressed: onBackPressed,
-                icon: Icons.arrow_back,
-              ),
-            ),
           ],
         ),
       ),
