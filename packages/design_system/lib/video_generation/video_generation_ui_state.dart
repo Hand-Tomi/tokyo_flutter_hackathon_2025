@@ -64,4 +64,19 @@ class VideoGenerationPageAction with _$VideoGenerationPageAction {
 
   /// 비디오 공유
   factory VideoGenerationPageAction.shareVideo(String videoPath) = _ShareVideo;
+
+  /// 비디오 다운로드
+  factory VideoGenerationPageAction.downloadVideo(String videoUrl) =
+      _DownloadVideo;
+
+  /// 브라우저에서 열기
+  factory VideoGenerationPageAction.openInBrowser(String videoUrl) =
+      _OpenInBrowser;
+
+  /// 링크 공유
+  factory VideoGenerationPageAction.shareLink(String videoUrl) = _ShareLink;
+
+  /// 다운로드 완료
+  factory VideoGenerationPageAction.showDownloadComplete(String localPath) =
+      _ShowDownloadComplete;
 }

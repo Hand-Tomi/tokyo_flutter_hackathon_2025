@@ -1,8 +1,14 @@
+import 'dart:io';
+
 import 'package:design_system/video_generation/video_generation_template.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:presentation/video_generation/video_generation_page_view_model.dart';
+import 'package:share_plus/share_plus.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 /// 비디오 생성 페이지
 ///
@@ -29,7 +35,7 @@ class VideoGenerationPage extends ConsumerWidget {
             _showAudioPicker(context, ref);
           },
           showGenerationComplete: (videoPath) {
-            _showGenerationCompleteDialog(context, videoPath);
+            _showGenerationCompleteDialog(context, ref, videoPath);
           },
           showVideoPreview: (videoPath) {
             _showVideoPreview(context, videoPath);
@@ -44,6 +50,18 @@ class VideoGenerationPage extends ConsumerWidget {
           },
           shareVideo: (videoPath) {
             _shareVideo(context, videoPath);
+          },
+          downloadVideo: (videoUrl) {
+            _downloadVideo(context, ref, videoUrl);
+          },
+          openInBrowser: (videoUrl) {
+            _openInBrowser(context, videoUrl);
+          },
+          shareLink: (videoUrl) {
+            _shareLink(context, videoUrl);
+          },
+          showDownloadComplete: (localPath) {
+            _showDownloadCompleteDialog(context, localPath);
           },
         );
 
@@ -236,24 +254,121 @@ class VideoGenerationPage extends ConsumerWidget {
   }
 
   /// 비디오 생성 완료 다이얼로그
-  void _showGenerationCompleteDialog(BuildContext context, String videoPath) {
+  void _showGenerationCompleteDialog(
+    BuildContext context,
+    WidgetRef ref,
+    String videoPath,
+  ) {
     showDialog<void>(
       context: context,
-      builder: (context) => AlertDialog(
+      builder: (dialogContext) => AlertDialog(
         title: const Row(
           children: [
-            Icon(Icons.check_circle, color: Colors.green),
+            Icon(Icons.check_circle, color: Colors.green, size: 28),
             SizedBox(width: 8),
-            Text('생성 완료!'),
+            Text('🎉 생성 완료!'),
           ],
         ),
-        content: Text('비디오가 성공적으로 생성되었습니다.\n\n경로: $videoPath'),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              '비디오가 성공적으로 생성되었습니다.',
+              style: TextStyle(fontSize: 16),
+            ),
+            const SizedBox(height: 16),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.link, size: 20, color: Colors.blue),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      videoPath,
+                      style: const TextStyle(fontSize: 12),
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            const SizedBox(height: 20),
+            // 액션 버튼들
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                _buildActionButton(
+                  icon: Icons.download,
+                  label: '다운로드',
+                  onTap: () {
+                    Navigator.of(dialogContext).pop();
+                    ref
+                        .read(videoGenerationPageViewModelProvider.notifier)
+                        .onDownloadVideo();
+                  },
+                ),
+                _buildActionButton(
+                  icon: Icons.open_in_browser,
+                  label: '브라우저',
+                  onTap: () {
+                    Navigator.of(dialogContext).pop();
+                    ref
+                        .read(videoGenerationPageViewModelProvider.notifier)
+                        .onOpenInBrowser();
+                  },
+                ),
+                _buildActionButton(
+                  icon: Icons.share,
+                  label: '링크 공유',
+                  onTap: () {
+                    Navigator.of(dialogContext).pop();
+                    ref
+                        .read(videoGenerationPageViewModelProvider.notifier)
+                        .onShareLink();
+                  },
+                ),
+              ],
+            ),
+          ],
+        ),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: const Text('확인'),
+            onPressed: () => Navigator.of(dialogContext).pop(),
+            child: const Text('닫기'),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildActionButton({
+    required IconData icon,
+    required String label,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(8),
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(icon, size: 28, color: Colors.blue),
+            const SizedBox(height: 4),
+            Text(
+              label,
+              style: const TextStyle(fontSize: 12, color: Colors.blue),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -301,6 +416,168 @@ class VideoGenerationPage extends ConsumerWidget {
       SnackBar(
         content: Text('공유 기능: $videoPath\n(share_plus 패키지로 구현)'),
         duration: const Duration(seconds: 2),
+      ),
+    );
+  }
+
+  /// 비디오 다운로드
+  Future<void> _downloadVideo(
+    BuildContext context,
+    WidgetRef ref,
+    String videoUrl,
+  ) async {
+    // 다운로드 시작 알림
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Row(
+          children: [
+            SizedBox(
+              width: 20,
+              height: 20,
+              child: CircularProgressIndicator(
+                strokeWidth: 2,
+                color: Colors.white,
+              ),
+            ),
+            SizedBox(width: 12),
+            Text('비디오 다운로드 중...'),
+          ],
+        ),
+        duration: Duration(seconds: 30),
+      ),
+    );
+
+    try {
+      // HTTP로 비디오 다운로드
+      final response = await http.get(Uri.parse(videoUrl));
+
+      if (response.statusCode == 200) {
+        // 저장 경로 결정
+        final directory = await getApplicationDocumentsDirectory();
+        final fileName =
+            'video_${DateTime.now().millisecondsSinceEpoch}.mp4';
+        final filePath = '${directory.path}/$fileName';
+
+        // 파일 저장
+        final file = File(filePath);
+        await file.writeAsBytes(response.bodyBytes);
+
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).hideCurrentSnackBar();
+          ref
+              .read(videoGenerationPageViewModelProvider.notifier)
+              .onDownloadComplete(filePath);
+        }
+      } else {
+        throw Exception('다운로드 실패: ${response.statusCode}');
+      }
+    } on Exception catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).hideCurrentSnackBar();
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('다운로드 실패: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  /// 브라우저에서 열기
+  Future<void> _openInBrowser(BuildContext context, String videoUrl) async {
+    final uri = Uri.parse(videoUrl);
+    try {
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      } else {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('브라우저를 열 수 없습니다'),
+              backgroundColor: Colors.red,
+            ),
+          );
+        }
+      }
+    } on Exception catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('오류: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  /// 링크 공유
+  Future<void> _shareLink(BuildContext context, String videoUrl) async {
+    try {
+      await Share.share(
+        '🎬 AI로 생성한 비디오를 확인해보세요!\n\n$videoUrl',
+        subject: 'AI 생성 비디오',
+      );
+    } on Exception catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('공유 실패: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
+  }
+
+  /// 다운로드 완료 다이얼로그
+  void _showDownloadCompleteDialog(BuildContext context, String localPath) {
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Row(
+          children: [
+            Icon(Icons.download_done, color: Colors.green, size: 28),
+            SizedBox(width: 8),
+            Text('다운로드 완료!'),
+          ],
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text('비디오가 저장되었습니다.'),
+            const SizedBox(height: 12),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.grey[100],
+                borderRadius: BorderRadius.circular(8),
+              ),
+              child: Row(
+                children: [
+                  const Icon(Icons.folder, size: 20, color: Colors.orange),
+                  const SizedBox(width: 8),
+                  Expanded(
+                    child: Text(
+                      localPath,
+                      style: const TextStyle(fontSize: 11),
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(context).pop(),
+            child: const Text('확인'),
+          ),
+        ],
       ),
     );
   }
