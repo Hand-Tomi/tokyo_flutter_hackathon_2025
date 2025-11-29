@@ -43,6 +43,7 @@ class HandTrackingPageAction with _$HandTrackingPageAction {
   factory HandTrackingPageAction.none() = _None;
   factory HandTrackingPageAction.showError(String message) = _ShowError;
   factory HandTrackingPageAction.showConfirmDialog() = _ShowConfirmDialog;
+  factory HandTrackingPageAction.navigateToSceneList() = _NavigateToSceneList;
 }
 
 /// UI model for hand landmark data (decoupled from hand_landmarker package)

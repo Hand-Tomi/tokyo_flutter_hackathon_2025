@@ -30,6 +30,7 @@ class SceneCreationPageAction with _$SceneCreationPageAction {
   factory SceneCreationPageAction.none() = _None;
   factory SceneCreationPageAction.showError(String message) = _ShowError;
   factory SceneCreationPageAction.navigateToSceneList() = _NavigateToSceneList;
+  factory SceneCreationPageAction.navigateToHandTracking() = _NavigateToHandTracking;
   factory SceneCreationPageAction.showSceneCreated(int sceneNumber) =
       _ShowSceneCreated;
 }
