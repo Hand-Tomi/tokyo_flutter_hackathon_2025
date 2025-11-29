@@ -25,4 +25,13 @@ class DebugListPageAction with _$DebugListPageAction {
   factory DebugListPageAction.navigateToImageAnalysis() =
       _NavigateToImageAnalysis;
   factory DebugListPageAction.navigateToSketchTest() = _NavigateToSketchTest;
+  // 새 화면들
+  factory DebugListPageAction.navigateToSceneCreation() =
+      _NavigateToSceneCreation;
+  factory DebugListPageAction.navigateToSceneList() = _NavigateToSceneList;
+  factory DebugListPageAction.navigateToVideoGeneration() =
+      _NavigateToVideoGeneration;
+  factory DebugListPageAction.navigateToVideoPlayback() =
+      _NavigateToVideoPlayback;
+  factory DebugListPageAction.navigateToSaveShare() = _NavigateToSaveShare;
 }

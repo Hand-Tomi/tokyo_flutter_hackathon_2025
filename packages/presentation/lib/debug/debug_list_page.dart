@@ -27,6 +27,21 @@ class DebugListPage extends ConsumerWidget {
           navigateToHome: () {
             context.push('/home');
           },
+          navigateToSceneCreation: () {
+            context.push('/scene-creation');
+          },
+          navigateToSceneList: () {
+            context.push('/scene-list');
+          },
+          navigateToVideoGeneration: () {
+            context.push('/video-generation');
+          },
+          navigateToVideoPlayback: () {
+            context.push('/video-playback');
+          },
+          navigateToSaveShare: () {
+            context.push('/save-share');
+          },
           navigateToTodoList: () {
             context.push('/todo');
           },

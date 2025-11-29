@@ -57,6 +57,21 @@ abstract final class AppTypography {
         ],
       );
 
+  /// 중간 디스플레이 타이틀
+  /// fontSize: 40, weight: 700
+  static TextStyle get displayMedium => GoogleFonts.fredoka(
+        fontSize: 40,
+        fontWeight: FontWeight.w700,
+        color: AppColors.textPrimary,
+        shadows: [
+          Shadow(
+            offset: const Offset(3, 3),
+            color: AppColors.textShadow,
+            blurRadius: 0,
+          ),
+        ],
+      );
+
   // ============================================
   // 버튼 텍스트 스타일 (Fredoka)
   // ============================================
@@ -83,6 +98,26 @@ abstract final class AppTypography {
   /// fontSize: 18, weight: 600
   static TextStyle get buttonSmall => GoogleFonts.fredoka(
         fontSize: 18,
+        fontWeight: FontWeight.w600,
+        color: AppColors.textPrimary,
+      );
+
+  // ============================================
+  // 라벨 스타일 (Fredoka)
+  // ============================================
+
+  /// 라벨 (중간)
+  /// fontSize: 14, weight: 600
+  static TextStyle get labelMedium => GoogleFonts.fredoka(
+        fontSize: 14,
+        fontWeight: FontWeight.w600,
+        color: AppColors.textPrimary,
+      );
+
+  /// 라벨 (큰)
+  /// fontSize: 16, weight: 600
+  static TextStyle get labelLarge => GoogleFonts.fredoka(
+        fontSize: 16,
         fontWeight: FontWeight.w600,
         color: AppColors.textPrimary,
       );
