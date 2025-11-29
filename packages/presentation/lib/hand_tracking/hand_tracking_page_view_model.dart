@@ -681,7 +681,7 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
     }
   }
 
-  /// Save image to gallery
+  /// Save image to gallery and /media/sketches with sequential numbering
   Future<bool> onSaveToGallery(Uint8List imageBytes) async {
     try {
       // Request storage permission
@@ -694,17 +694,43 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
         return false;
       }
 
-      // Save to temporary file first
-      final tempDir = await getTemporaryDirectory();
-      final file = File(
-        '${tempDir.path}/hand_drawing_${DateTime.now().millisecondsSinceEpoch}.png',
-      );
-      await file.writeAsBytes(imageBytes);
+      // 1. Create /media/sketches directory
+      final documentsDir = await getApplicationDocumentsDirectory();
+      final mediaDir = Directory('${documentsDir.parent.path}/media');
+      final sketchesDir = Directory('${mediaDir.path}/sketches');
 
-      // Save to gallery using gal package
-      await Gal.putImage(file.path, album: 'HandDrawings');
+      if (!await sketchesDir.exists()) {
+        await sketchesDir.create(recursive: true);
+        debugPrint('Created sketches directory: ${sketchesDir.path}');
+      }
 
-      debugPrint('Image saved to gallery: ${file.path}');
+      // 2. Find the next sequential number
+      int nextNumber = 1;
+      final existingFiles = await sketchesDir.list().toList();
+
+      // Find all files matching sketches_N.png pattern
+      final sketchPattern = RegExp(r'sketches_(\d+)\.png$');
+      for (final entity in existingFiles) {
+        if (entity is File) {
+          final match = sketchPattern.firstMatch(entity.path);
+          if (match != null) {
+            final fileNumber = int.tryParse(match.group(1) ?? '0') ?? 0;
+            if (fileNumber >= nextNumber) {
+              nextNumber = fileNumber + 1;
+            }
+          }
+        }
+      }
+
+      // 3. Save to /media/sketches with sequential name
+      final sketchFile = File('${sketchesDir.path}/sketches_$nextNumber.png');
+      await sketchFile.writeAsBytes(imageBytes);
+      debugPrint('✅ Original saved to: ${sketchFile.path}');
+
+      // 4. Also save to gallery using gal package
+      await Gal.putImage(sketchFile.path, album: 'HandDrawings');
+      debugPrint('✅ Image saved to gallery');
+
       return true;
     } catch (e) {
       debugPrint('Error saving to gallery: $e');
