@@ -7,7 +7,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
 import 'package:gal/gal.dart';
 import 'package:hand_landmarker/hand_landmarker.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:presentation/page_state.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -681,34 +680,34 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
     }
   }
 
-  /// Save image to gallery and /media/sketches with sequential numbering
+  /// Save image to /storage/emulated/0/media/sketches with sequential numbering
   Future<bool> onSaveToGallery(Uint8List imageBytes) async {
     try {
       // Request storage permission
-      final status = await Permission.photos.request();
-      if (!status.isGranted) {
-        debugPrint('Gallery permission denied');
+      final storageStatus = await Permission.storage.request();
+      final manageStatus = await Permission.manageExternalStorage.request();
+
+      if (!storageStatus.isGranted && !manageStatus.isGranted) {
+        debugPrint('Storage permission denied');
         state = state.copyWith(
-          action: HandTrackingPageAction.showError('갤러리 권한이 필요합니다'),
+          action: HandTrackingPageAction.showError('저장소 권한이 필요합니다'),
         );
         return false;
       }
 
-      // 1. Create /media/sketches directory
-      final documentsDir = await getApplicationDocumentsDirectory();
-      final mediaDir = Directory('${documentsDir.parent.path}/media');
-      final sketchesDir = Directory('${mediaDir.path}/sketches');
+      // 1. Create /storage/emulated/0/media/sketches directory
+      final sketchesDir = Directory('/storage/emulated/0/media/sketches');
 
       if (!await sketchesDir.exists()) {
         await sketchesDir.create(recursive: true);
         debugPrint('Created sketches directory: ${sketchesDir.path}');
       }
 
-      // 2. Find the next sequential number
+      // 2. Find the next sequential number (with leading zeros)
       int nextNumber = 1;
       final existingFiles = await sketchesDir.list().toList();
 
-      // Find all files matching sketches_N.png pattern
+      // Find all files matching sketches_NN.png pattern (01, 02, 03...)
       final sketchPattern = RegExp(r'sketches_(\d+)\.png$');
       for (final entity in existingFiles) {
         if (entity is File) {
@@ -722,8 +721,9 @@ class HandTrackingPageViewModel extends _$HandTrackingPageViewModel {
         }
       }
 
-      // 3. Save to /media/sketches with sequential name
-      final sketchFile = File('${sketchesDir.path}/sketches_$nextNumber.png');
+      // 3. Save to /storage/emulated/0/media/sketches with sequential name (with leading zeros)
+      final numberStr = nextNumber.toString().padLeft(2, '0');
+      final sketchFile = File('${sketchesDir.path}/sketches_$numberStr.png');
       await sketchFile.writeAsBytes(imageBytes);
       debugPrint('✅ Original saved to: ${sketchFile.path}');
 
