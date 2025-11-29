@@ -1,7 +1,8 @@
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:image_picker/image_picker.dart';
-import 'package:domain/domain.dart';
 import 'package:design_system/design_system.dart';
+import 'package:domain/domain.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+
 import '../page_state.dart';
 import '../services/service_providers.dart';
 import 'image_analysis_mapper.dart';
@@ -12,7 +13,6 @@ part 'image_analysis_page_view_model.g.dart';
 class ImageAnalysisPageViewModel extends _$ImageAnalysisPageViewModel {
   final ImagePicker _imagePicker = ImagePicker();
   ImageAnalysis? _currentAnalysis;
-  GeneratedImage? _currentGeneratedImage;
 
   late final VisionService _visionService;
   late final ImageGenerationService _imageGenService;
@@ -60,9 +60,7 @@ class ImageAnalysisPageViewModel extends _$ImageAnalysisPageViewModel {
   Future<void> onAnalyzeImagePressed() async {
     if (state.uiState.selectedImagePath == null) return;
 
-    state = state.copyWith(
-      uiState: state.uiState.copyWith(isAnalyzing: true),
-    );
+    state = state.copyWith(uiState: state.uiState.copyWith(isAnalyzing: true));
 
     try {
       final analysisResult = await _visionService.analyzeImage(
@@ -92,16 +90,12 @@ class ImageAnalysisPageViewModel extends _$ImageAnalysisPageViewModel {
   Future<void> onGenerateImagePressed() async {
     if (_currentAnalysis == null) return;
 
-    state = state.copyWith(
-      uiState: state.uiState.copyWith(isGenerating: true),
-    );
+    state = state.copyWith(uiState: state.uiState.copyWith(isGenerating: true));
 
     try {
       final generatedImage = await _imageGenService.generateImage(
         _currentAnalysis!,
       );
-
-      _currentGeneratedImage = generatedImage;
 
       state = state.copyWith(
         uiState: state.uiState.copyWith(

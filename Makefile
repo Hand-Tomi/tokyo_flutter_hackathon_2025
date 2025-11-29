@@ -5,6 +5,7 @@
 # Flutter version management
 FLUTTER := fvm flutter
 DART := fvm dart
+MELOS := $(DART) pub global run melos
 
 # デフォルトターゲット - ヘルプを表示
 help:
@@ -39,35 +40,35 @@ help:
 # Melosワークスペースの初期化
 bootstrap:
 	@echo "🚀 Bootstrapping workspace..."
-	melos bootstrap
+	$(MELOS) bootstrap
 
 # 依存関係の取得
 get:
 	@echo "📦 Getting dependencies..."
-	melos run get --no-select
+	$(MELOS) exec -- $(FLUTTER) pub get
 
 # クリーン
 clean:
 	@echo "🧹 Cleaning..."
 	$(FLUTTER) clean
-	melos exec -- $(FLUTTER) clean
+	$(MELOS) exec -- $(FLUTTER) clean
 	find . -name "*.g.dart" -type f -delete
 	find . -name "*.freezed.dart" -type f -delete
 
 # コード生成
 build-runner:
 	@echo "🔨 Running build_runner..."
-	melos run build --no-select
+	$(MELOS) exec --order-dependents --depends-on="build_runner" -- $(DART) run build_runner build --delete-conflicting-outputs
 
 # ファイル変更を監視してコード生成
 watch:
 	@echo "👀 Watching for changes..."
-	melos run watch
+	$(MELOS) exec --order-dependents --depends-on="build_runner" -- $(DART) run build_runner watch --delete-conflicting-outputs
 
 # テスト実行
 test:
 	@echo "🧪 Running tests..."
-	melos exec -- $(FLUTTER) test
+	$(MELOS) exec -- $(FLUTTER) test
 
 # コードフォーマット
 format:
@@ -77,7 +78,7 @@ format:
 # Lint実行
 lint:
 	@echo "🔍 Running lint..."
-	melos exec -- $(FLUTTER) analyze
+	$(MELOS) exec -- $(FLUTTER) analyze
 
 # アプリ実行
 run:
@@ -101,10 +102,13 @@ setup:
 	@echo "📥 Installing Flutter version from .fvmrc..."
 	fvm install
 	@echo "✅ FVM setup complete!"
+	@echo "📦 Installing Melos..."
+	$(DART) pub global activate melos
+	@echo "✅ Melos installed!"
 	@echo "🚀 Bootstrapping workspace..."
 	@$(MAKE) bootstrap
 	@echo "🧹 Cleaning build cache..."
-	@melos exec --depends-on="build_runner" -- $(DART) run build_runner clean
+	@$(MELOS) exec --depends-on="build_runner" -- $(DART) run build_runner clean
 	@echo "🔨 Running build_runner..."
 	@$(MAKE) build-runner
 	@echo "✅ Setup complete!"

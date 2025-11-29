@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:design_system/design_system.dart';
 import 'package:flutter/foundation.dart';
 import 'package:image_picker/image_picker.dart';
@@ -53,9 +51,7 @@ class SketchTestPageViewModel extends _$SketchTestPageViewModel {
 
   /// 동화 텍스트 변경
   void onStoryTextChanged(String text) {
-    state = state.copyWith(
-      uiState: state.uiState.copyWith(storyText: text),
-    );
+    state = state.copyWith(uiState: state.uiState.copyWith(storyText: text));
   }
 
   /// 이미지 생성

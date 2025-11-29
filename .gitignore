@@ -51,3 +51,35 @@ app.*.map.json
 
 # Environment variables (API keys)
 .env
+
+# Code generation (Freezed, Riverpod, JSON serialization)
+*.freezed.dart
+*.g.dart
+
+# Melos
+.melos/
+
+# Coverage
+coverage/
+
+# Pub lockfiles in packages (keep only root)
+packages/**/pubspec.lock
+apps/**/pubspec.lock
+
+# Build outputs
+**/build/
+
+# Platform-specific generated files
+**/ios/Pods/
+**/ios/.symlinks/
+**/ios/Flutter/Flutter.framework
+**/ios/Flutter/Flutter.podspec
+**/android/.gradle/
+**/android/local.properties
+**/android/**/gradle-wrapper.jar
+**/macos/Flutter/ephemeral/
+**/linux/flutter/ephemeral/
+**/windows/flutter/ephemeral/
+
+# Web specific
+**/web/.dart_tool/
