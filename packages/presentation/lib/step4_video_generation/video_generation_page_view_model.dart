@@ -121,7 +121,6 @@ class VideoGenerationPageViewModel extends _$VideoGenerationPageViewModel {
           step: VideoGenerationStep.completed,
           progress: 1.0,
           statusMessage: '영상이 생성되었습니다!',
-          videoPath: video.videoPath,
         ),
         action: VideoGenerationPageAction.navigateToVideoPlayback(),
       );
@@ -151,7 +150,6 @@ class VideoGenerationPageViewModel extends _$VideoGenerationPageViewModel {
         step: VideoGenerationStep.preparing,
         progress: 0.0,
         statusMessage: '준비 중...',
-        videoPath: null,
       ),
       action: VideoGenerationPageAction.none(),
     );
