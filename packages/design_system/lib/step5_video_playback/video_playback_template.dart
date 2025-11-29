@@ -15,15 +15,15 @@ class VideoPlaybackTemplate extends StatelessWidget {
     required this.uiState,
     this.onPlayPausePressed,
     this.onSeek,
-    this.onSaveSharePressed,
     this.onReplayPressed,
+    this.onHomePressed,
   });
 
   final VideoPlaybackPageUiState uiState;
   final VoidCallback? onPlayPausePressed;
   final void Function(double)? onSeek;
-  final VoidCallback? onSaveSharePressed;
   final VoidCallback? onReplayPressed;
+  final VoidCallback? onHomePressed;
 
   @override
   Widget build(BuildContext context) {
@@ -55,15 +55,15 @@ class VideoPlaybackTemplate extends StatelessWidget {
 
                       const SizedBox(height: AppSpacing.lg),
 
-                      // 저장 & 공유 버튼
+                      // Home 버튼
                       GameButton(
-                        onPressed: onSaveSharePressed,
+                        onPressed: onHomePressed,
                         style: GameButtonStyle.primary,
-                        icon: Icons.share,
-                        label: 'Save & Share',
+                        icon: Icons.home,
+                        label: 'Home',
                       ),
 
-                      const SizedBox(height: 140),
+                      const SizedBox(height: 80),
                     ],
                   ),
                 ),

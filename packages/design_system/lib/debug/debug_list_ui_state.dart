@@ -33,5 +33,4 @@ class DebugListPageAction with _$DebugListPageAction {
       _NavigateToVideoGeneration;
   factory DebugListPageAction.navigateToVideoPlayback() =
       _NavigateToVideoPlayback;
-  factory DebugListPageAction.navigateToSaveShare() = _NavigateToSaveShare;
 }

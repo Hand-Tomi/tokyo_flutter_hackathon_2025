@@ -91,21 +91,6 @@ StorySpark 앱의 화면 구성을 정의합니다.
 - 재생 상태 (loading/playing/paused/completed)
 - 현재 위치, 전체 길이
 
-### 6. 저장/공유 화면 (SaveShare)
-
-**핵심 기능**: 완성된 영상 저장 및 공유
-
-**구성**:
-- 영상 썸네일
-- 완성 축하 메시지
-- 다운로드 버튼
-- 공유하기 버튼
-- 홈으로 버튼
-
-**UI 상태**:
-- 비디오/썸네일 경로
-- 저장 상태
-
 ---
 
 ## 파일 구조
@@ -115,15 +100,13 @@ design_system/lib/
 ├── scene_creation/     # 장면 생성
 ├── scene_list/         # 장면 리스트
 ├── video_generation/   # 영상 생성
-├── video_playback/     # 영상 재생
-└── save_share/         # 저장/공유
+└── video_playback/     # 영상 재생
 
 presentation/lib/
 ├── scene_creation/
 ├── scene_list/
 ├── video_generation/
-├── video_playback/
-└── save_share/
+└── video_playback/
 
 domain/lib/
 ├── scene.dart          # 장면 엔티티

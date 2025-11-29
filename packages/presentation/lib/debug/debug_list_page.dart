@@ -39,9 +39,6 @@ class DebugListPage extends ConsumerWidget {
           navigateToVideoPlayback: () {
             context.push('/video-playback');
           },
-          navigateToSaveShare: () {
-            context.push('/save-share');
-          },
           navigateToTodoList: () {
             context.push('/todo');
           },

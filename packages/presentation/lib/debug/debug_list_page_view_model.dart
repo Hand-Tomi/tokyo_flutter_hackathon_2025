@@ -45,11 +45,6 @@ class DebugListPageViewModel extends _$DebugListPageViewModel {
         title: '5. 영상 재생 화면 (VideoPlayback)',
         description: '완성된 동화 영상 재생',
       ),
-      const DebugMenuItemUi(
-        id: 'save_share',
-        title: '6. 저장/공유 화면 (SaveShare)',
-        description: '영상 다운로드 및 공유',
-      ),
       // 기존 디버그 화면들
       const DebugMenuItemUi(
         id: 'todo_list',
@@ -106,11 +101,6 @@ class DebugListPageViewModel extends _$DebugListPageViewModel {
       case 'video_playback':
         state = state.copyWith(
           action: DebugListPageAction.navigateToVideoPlayback(),
-        );
-        break;
-      case 'save_share':
-        state = state.copyWith(
-          action: DebugListPageAction.navigateToSaveShare(),
         );
         break;
       case 'todo_list':

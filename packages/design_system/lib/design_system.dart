@@ -57,10 +57,6 @@ export 'step4_video_generation/video_generation_template.dart';
 export 'step5_video_playback/video_playback_ui_state.dart';
 export 'step5_video_playback/video_playback_template.dart';
 
-// Step 6: Save Share
-export 'step6_save_share/save_share_ui_state.dart';
-export 'step6_save_share/save_share_template.dart';
-
 // Step 7: My Stories
 export 'step7_my_stories/my_story_ui.dart';
 export 'step7_my_stories/my_story_card.dart';

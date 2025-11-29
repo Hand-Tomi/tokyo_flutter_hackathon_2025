@@ -383,9 +383,9 @@ class VideoPlaybackPageViewModel extends _$VideoPlaybackPageViewModel {
     _play();
   }
 
-  void onSaveSharePressed() {
+  void onHomePressed() {
     state = state.copyWith(
-      action: VideoPlaybackPageAction.navigateToSaveShare(),
+      action: VideoPlaybackPageAction.navigateToHome(),
     );
   }
 }

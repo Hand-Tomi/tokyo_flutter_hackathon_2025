@@ -2,7 +2,6 @@ import 'package:go_router/go_router.dart';
 import 'package:presentation/debug/debug_list_page.dart';
 import 'package:presentation/hand_tracking/hand_tracking_page.dart';
 import 'package:presentation/step1_home/home_page.dart';
-import 'package:presentation/step6_save_share/save_share_page.dart';
 import 'package:presentation/step2_scene_creation/scene_creation_page.dart';
 import 'package:presentation/step3_scene_list/scene_list_page.dart';
 import 'package:presentation/todo/todo_list_page.dart';
@@ -49,11 +48,6 @@ final appRouter = GoRouter(
             slideshowIdStr != null ? int.tryParse(slideshowIdStr) : null;
         return VideoPlaybackPage(slideshowId: slideshowId);
       },
-    ),
-    GoRoute(
-      path: '/save-share',
-      name: 'saveShare',
-      builder: (context, state) => const SaveSharePage(),
     ),
     GoRoute(
       path: '/my-stories',

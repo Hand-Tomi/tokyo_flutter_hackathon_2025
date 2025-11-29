@@ -49,6 +49,6 @@ class VideoPlaybackPageUiState with _$VideoPlaybackPageUiState {
 @freezed
 class VideoPlaybackPageAction with _$VideoPlaybackPageAction {
   factory VideoPlaybackPageAction.none() = _None;
-  factory VideoPlaybackPageAction.navigateToSaveShare() = _NavigateToSaveShare;
+  factory VideoPlaybackPageAction.navigateToHome() = _NavigateToHome;
   factory VideoPlaybackPageAction.showError(String message) = _ShowError;
 }

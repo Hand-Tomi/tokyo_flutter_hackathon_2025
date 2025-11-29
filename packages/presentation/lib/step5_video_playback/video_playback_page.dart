@@ -26,8 +26,8 @@ class VideoPlaybackPage extends ConsumerWidget {
 
         next.when(
           none: () {},
-          navigateToSaveShare: () {
-            context.go('/save-share');
+          navigateToHome: () {
+            context.go('/home');
           },
           showError: (message) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -49,8 +49,8 @@ class VideoPlaybackPage extends ConsumerWidget {
       uiState: state.uiState,
       onPlayPausePressed: notifier.onPlayPausePressed,
       onSeek: notifier.onSeek,
-      onSaveSharePressed: notifier.onSaveSharePressed,
       onReplayPressed: notifier.onReplayPressed,
+      onHomePressed: notifier.onHomePressed,
     );
   }
 }
