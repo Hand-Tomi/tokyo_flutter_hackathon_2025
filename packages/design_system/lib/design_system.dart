@@ -2,6 +2,16 @@
 //
 // 外部パッケージから使用する際はこのファイルからインポート
 
+// Theme
+export 'theme/app_colors.dart';
+export 'theme/app_typography.dart';
+export 'theme/app_spacing.dart';
+export 'theme/app_theme.dart';
+
+// Components
+export 'components/sky_background.dart';
+export 'components/game_button.dart';
+
 // Home
 export 'home/home_page_ui_state.dart';
 export 'home/home_page_template.dart';
