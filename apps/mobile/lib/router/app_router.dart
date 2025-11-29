@@ -43,7 +43,12 @@ final appRouter = GoRouter(
     GoRoute(
       path: '/video-playback',
       name: 'videoPlayback',
-      builder: (context, state) => const VideoPlaybackPage(),
+      builder: (context, state) {
+        final slideshowIdStr = state.uri.queryParameters['slideshowId'];
+        final slideshowId =
+            slideshowIdStr != null ? int.tryParse(slideshowIdStr) : null;
+        return VideoPlaybackPage(slideshowId: slideshowId);
+      },
     ),
     GoRoute(
       path: '/save-share',

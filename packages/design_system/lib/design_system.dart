@@ -62,5 +62,7 @@ export 'step6_save_share/save_share_ui_state.dart';
 export 'step6_save_share/save_share_template.dart';
 
 // Step 7: My Stories
+export 'step7_my_stories/my_story_ui.dart';
+export 'step7_my_stories/my_story_card.dart';
 export 'step7_my_stories/my_stories_list_ui_state.dart';
 export 'step7_my_stories/my_stories_list_template.dart';

@@ -15,6 +15,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'video_playback_page_view_model.g.dart';
 
 /// 영상 재생 페이지의 ViewModel
+/// slideshowId가 null이면 현재 sceneList에서 새로 생성, 있으면 저장된 JSON에서 로드
 @riverpod
 class VideoPlaybackPageViewModel extends _$VideoPlaybackPageViewModel {
   Timer? _playbackTimer;
@@ -22,17 +23,32 @@ class VideoPlaybackPageViewModel extends _$VideoPlaybackPageViewModel {
   int _currentAudioSceneIndex = -1;
 
   @override
-  PageState<VideoPlaybackPageUiState, VideoPlaybackPageAction> build() {
+  PageState<VideoPlaybackPageUiState, VideoPlaybackPageAction> build(
+    int? slideshowId,
+  ) {
     ref.onDispose(() {
       _playbackTimer?.cancel();
       _audioPlayer?.dispose();
     });
 
-    // build() 내에서 ref.read()를 먼저 수행
-    final sceneDataList = ref.read(sceneListProvider);
-
-    // 슬라이드쇼 정보 로드 (sceneDataList를 파라미터로 전달)
-    Future.microtask(() => _loadSlideshowInfo(sceneDataList));
+    if (slideshowId != null) {
+      // 저장된 슬라이드쇼에서 로드
+      final slideshow = ref.read(slideshowListProvider.notifier).getById(slideshowId);
+      if (slideshow != null) {
+        Future.microtask(() => _loadFromSavedSlideshow(slideshow.fileName));
+      } else {
+        Future.microtask(() {
+          state = state.copyWith(
+            action: VideoPlaybackPageAction.showError('슬라이드쇼를 찾을 수 없습니다.'),
+          );
+        });
+      }
+    } else {
+      // build() 내에서 ref.read()를 먼저 수행
+      final sceneDataList = ref.read(sceneListProvider);
+      // 슬라이드쇼 정보 로드 (sceneDataList를 파라미터로 전달)
+      Future.microtask(() => _loadSlideshowInfo(sceneDataList));
+    }
 
     return PageState(
       uiState: const VideoPlaybackPageUiState(
@@ -40,6 +56,64 @@ class VideoPlaybackPageViewModel extends _$VideoPlaybackPageViewModel {
       ),
       action: VideoPlaybackPageAction.none(),
     );
+  }
+
+  /// 저장된 JSON 파일에서 슬라이드쇼 로드
+  Future<void> _loadFromSavedSlideshow(String fileName) async {
+    try {
+      final appDir = await getApplicationDocumentsDirectory();
+      final jsonPath = '${appDir.path}/media/videos/$fileName';
+      final jsonFile = File(jsonPath);
+
+      if (!await jsonFile.exists()) {
+        state = state.copyWith(
+          uiState: state.uiState.copyWith(status: PlaybackStatus.error),
+          action: VideoPlaybackPageAction.showError('슬라이드쇼 파일을 찾을 수 없습니다.'),
+        );
+        return;
+      }
+
+      final jsonString = await jsonFile.readAsString();
+      final jsonData = jsonDecode(jsonString) as Map<String, dynamic>;
+
+      // AudioPlayer 초기화
+      _audioPlayer = AudioPlayer();
+
+      // JSON에서 Scene 데이터 파싱
+      final scenesJson = jsonData['scenes'] as List<dynamic>;
+      final scenes = scenesJson.map((s) {
+        final sceneMap = s as Map<String, dynamic>;
+        return SlideshowScene(
+          index: sceneMap['index'] as int,
+          imagePath: sceneMap['imagePath'] as String,
+          audioPath: sceneMap['audioPath'] as String?,
+          subtitle: sceneMap['subtitle'] as String,
+          durationMs: sceneMap['durationMs'] as int,
+          startTimeMs: sceneMap['startTimeMs'] as int,
+        );
+      }).toList();
+
+      final totalDurationMs = jsonData['totalDurationMs'] as int;
+
+      debugPrint('저장된 슬라이드쇼 로드 완료: ${scenes.length}개 장면');
+
+      state = state.copyWith(
+        uiState: state.uiState.copyWith(
+          status: PlaybackStatus.paused,
+          scenes: scenes,
+          totalDuration: Duration(milliseconds: totalDurationMs),
+          currentSceneIndex: 0,
+          currentImagePath: scenes.isNotEmpty ? scenes[0].imagePath : null,
+          currentSubtitle: scenes.isNotEmpty ? scenes[0].subtitle : null,
+        ),
+      );
+    } catch (e) {
+      debugPrint('저장된 슬라이드쇼 로드 실패: $e');
+      state = state.copyWith(
+        uiState: state.uiState.copyWith(status: PlaybackStatus.error),
+        action: VideoPlaybackPageAction.showError('슬라이드쇼 로드 실패: $e'),
+      );
+    }
   }
 
   /// 슬라이드쇼 정보 로드
@@ -159,9 +233,11 @@ class VideoPlaybackPageViewModel extends _$VideoPlaybackPageViewModel {
 
       // 전역 상태에 슬라이드쇼 정보 저장
       final firstSubtitle = scenes.isNotEmpty ? scenes[0].subtitle : '';
+      final firstImagePath = scenes.isNotEmpty ? scenes[0].imagePath : null;
       ref.read(slideshowListProvider.notifier).addSlideshow(
         title: firstSubtitle,
         fileName: fileName,
+        thumbnailPath: firstImagePath,
       );
 
       debugPrint('슬라이드쇼 JSON 저장 완료: $jsonPath');

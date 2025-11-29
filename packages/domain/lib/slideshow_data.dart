@@ -9,6 +9,7 @@ class SlideshowData with _$SlideshowData {
     required int id,
     required String title,
     required String fileName,
+    String? thumbnailPath,
   }) = _SlideshowData;
 
   factory SlideshowData.fromJson(Map<String, dynamic> json) =>

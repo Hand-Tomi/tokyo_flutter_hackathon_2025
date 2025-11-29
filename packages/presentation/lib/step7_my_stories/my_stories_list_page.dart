@@ -20,6 +20,9 @@ class MyStoriesListPage extends ConsumerWidget {
 
         next.when(
           none: () {},
+          navigateToPlayback: (slideshowId) {
+            context.push('/video-playback?slideshowId=$slideshowId');
+          },
         );
 
         notifier.onFinishedAction();
@@ -29,6 +32,7 @@ class MyStoriesListPage extends ConsumerWidget {
     return MyStoriesListTemplate(
       uiState: state.uiState,
       onBackPressed: () => context.pop(),
+      onStoryTap: notifier.onStoryTap,
     );
   }
 }

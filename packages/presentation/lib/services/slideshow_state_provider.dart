@@ -15,11 +15,13 @@ class SlideshowList extends _$SlideshowList {
   void addSlideshow({
     required String title,
     required String fileName,
+    String? thumbnailPath,
   }) {
     final slideshow = SlideshowData(
       id: _nextId++,
       title: title,
       fileName: fileName,
+      thumbnailPath: thumbnailPath,
     );
     state = [...state, slideshow];
   }

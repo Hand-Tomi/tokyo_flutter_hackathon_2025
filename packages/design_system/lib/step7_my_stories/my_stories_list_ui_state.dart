@@ -1,3 +1,4 @@
+import 'package:design_system/step7_my_stories/my_story_ui.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'my_stories_list_ui_state.freezed.dart';
@@ -6,6 +7,7 @@ part 'my_stories_list_ui_state.freezed.dart';
 @freezed
 class MyStoriesListPageUiState with _$MyStoriesListPageUiState {
   const factory MyStoriesListPageUiState({
+    @Default([]) List<MyStoryUi> stories,
     @Default(false) bool isLoading,
   }) = _MyStoriesListPageUiState;
 }
@@ -14,4 +16,6 @@ class MyStoriesListPageUiState with _$MyStoriesListPageUiState {
 @freezed
 class MyStoriesListPageAction with _$MyStoriesListPageAction {
   const factory MyStoriesListPageAction.none() = _None;
+  const factory MyStoriesListPageAction.navigateToPlayback(int slideshowId) =
+      _NavigateToPlayback;
 }

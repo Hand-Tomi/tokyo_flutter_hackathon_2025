@@ -6,14 +6,21 @@ import 'package:presentation/step5_video_playback/video_playback_page_view_model
 
 /// 영상 재생 페이지
 class VideoPlaybackPage extends ConsumerWidget {
-  const VideoPlaybackPage({super.key});
+  const VideoPlaybackPage({
+    super.key,
+    this.slideshowId,
+  });
+
+  /// 저장된 슬라이드쇼 ID (null이면 현재 sceneList에서 새로 생성)
+  final int? slideshowId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(videoPlaybackPageViewModelProvider);
+    final state = ref.watch(videoPlaybackPageViewModelProvider(slideshowId));
 
     ref.listen(
-      videoPlaybackPageViewModelProvider.select((value) => value.action),
+      videoPlaybackPageViewModelProvider(slideshowId)
+          .select((value) => value.action),
       (_, next) {
         if (!context.mounted) return;
 
@@ -29,11 +36,14 @@ class VideoPlaybackPage extends ConsumerWidget {
           },
         );
 
-        ref.read(videoPlaybackPageViewModelProvider.notifier).onFinishedAction();
+        ref
+            .read(videoPlaybackPageViewModelProvider(slideshowId).notifier)
+            .onFinishedAction();
       },
     );
 
-    final notifier = ref.read(videoPlaybackPageViewModelProvider.notifier);
+    final notifier =
+        ref.read(videoPlaybackPageViewModelProvider(slideshowId).notifier);
 
     return VideoPlaybackTemplate(
       uiState: state.uiState,

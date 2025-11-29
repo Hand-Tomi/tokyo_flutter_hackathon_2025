@@ -1,6 +1,7 @@
 import 'package:design_system/components/game_button.dart';
 import 'package:design_system/components/sky_background.dart';
 import 'package:design_system/step7_my_stories/my_stories_list_ui_state.dart';
+import 'package:design_system/step7_my_stories/my_story_card.dart';
 import 'package:design_system/theme/app_spacing.dart';
 import 'package:design_system/theme/app_typography.dart';
 import 'package:flutter/material.dart';
@@ -11,10 +12,12 @@ class MyStoriesListTemplate extends StatelessWidget {
     super.key,
     required this.uiState,
     this.onBackPressed,
+    this.onStoryTap,
   });
 
   final MyStoriesListPageUiState uiState;
   final VoidCallback? onBackPressed;
+  final void Function(int storyId)? onStoryTap;
 
   @override
   Widget build(BuildContext context) {
@@ -29,16 +32,18 @@ class MyStoriesListTemplate extends StatelessWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 24),
                   child: Column(
                     children: [
-                      const SizedBox(height: 60),
+                      const SizedBox(height: 16),
 
                       // 헤더
                       Text('My Stories', style: AppTypography.headlineLarge),
 
                       const SizedBox(height: AppSpacing.lg),
 
-                      // 빈 상태 표시
+                      // 스토리 그리드 또는 빈 상태
                       Expanded(
-                        child: _buildEmptyState(),
+                        child: uiState.stories.isEmpty
+                            ? _buildEmptyState()
+                            : _buildStoriesGrid(),
                       ),
 
                       const SizedBox(height: 140),
@@ -60,6 +65,25 @@ class MyStoriesListTemplate extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildStoriesGrid() {
+    return GridView.builder(
+      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+        crossAxisCount: 2,
+        crossAxisSpacing: 16,
+        mainAxisSpacing: 16,
+        childAspectRatio: 1.0,
+      ),
+      itemCount: uiState.stories.length,
+      itemBuilder: (context, index) {
+        final story = uiState.stories[index];
+        return MyStoryCard(
+          story: story,
+          onTap: () => onStoryTap?.call(story.id),
+        );
+      },
     );
   }
 
