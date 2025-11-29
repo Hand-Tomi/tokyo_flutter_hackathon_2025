@@ -75,6 +75,7 @@ apps/**/pubspec.lock
 **/ios/Flutter/Flutter.framework
 **/ios/Flutter/Flutter.podspec
 **/android/.gradle/
+**/android/.kotlin/
 **/android/local.properties
 **/android/**/gradle-wrapper.jar
 **/macos/Flutter/ephemeral/
